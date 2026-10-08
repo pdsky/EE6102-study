@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>模块 2 · 工业 4.0 与人的因素 | EE6102 小白课</title>
+<meta name="description" content="EE6102 模块 2：工业革命 1.0–5.0、IoT/云/AI/数字孪生的安全隐患、员工行为、安全意识与培训、社会工程、合规与风险计算。">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="m2">
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><span class="marks" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></span><b>EE6102 小白课</b></a>
+  <span class="sp"></span>
+  <nav aria-label="模块导航"><a href="index.html">首页</a><a href="m1.html">1 入门与威胁</a><a class="on" href="m2.html">2 工业4.0与人</a><a href="m3.html">3 策略与生物识别</a><a href="m4.html">4 密码学</a><a href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="practice.html">刷题本</a></nav>
+  <button class="themeb" type="button">主题</button>
+</div></header>
+<div class="wrap">
+<aside class="toc" aria-label="本页目录"><p class="tt">本模块目录</p><ol></ol><div class="prog"><span class="pct"></span><div class="bar"><i></i></div></div></aside>
+<main class="lesson">
+<p class="eyebrow">Module 02 · 对应课件 sld2</p>
+<h1 class="title">工业 4.0 与“人”的因素：新技术带来新漏洞，人是最弱的一环</h1>
+<p class="sub-en">Industry 4.0/5.0 and Cyber Security · Education, Awareness and Compliance</p>
+<div class="meta"><span>约 40 分钟</span><span>11 道小测</span><span>2 个动手实验</span><span>Quiz 样题 Part 2 · 20 题对应本章</span></div>
+<p class="lede">这一章几乎没有技术难点，概念多、送分题多，样题 Part 2 的 20 题里有一大半是判断题。它的主线只有两句话：<b>技术越先进、越互联，攻击面越大</b>；<b>再好的技术，也会被一个粗心的员工打穿</b>。</p>
+<div class="goals"><h3>学完这一章，你应该能：</h3><ul>
+<li>说出工业 1.0 到 5.0 各自的标志，记住“工业 4.0 一词起源于德国”；</li>
+<li>讲清 IoT、云计算、AI、数字孪生、CPS 各自带来什么安全问题；</li>
+<li>说出员工行为的三大问题，以及安全意识、培训、教育的作用；</li>
+<li>识别 7 种日常骗局：邮件、鱼叉、短信、搜索结果、社交媒体、二维码、电话；</li>
+<li>说出合规的定义、好处和建立合规项目的 5 个步骤；</li>
+<li>会算风险分 <b>Threat × Vulnerability × Asset</b>，会检查密码是否合规。</li></ul></div>
+
+<section class="sec" id="rev">
+<h2><span class="n">1</span>五次工业革命：从蒸汽机到人机协作</h2>
+<p>“工业 4.0”这个词你一定听过。要理解它为什么和网络安全有关，先看前几次革命分别改变了什么。</p>
+<figure>
+<svg viewBox="0 0 680 210" role="img" aria-label="工业 1.0 到 5.0 时间线">
+  <line x1="30" y1="70" x2="650" y2="70" class="ln"/>
+  <g font-size="13">
+  <circle cx="70" cy="70" r="12" class="box-s"/><text x="70" y="40" text-anchor="middle" font-weight="700">1.0</text><text x="70" y="105" text-anchor="middle">机械化</text><text x="70" y="124" text-anchor="middle">蒸汽机</text>
+  <circle cx="200" cy="70" r="12" class="box-s"/><text x="200" y="40" text-anchor="middle" font-weight="700">2.0</text><text x="200" y="105" text-anchor="middle">电力</text><text x="200" y="124" text-anchor="middle">流水线、大规模生产</text>
+  <circle cx="330" cy="70" r="12" class="box-s"/><text x="330" y="40" text-anchor="middle" font-weight="700">3.0</text><text x="330" y="105" text-anchor="middle">计算机</text><text x="330" y="124" text-anchor="middle">自动化、电子</text>
+  <circle cx="460" cy="70" r="14" class="box-a"/><text x="460" y="40" text-anchor="middle" font-weight="700" class="ta">4.0</text><text x="460" y="105" text-anchor="middle">智能化、万物互联</text><text x="460" y="124" text-anchor="middle">IoT、云、AI</text><text x="460" y="142" text-anchor="middle">数字孪生</text>
+  <circle cx="590" cy="70" r="12" class="box-t"/><text x="590" y="40" text-anchor="middle" font-weight="700">5.0</text><text x="590" y="105" text-anchor="middle">人机协作</text><text x="590" y="124" text-anchor="middle">以人为本</text><text x="590" y="142" text-anchor="middle">解决社会问题</text></g>
+  <rect x="380" y="158" width="160" height="44" rx="8" class="box-w"/><text x="460" y="178" text-anchor="middle" font-size="12">网络安全问题从这里</text><text x="460" y="194" text-anchor="middle" font-size="12">开始全面爆发</text>
+</svg>
+<figcaption>工业革命时间线（课件 P2-3）。</figcaption>
+</figure>
+<ul>
+<li><b>1.0</b> 机械化和蒸汽；<b>2.0</b> 电力、大规模生产、流水线；<b>3.0</b> 计算机、自动化、电子。这三次革命让企业更高效。</li>
+<li><b>4.0</b> 把数字孪生、人工智能、高速有线/无线网络、云计算、虚拟化结合起来，目标是智能产品、智能流程、智能工厂，乃至智能国家。</li>
+<li><b>5.0</b> 关注“人”：人与 AI 驱动的机器人<b>协作</b>，共同解决社会面临的挑战。注意是协作，不是取代。</li>
+</ul>
+<div class="exam box"><span class="bt">考试怎么考</span><p>样题 Q2-1：“The term industry 4 or i4.0 originated in ___”，选项是 USA / China and Singapore / Both / <b>None of the above</b>。答案是 D，因为它起源于<b>德国</b>（课件说是 WEF 创始人 Klaus Schwab 在 2015 年底到 2016 年初正式使用）。正确答案不在选项里，所以选 None。</p></div>
+<div class="analogy box"><span class="bt">为什么 4.0 和安全突然绑在一起</span><p>1.0 到 3.0 时代，工厂里的机器是“孤岛”：一台机床坏了就是坏了，没人能从国外远程控制它。4.0 时代，<b>每台机器都联网了</b>。远程监控变得很方便，但黑客也能远程进来。课件 P2-26 的原话：“This interconnectivity creates security holes.”</p></div>
+<div class="check" data-a="3"><p class="cq">“人与 AI 机器人一起工作，为社会挑战提供解决方案”描述的是第几次工业革命？</p>
+<div class="opts"><button class="opt">2.0</button><button class="opt">3.0</button><button class="opt">4.0</button><button class="opt">5.0</button></div>
+<div class="cx"><p>5.0 的关键词是 <b>man and machines working together</b>。4.0 强调的是智能化和互联。</p></div></div>
+</section>
+
+<section class="sec" id="tech">
+<h2><span class="n">2</span>工业 4.0 的关键技术，以及它们各自的安全隐患</h2>
+<p>课件把工业 4.0 的驱动技术逐个介绍，每一个后面都跟着“但是有安全问题”。用一张表把“它是什么”和“危险在哪”对上号：</p>
+<div class="tbl"><table>
+<tr><th>技术</th><th>用大白话说</th><th>安全隐患</th></tr>
+<tr><td><b>IoT / IIoT</b><br>（工业）物联网</td><td>让传感器、摄像头、机器都连上网，自动采集和传输数据。IIoT 的理念是“机器比人更准确、更稳定地采集数据”。2024 年约 180 亿台设备，2030 年约 321 亿台</td><td>数量巨大，且很多设备安全设计很差：超过 200 万台 IoT 设备可被完全接管（P2-6）。模块 1 的 Mirai 僵尸网络就是 IoT 设备组成的</td></tr>
+<tr><td><b>Cloud computing</b><br>云计算</td><td>不用自己买服务器，租用网上的远程服务器来存储和计算，按用量付费。2006 年开始流行</td><td>最常见的攻击是用 <b>DoS 打可用性</b>；其他攻击破坏存储数据的<b>机密性和完整性</b>（P2-8）。CIA 三项全中</td></tr>
+<tr><td><b>AI &amp; Big Data</b></td><td>大数据是 AI 的“燃料”：用来训练 AI，AI 又被用来从大数据里挖洞见</td><td>数据集中意味着泄露代价更大；网络犯罪增长了 400%；攻击者也在用 AI 写钓鱼邮件、找漏洞</td></tr>
+<tr><td><b>Digital twin</b><br>数字孪生</td><td>给资产、人、流程、系统、设备、场所做一个<b>虚拟复制品</b>；企业可以在上面开发新产品的虚拟原型</td><td>它提供的洞察和控制能力，同样可以被攻击者利用（P2-18）</td></tr>
+<tr><td><b>Virtualization</b><br>虚拟化</td><td>把工厂的传感器数据和虚拟模型连起来，美国的一台电脑可以替中国的工厂做生产决策</td><td>主要挑战：物理资产和虚拟模型之间的<b>信息交换要安全</b></td></tr>
+<tr><td><b>CPS</b><br>信息物理系统</td><td>计算能力和物理能力集成在一起的“智能系统”：智能电网、自动驾驶、医疗监测、机器人、自动驾驶航电</td><td>被攻击时后果是物理的（停电、撞车），保护它是网络防御中最复杂的问题之一</td></tr>
+<tr><td><b>Smart factory</b><br>智能工厂</td><td>IIoT 把 AI、云、机器人带进工厂，效率更高、错误更少、更灵活</td><td>制造业是<b>第三大</b>被攻击行业，仅次于金融和政府；35% 的制造商因安全顾虑不敢全力投资数字化</td></tr>
+</table></div>
+<div class="key box"><span class="bt">一句话抓住这一节</span><p>课件 P2-26：工业 4.0/5.0 依赖整个生态中设备的<b>互联</b>；互联在系统里到处制造安全漏洞，因为从安全角度<b>无法确定数据从哪里来、到哪里去</b>。所以<b>数据可见性（data visibility）是智能制造车间最大的安全挑战</b>。</p></div>
+<div class="check" data-a="1"><p class="cq">IoT 是工业 4.0 的驱动力，但是……（样题 Q2-3）</p>
+<div class="opts"><button class="opt">它们目前只用在智能家居里</button><button class="opt">它们容易受到网络攻击</button><button class="opt">要到 2030 年才会流行</button></div>
+<div class="cx"><p>IoT 已经大量用在工业里（IIoT），现在就很普及，问题在于<b>不安全</b>。</p></div></div>
+<div class="check" data-a="2"><p class="cq">云计算可以被 DDoS 破坏可用性，其他攻击会破坏存储数据的什么？</p>
+<div class="opts"><button class="opt">只有机密性</button><button class="opt">只有完整性</button><button class="opt">机密性和完整性都会</button></div>
+<div class="cx"><p>课件原文就是 “the confidentiality and integrity of the stored data”。加上 DDoS 打的 A，云计算面临的威胁覆盖了整个 CIA。</p></div></div>
+<div class="check" data-a="0"><p class="cq">“The concept of Industry 4.0 depends upon connectivity, however, this interconnectivity creates cyber security holes.”</p>
+<div class="opts"><button class="opt">True</button><button class="opt">False</button></div>
+<div class="cx"><p>这就是本节的主线（样题 Q2-5）。</p></div></div>
+</section>
+
+<section class="sec" id="human">
+<h2><span class="n">3</span>人是最弱的一环：员工行为带来的三大问题</h2>
+<p>很多数据泄露不是黑客技术多高超，而是有人点了不该点的链接、把密码贴在显示器上、离职前带走了客户名单。课件 P2-31 说，研究表明员工的行为，<b>无论是恶意的还是无意的</b>（both malicious and unintentional），都造成了大量损失。</p>
+<p>员工行为相关的<b>三大问题</b>：</p>
+<div class="tbl"><table>
+<tr><th>问题</th><th>是否故意</th><th>例子</th></tr>
+<tr><td><b>Errors and omissions</b> 错误与疏忽</td><td>无意</td><td>把客户资料发错邮箱；忘了给服务器打补丁；用了弱密码</td></tr>
+<tr><td><b>Fraud</b> 欺诈</td><td>故意</td><td>财务人员利用权限做假账、挪用资金</td></tr>
+<tr><td><b>Actions by disgruntled employees</b> 心怀不满的员工</td><td>故意</td><td>被辞退前删除数据库、埋逻辑炸弹、把机密卖给竞争对手</td></tr>
+</table></div>
+<div class="analogy box"><span class="bt">类比</span><p>城堡的墙再高，如果守门人开门放了陌生人进来（疏忽），或者守门人自己就是内应（欺诈、不满），墙就没有用了。模块 1 讲的 insider threat 就是这一节的延续。</p></div>
+<div class="check" data-a="3"><p class="cq">与员工行为相关的主要安全问题包括？（样题 Q2-8）</p>
+<div class="opts"><button class="opt">Errors and omissions</button><button class="opt">Fraud</button><button class="opt">Actions by disgruntled employees</button><button class="opt">All of the above</button></div>
+<div class="cx"><p>三个都是课件原文列出的，选 <b>All of the above</b>。同理样题 Q2-7：员工行为可能是 malicious，也可能是 unintentional，选 <b>Both</b>。</p></div></div>
+</section>
+
+<section class="sec" id="train">
+<h2><span class="n">4</span>安全意识、培训和教育：让员工从漏洞变成防线</h2>
+<p>既然人是弱点，办法就是培养人。课件 P2-32 讲了这类项目的四个作用，每一条都可能出题：</p>
+<ol>
+<li><b>威慑</b>：让员工清楚自己要承担的<b>责任和可能的处罚</b>，从而遏制欺诈和报复行为；</li>
+<li><b>消除借口</b>：员工不可能遵守自己不知道的规定；如果不培训，员工被抓时可以说“我不知道”，执法就很难；</li>
+<li><b>限制组织的法律责任</b>：持续的培训能证明公司已经尽到了“应有的注意”（due care）；</li>
+<li><b>满足合规</b>：法规和合同可能要求必须培训。</li>
+</ol>
+<div class="pitfall box"><span class="bt">易错点</span><p>样题 Q2-9 的干扰项说“不能要求员工参加意识培训，因为这会让他们承担责任”。逻辑完全反了：培训限制的是<b>组织</b>的责任，而且员工<b>必须</b>参加。</p></div>
+
+<h3>安全意识政策必须写清的三件事（P2-33）</h3>
+<ol>
+<li><b>每位员工都必须参加</b>意识项目，包括新员工入职培训和定期活动；</li>
+<li><b>每个人都有足够的时间</b>参加；</li>
+<li><b>明确由谁负责</b>管理和开展这些活动。</li>
+</ol>
+<p>样题 Q2-10 给了前两条，答案是 <b>Both a and b</b>。</p>
+
+<h3>意识 vs 培训：别混淆</h3>
+<div class="tbl"><table>
+<tr><th></th><th>Awareness 意识</th><th>Training 培训</th></tr>
+<tr><td>目的</td><td>让人知道安全很重要、自己有什么责任</td><td>教会人<b>技能</b>，让他们更安全地完成 IT 工作</td></tr>
+<tr><td>课件原话</td><td>Employees are aware of their responsibilities</td><td>Training teaches <b>what people should do and how they should do it</b></td></tr>
+<tr><td>形式</td><td>海报、提醒邮件、入职介绍</td><td>按角色设计的课程</td></tr>
+</table></div>
+<p>培训内容要<b>按角色区分</b>（P2-34），职位越高，越关注目标和领导：</p>
+<div class="tbl"><table>
+<tr><th>对象</th><th>培训重点</th></tr>
+<tr><td>普通用户</td><td>良好的计算机安全习惯</td></tr>
+<tr><td>程序员、开发者、系统维护人员</td><td>培养开发者的安全意识（security mindset）</td></tr>
+<tr><td>中层管理者</td><td>如何在安全风险、成本和收益之间做权衡</td></tr>
+<tr><td>高管</td><td>风险管理目标、度量、领导力</td></tr>
+</table></div>
+<div class="check" data-a="0"><p class="cq">“Cyber security training teaches what people should do and how they should do it.”</p>
+<div class="opts"><button class="opt">True</button><button class="opt">False</button></div>
+<div class="cx"><p>课件原句（样题 Q2-11）。</p></div></div>
+<div class="check" data-a="2"><p class="cq">给公司 CEO 做的安全培训，重点应该是？</p>
+<div class="opts"><button class="opt">怎样设置强密码</button><button class="opt">怎样写安全的代码</button><button class="opt">风险管理目标、度量和领导力</button></div>
+<div class="cx"><p>高管层关注的是 risk management goals, measurement, leadership。A 是普通用户的内容，B 是开发者的内容。</p></div></div>
+</section>
+
+<section class="sec" id="scams">
+<h2><span class="n">5</span>骗局图鉴：社会工程的 7 种日常形态</h2>
+<p>课件 P2-36 用一句话概括社会工程：<b>Distraction and Misdirection（分散注意力、误导）</b>。骗子让你以为他是你信任的人，诱导你做某件事。下面 7 种形态，样题 Part 2 的判断题几乎都出自这里，<b>答案全是 True</b>。</p>
+<div class="tbl"><table>
+<tr><th>形态</th><th>怎么骗</th></tr>
+<tr><td><b>Email phishing</b></td><td>看起来像来自银行、PayPal、Google、Amazon，甚至你们公司 CEO 的邮件</td></tr>
+<tr><td><b>Spear phishing</b></td><td>专门针对你，研究过你，知道你的家人、单位和老板，<b>骗到你的几率更高</b></td></tr>
+<tr><td><b>Smishing</b></td><td>短信钓鱼，人们回短信比回邮件快</td></tr>
+<tr><td><b>Google search scams</b></td><td><b>搜索结果靠前的链接也可能是钓鱼网站</b>：骗子也做 SEO。看 URL：标题写 Venmo，网址却是 sites.google.com</td></tr>
+<tr><td><b>Social media scams</b></td><td>社交媒体上满是假账号，可能用你真实朋友的名字和头像</td></tr>
+<tr><td><b>QR code scams</b></td><td>把自己的二维码贴纸贴在餐厅的真二维码上，扫了就跳到假网站</td></tr>
+<tr><td><b>Vishing</b></td><td>电话诈骗，<b>来电号码可以伪造得和银行一模一样</b></td></tr>
+</table></div>
+<h3>防骗清单（P2-46）</h3>
+<ul>
+<li>越紧急，越冷静：不要让情绪左右判断；</li>
+<li><b>Call and verify</b>：用你自己知道的号码回拨核实；</li>
+<li>检查邮件地址和 URL 有没有拼写错误；</li>
+<li>开启多因素认证（MFA）；留意措辞风格；多问几个问题。</li>
+</ul>
+<h3>勒索软件和 U 盘的安全习惯（P2-47～49）</h3>
+<ul>
+<li>不从来路不明的网站下载文件；警惕带附件的钓鱼邮件；</li>
+<li>不把公司邮箱和密码用在私人用途；不把密码存在文本文件或表格里；</li>
+<li><b>不用公共充电站</b>（可能被动过手脚）；<b>不插不是自己的 U 盘</b>；U 盘上的数据要加密，以防丢失。</li>
+</ul>
+<div class="check" data-a="0"><p class="cq">“Some of the top search results in Google are phishing links.”</p>
+<div class="opts"><button class="opt">True</button><button class="opt">False</button></div>
+<div class="cx"><p>True（样题 Q2-14）。排名靠前不代表可信。这一组判断题（Q2-13～16：spear phishing、Google 搜索、社交媒体假账号、vishing 伪造号码）全部是 True。</p></div></div>
+<div class="check" data-a="2"><p class="cq">以下哪些是社会工程的例子？①电话：“我是系统管理员 John，你的密码是多少？” ②邮件：“ABC 银行发现你的账户有问题，点击链接并输入密码解决。”</p>
+<div class="opts"><button class="opt">只有 ①</button><button class="opt">只有 ②</button><button class="opt">①和②都是</button></div>
+<div class="cx"><p>两个都是课件 P2-37 原图上的例子（样题 Q2-12 选 Both）。记住：<b>真正的管理员和银行永远不会问你要密码。</b></p></div></div>
+</section>
+
+<section class="sec" id="comp">
+<h2><span class="n">6</span>合规（Compliance）：守规矩为什么也是安全</h2>
+<p><b>Cybersecurity compliance</b> 就是<b>遵守法律、法规和标准</b>，这些规定由某个机构、法律或权威团体制定，目的是保护数据、系统和网络（P2-51）。常见的有：欧盟的 <b>GDPR</b>（个人数据保护）、支付卡行业的 <b>PCI DSS</b>、美国医疗行业的 <b>HIPAA</b>。</p>
+<div class="analogy box"><span class="bt">类比</span><p>餐厅要通过卫生检查：冰箱温度、员工健康证、消毒记录都有标准。合规就是企业的“网络安全卫生检查”：照着标准做，既少出事，出了事也能证明自己尽了责。</p></div>
+<h3>为什么重要</h3>
+<p>没有组织能完全免疫攻击；中小企业被当成“低垂的果实”，更容易被盯上；数据泄露会损害声誉和财务，还常常引发官司。</p>
+<h3>合规的好处（P2-52）</h3>
+<ul><li>保护声誉；维持客户信任；<b>建立客户信心和忠诚度</b>；</li><li><b>帮助识别、解读并防范潜在的数据泄露</b>；<b>改善组织的安全态势</b>；</li><li>保护知识产权（商业机密、产品规格、源代码），带来竞争优势。</li></ul>
+<h3>建立合规项目的 5 个步骤</h3>
+<div class="stepper"><div class="sh"><span>合规项目五步走（P2-53～55）</span><span class="ctr"></span></div>
+<div class="st"><p><b>① 组建合规团队（Creating a Compliance Team）</b></p><p>IT 团队是主力，但要组建专门的团队。课件原话：“Forming a compliance team is <b>necessary</b> when implementing a thorough compliance program.”（样题 Q2-19：True）</p></div>
+<div class="st"><p><b>② 建立风险分析流程</b>，分四步：</p><ul><li><b>Identify</b> 识别：找出所有接触数据的信息系统、资产和网络；</li><li><b>Assess</b> 评估：评估每类数据的风险等级；</li><li><b>Analyze</b> 分析：风险 = 泄露的可能性 × 影响（或成本）；</li><li><b>Set tolerance</b> 设定容忍度：对每个风险决定<b>缓解（mitigate）、转移（transfer，比如买网络保险）、驳回（refute）或接受（accept）</b>。</li></ul></div>
+<div class="st"><p><b>③ 设置控制措施（Setting Controls）</b></p><p>控制可以是<b>技术控制</b>（密码、访问控制列表），也可以是<b>物理控制</b>（监控摄像头、围栏）（样题 Q2-20：True）。例子：加密、防火墙、密码策略、网络保险、员工培训、事件响应计划、访问控制、补丁管理计划。</p></div>
+<div class="st"><p><b>④ 制定政策（Creating Policies）</b></p><p>把控制措施写成 IT 团队、员工和其他相关方必须遵守的政策。以后的内部审计和外部审计都会用到这些文件。</p></div>
+<div class="st"><p><b>⑤ 监控与快速响应（Monitoring and Quick Response）</b></p><p>法规会更新，所以要持续监控。合规项目的目标是在威胁变成全面泄露<b>之前</b>就识别和管理风险；被攻击时也要有能快速补救的流程。</p></div>
+<div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
+<p>课件 P2-56 还列了合规的 9 个关键领域：访问控制（基于角色、最小权限、MFA）、数据保护（加密、数据脱敏、备份）、事件响应计划、风险管理、审计与日志、政策文档、培训与意识、第三方风险（供应商也要合规）、渗透测试与漏洞管理。</p>
+<div class="check" data-a="0"><p class="cq">关于网络安全合规，哪项正确？（样题 Q2-17）</p>
+<div class="opts"><button class="opt">遵守某个机构、法律或权威团体制定的标准和监管要求</button><button class="opt">让安全对攻击者和用户都变得困难</button><button class="opt">以上都对</button></div>
+<div class="cx"><p>A 是定义。B 是胡扯：合规不是为了给用户添堵。</p></div></div>
+</section>
+
+<section class="sec" id="calc">
+<h2><span class="n">7</span>两道计算题：风险评分与密码合规检查</h2>
+<h3>风险评分</h3>
+<div class="key box"><span class="bt">公式（P2-57）</span><p><b>Risk = Threat × Vulnerability × Asset Value</b></p><p>每一项按 1–5 打分，分数越高风险越大。最高分是 5 × 5 × 5 = <b>125</b>，所以可以用“得分 ÷ 125”换算成百分比。</p></div>
+<p><b>课件例题：</b>一家医院给某系统打分：威胁可能性 4，脆弱性 3，资产价值 5。Risk = 4 × 3 × 5 = <b>60</b>，60 ÷ 125 = <b>48%</b>，课件判为 <b>medium（中等风险）</b>。</p>
+<p>三个因子各是什么意思？<b>Threat</b>：有没有人想攻击、攻击有多频繁；<b>Vulnerability</b>：系统有多少弱点（没打补丁、弱密码）；<b>Asset value</b>：被攻破后损失有多大（病人的医疗记录价值就很高）。三者相乘的含义是：<b>任何一项为 0，就没有风险</b>，比如没有任何弱点的系统，威胁再大也打不进来。</p>
+<div class="lab"><p class="lt">风险评分计算器</p>
+<div class="fields"><div class="fld"><label for="rt">Threat 威胁 (1–5)</label><input id="rt" type="number" min="1" max="5" value="4"></div><div class="fld"><label for="rv">Vulnerability 脆弱性 (1–5)</label><input id="rv" type="number" min="1" max="5" value="3"></div><div class="fld"><label for="ra">Asset value 资产价值 (1–5)</label><input id="ra" type="number" min="1" max="5" value="5"></div></div>
+<div class="out" id="rout"></div></div>
+
+<h3>密码合规检查</h3>
+<p><b>课件例题（P2-58）：</b>公司密码策略：至少 12 个字符，必须包含至少 1 个大写字母、1 个小写字母、1 个数字和 1 个符号。用户密码是 <code>MyPassword123</code>，合规吗？</p>
+<p>逐条对照：长度 13 ✓；大写 M、P ✓；小写 y、a、s… ✓；数字 1、2、3 ✓；<b>符号：没有 ✗</b>。只要有一条不满足，结论就是 <b>Non-compliant（不合规）</b>。</p>
+<div class="lab"><p class="lt">密码合规检查器</p><p class="ld">输入一个<b>练习用</b>的密码（不要输入你真实使用的密码），看它是否满足课件的策略。</p>
+<div class="fields"><div class="fld" style="grid-column:1/-1"><label for="pw">密码</label><input id="pw" type="text" value="MyPassword123" autocomplete="off"></div><div class="fld"><label for="pmin">最短长度</label><input id="pmin" type="number" value="12" min="1"></div></div>
+<div class="out" id="pout"></div></div>
+<div class="check" data-a="1"><p class="cq">威胁 5、脆弱性 2、资产价值 4，风险分和百分比是？</p>
+<div class="opts"><button class="opt">11，8.8%</button><button class="opt">40，32%</button><button class="opt">40，40%</button></div>
+<div class="cx"><p>5 × 2 × 4 = 40；40 ÷ 125 = 32%。相加或除以 100 都是常见错误。</p></div></div>
+</section>
+
+<section class="sec" id="sum">
+<h2><span class="n">8</span>本章小结</h2>
+<div class="key box"><span class="bt">一页纸总结</span><ul>
+<li>工业 1.0 蒸汽 → 2.0 电力流水线 → 3.0 计算机自动化 → 4.0 智能互联 → 5.0 人机协作；“工业 4.0”一词起源于<b>德国</b>。</li>
+<li>工业 4.0 的关键技术：IoT、云、AI 和大数据、数字孪生、虚拟化、CPS、智能工厂。<b>互联制造漏洞，数据可见性是最大挑战</b>；制造业是第三大被攻击行业。</li>
+<li>云：DoS 打可用性，其他攻击打机密性和完整性。</li>
+<li>员工三大问题：<b>疏忽、欺诈、心怀不满</b>；员工行为既有恶意的也有无意的。</li>
+<li>培训的作用：威慑、消除“我不知道”、限制组织责任、满足合规。意识政策三件事：人人参加、给足时间、明确负责人。</li>
+<li>Training 教 <b>what + how</b>；内容按角色分层。</li>
+<li>7 种骗局（邮件、鱼叉、短信、搜索、社交、二维码、电话），相关判断题<b>全是 True</b>。</li>
+<li>合规 = 遵守法律、法规和标准；五步：团队 → 风险分析 → 控制 → 政策 → 监控；控制分技术控制和物理控制。</li>
+<li><b>Risk = T × V × A</b>（满分 125）；密码合规要逐条检查。</li>
+</ul></div>
+<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 2（20 题）</b>和刷题本 P2 的 9 道自编题。去<a href="practice.html#practice">刷题本</a>，在章节里选 P2。</p></div>
+<p><button class="btn" data-done></button> <button class="btn" data-reset-quiz>重做本页小测</button></p>
+<nav class="pager"><a href="m1.html"><span>← 上一模块</span><b>1 · 入门与威胁</b></a><a class="next" href="m3.html"><span>下一模块 →</span><b>3 · 策略与生物识别</b></a></nav>
+</section>
+</main>
+</div>
+<footer class="foot">EE6102 小白课 · 个人学习笔记，依据 NTU EE6102（Dr M Y Siyal）课件整理讲解，非官方材料。</footer>
+<script src="assets/lesson.js"></script>
+<script>
+(function(){
+  function $(i){return document.getElementById(i)}
+  function risk(){var t=+$('rt').value,v=+$('rv').value,a=+$('ra').value;
+    if(![t,v,a].every(function(x){return x>=1&&x<=5})){$('rout').textContent='每项请填 1 到 5 之间的数';return}
+    var r=t*v*a;$('rout').innerHTML='<span class="eq">Risk = '+t+' × '+v+' × '+a+' = '+r+'</span><span class="eq">'+r+' ÷ 125 = '+(r/125*100).toFixed(1)+'%</span>风险分 <b class="r">'+r+'</b>（'+(r/125*100).toFixed(1)+'%）。课件里 60 分（48%）被判为 medium；课件没有给出高、中、低的具体分界线。'}
+  ['rt','rv','ra'].forEach(function(i){$(i).addEventListener('input',risk)});risk();
+  function esc(s){return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+  function pw(){var p=$('pw').value,mn=+$('pmin').value||0,rows=[],miss=[];
+    function chk(name,ok,info){rows.push((ok?'✓ ':'✗ ')+name+'：'+info);if(!ok)miss.push(name)}
+    var U=p.match(/[A-Z]/g),L=p.match(/[a-z]/g),D=p.match(/[0-9]/g),Y=p.match(/[^A-Za-z0-9]/g);
+    chk('长度 ≥ '+mn,p.length>=mn,'长度 '+p.length);chk('大写字母',!!U,U?U.slice(0,5).join(' '):'没有');chk('小写字母',!!L,L?L.slice(0,5).join(' ')+(L.length>5?' …':''):'没有');chk('数字',!!D,D?D.join(' '):'没有');chk('符号',!!Y,Y?esc(Y.join(' ')):'没有');
+    $('pout').innerHTML=rows.join('<br>')+'<br>结论：<b class="r" style="color:'+(miss.length?'var(--bad)':'var(--good)')+'">'+(miss.length?'Non-compliant 不合规（缺：'+miss.join('、')+'）':'Compliant 合规')+'</b>'}
+  ['pw','pmin'].forEach(function(i){$(i).addEventListener('input',pw)});pw();
+})();
+</script>
+</body>
+</html>
