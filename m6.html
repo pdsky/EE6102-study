@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>模块 6 · 区块链、加密货币与案例 | EE6102 小白课</title>
+<meta name="description" content="EE6102 模块 6：区块链如何防篡改（互动演示）、工作量证明挖矿、共识算法、智能合约、TPS 计算、货币与支付、比特币/以太坊/瑞波、DeFi、Equifax 与孟加拉央行案例、事件响应。">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+.chain{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:0 0 10px}
+.blk{border:1.5px solid var(--good);background:var(--good-soft);border-radius:10px;padding:10px;font-size:13px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.blk.bad{border-color:var(--bad);background:var(--bad-soft)}
+.blk .bh{font-family:var(--f-ui);font-weight:700;display:flex;justify-content:space-between}
+.blk .hx{font-family:var(--f-mono);font-size:11px;word-break:break-all;line-height:1.4}
+.blk label{font-family:var(--f-ui);font-size:11px;color:var(--muted)}
+.blk textarea{font:inherit;font-size:13px;border:1px solid var(--line-strong);border-radius:6px;padding:5px 7px;background:var(--surface);resize:vertical;min-height:52px;width:100%}
+.blk .hx.mis{color:var(--bad);font-weight:600}
+</style>
+</head>
+<body data-page="m6">
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><span class="marks" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></span><b>EE6102 小白课</b></a>
+  <span class="sp"></span>
+  <nav aria-label="模块导航"><a href="index.html">首页</a><a href="m1.html">1 入门与威胁</a><a href="m2.html">2 工业4.0与人</a><a href="m3.html">3 策略与生物识别</a><a href="m4.html">4 密码学</a><a href="m5.html">5 Web与防火墙</a><a class="on" href="m6.html">6 区块链</a><a href="practice.html">刷题本</a></nav>
+  <button class="themeb" type="button">主题</button>
+</div></header>
+<div class="wrap">
+<aside class="toc" aria-label="本页目录"><p class="tt">本模块目录</p><ol></ol><div class="prog"><span class="pct"></span><div class="bar"><i></i></div></div></aside>
+<main class="lesson">
+<p class="eyebrow">Module 06 · 对应课件 sld6</p>
+<h1 class="title">区块链、加密货币与案例：不需要信任中间人的账本</h1>
+<p class="sub-en">Blockchain Technology, Cryptocurrencies and Business Applications</p>
+<div class="meta"><span>约 60 分钟</span><span>8 道小测</span><span>3 个动手实验</span><span>样题没有这一章，刷题本 P6 有 26 道自编题</span></div>
+<p class="lede">课程目标里说，区块链被称为“第二次数字革命”。这一章会用到模块 4 的两样东西：<b>哈希</b>和<b>数字签名</b>。你会亲手改一个区块，看着整条链“断掉”；还会真的跑一次 SHA-256 挖矿，体会比特币为什么这么耗电。章末是两个真实的大案和事件响应，它们是对整门课的总结。</p>
+<div class="goals"><h3>学完这一章，你应该能：</h3><ul>
+<li>说出区块链的定义、五个特征和组成部分，解释它为什么<b>几乎不可篡改</b>；</li>
+<li>比较 PoW、PoS、DPoS、PoB、PoET、PoA 等共识算法；</li>
+<li>区分公链、私链、许可链、联盟链，以及区块链和数据库；</li>
+<li>解释智能合约，说出它的用途和风险；</li>
+<li>会算 <b>TPS</b> 和吞吐量；</li>
+<li>说出货币的演变、法币、双花问题、电子支付的三个目标；</li>
+<li>比较比特币、以太坊、瑞波；说出 DeFi 的好处和风险；</li>
+<li>讲清 Equifax 和孟加拉央行两个案例的教训，以及事件响应的四个阶段。</li></ul></div>
+
+<section class="sec" id="decent">
+<h2><span class="n">1</span>从中心化到去中心化</h2>
+<p>计算机的组织方式经历了三个阶段（P6-3）：</p>
+<div class="tbl"><table>
+<tr><th>阶段</th><th>样子</th><th>特点</th></tr>
+<tr><td><b>Mainframe</b> 大型机</td><td>所有计算、存储、代码都在一台大机器上，终端只负责输入输出</td><td>集中式</td></tr>
+<tr><td><b>Client-server</b> 客户端-服务器</td><td>个人电脑和服务器都有计算能力，催生了关系数据库</td><td>分布式计算</td></tr>
+<tr><td><b>Peer-to-peer</b> 点对点</td><td>电脑之间直接共享资源，不经过中心服务器</td><td><b>去中心化</b>；没有单一攻击点，通常被认为更安全</td></tr>
+</table></div>
+<h3>账本的历史（P6-5）</h3>
+<p>5000 多年前，人们用泥板记账（集中式账本）；约 700 年前，意大利北部的商人发明了复式记账；20 世纪 80–90 年代，银行用计算机做集中式电子账本；<b>2009 年</b>，Satoshi Nakamoto 推出了第一个<b>分布式账本</b>。</p>
+<p><b>分布式账本（distributed ledger）</b>：网络里每个成员都独立地保存和更新一份账本，没有中心机构负责广播记录。</p>
+<div class="analogy box"><span class="bt">类比：班级记账本</span><p>传统方式：班费账本只在班长手里，大家只能信任班长不做假账（中心化）。区块链方式：<b>每个同学手里都有一模一样的账本</b>，每笔新开支要大家核对一致后才写进去，写了就不能涂改。班长想偷偷改，就得同时改掉全班大多数人手里的本子，几乎不可能。</p></div>
+</section>
+
+<section class="sec" id="what">
+<h2><span class="n">2</span>区块链是什么</h2>
+<p><b>Blockchain</b> 是一种<b>去中心化、分布式</b>的数字账本技术，以安全、<b>不可篡改</b>、透明的方式记录交易，<b>不需要中心机构</b>（P6-6）。</p>
+<h3>五个关键特征</h3>
+<div class="tbl"><table>
+<tr><th>特征</th><th>含义</th></tr>
+<tr><td><b>Decentralization</b> 去中心化</td><td>没有单一实体控制网络，降低腐败和单点故障的风险</td></tr>
+<tr><td><b>Transparency</b> 透明</td><td>参与者都能看到交易，提高问责性</td></tr>
+<tr><td><b>Immutability</b> 不可篡改</td><td>一旦记录，就不能修改或删除，保证数据完整性</td></tr>
+<tr><td><b>Security</b> 安全</td><td>用哈希和数字签名保证交易真实（模块 4 的知识）</td></tr>
+<tr><td><b>Consensus</b> 共识</td><td>所有节点就交易是否有效达成一致</td></tr>
+</table></div>
+<p>组成部分（P6-7）：<b>交易</b>（用数字签名保护的事件记录，验证、排序后打包成块）、<b>不可篡改的账本</b>、<b>去中心化的节点</b>、<b>加密</b>、<b>共识机制</b>，以及可选的<b>智能合约</b>。</p>
+<p>“不可篡改”的比喻（P6-8）：像用墨水写的账本，记错了不能擦，只能<b>再记一笔来更正</b>。所以区块链也是一份“历史档案”，可以追溯来源（provenance）。</p>
+<h3>起源（P6-21）</h3>
+<ul><li><b>1991 年</b>：Stuart Haber 和 W. Scott Stornetta 提出用密码学保护的区块链来给文档打时间戳，防止篡改，这是概念先驱；</li>
+<li><b>2008 年</b>：化名 <b>Satoshi Nakamoto</b> 的人或团体发表比特币白皮书《Bitcoin: A Peer-to-Peer Electronic Cash System》，把密码学、工作量证明和去中心化网络结合起来，做出第一个完整可用的区块链，2009 年上线。</li></ul>
+<div class="check" data-a="1"><p class="cq">“交易一旦记录，就不能修改或删除”，这是哪个特征？</p>
+<div class="opts"><button class="opt">Transparency</button><button class="opt">Immutability</button><button class="opt">Consensus</button></div>
+<div class="cx"><p>Immutability，意思是 unchanging over time。</p></div></div>
+</section>
+
+<section class="sec" id="chain">
+<h2><span class="n">3</span>区块怎么连成链：为什么改不了</h2>
+<p>一个<b>区块</b>就是一批被打包在一起、同时加入链的交易。每个区块包含三样关键东西（P6-25）：</p>
+<ol><li>一批<b>交易记录</b>；</li><li>这个区块自己的<b>哈希</b>（它的“指纹”）；</li><li><b>前一个区块的哈希</b>（Prev Hash）。</li></ol>
+<p>第 3 条就是“链”的来历：Block 101 里记着 Block 100 的指纹，Block 100 里记着 Block 99 的指纹……一直追溯到第一个区块（<b>genesis block，创世区块</b>）。</p>
+<figure>
+<svg viewBox="0 0 680 170" role="img" aria-label="区块通过前一块的哈希连接成链">
+  <defs><marker id="m6a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-a"/></marker></defs>
+  <g font-size="12">
+  <rect x="20" y="20" width="190" height="120" rx="10" class="box-s"/><text x="115" y="44" text-anchor="middle" font-size="14" font-weight="700">Block #99</text><text x="35" y="70">交易：…</text><text x="35" y="94">Hash：<tspan class="ta" font-weight="700">456def</tspan></text><text x="35" y="118" class="tm">Prev：…</text>
+  <rect x="245" y="20" width="190" height="120" rx="10" class="box-s"/><text x="340" y="44" text-anchor="middle" font-size="14" font-weight="700">Block #100</text><text x="260" y="70">交易：…</text><text x="260" y="94">Hash：<tspan class="tg" font-weight="700">123abc</tspan></text><text x="260" y="118">Prev：<tspan class="ta" font-weight="700">456def</tspan></text>
+  <rect x="470" y="20" width="190" height="120" rx="10" class="box-s"/><text x="565" y="44" text-anchor="middle" font-size="14" font-weight="700">Block #101</text><text x="485" y="70">交易：…</text><text x="485" y="94">Hash：789ghi</text><text x="485" y="118">Prev：<tspan class="tg" font-weight="700">123abc</tspan></text></g>
+  <path d="M170,96 C210,150 230,150 268,120" class="la" marker-end="url(#m6a)"/>
+  <path d="M395,96 C435,150 455,150 493,120" class="la" marker-end="url(#m6a)"/>
+  <text x="340" y="164" text-anchor="middle" font-size="12" class="tm">每个区块都记着前一块的哈希：改动任何一块，后面的全都对不上</text>
+</svg>
+<figcaption>课件 P6-25 的示意：Block #101 的 Prev Hash = Block #100 的 Hash。</figcaption>
+</figure>
+<h3>动手：试着篡改一个区块</h3>
+<div class="lab"><p class="lt">迷你区块链（真实的 SHA-256）</p><p class="ld">每个区块的哈希 = SHA-256(编号 + 前一块哈希 + 数据)。试着把 Block 2 里的 “Bob 付给 Carol 10 元” 改成 “100 元”，看看会发生什么。</p>
+<div class="chain" id="minichain"></div>
+<div class="row" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="cfix">让后面的区块全部重新计算（模拟“篡改者重做整条链”）</button><button class="btn" id="creset">恢复原样</button></div>
+<div class="out" id="cout" style="margin-top:10px"></div></div>
+<p>你看到了：改一个字，这个区块的哈希就变了（雪崩效应），<b>下一块记录的 Prev Hash 立刻对不上</b>，整条链从这里开始变红。篡改者要掩盖痕迹，就必须<b>重新计算后面所有区块</b>。再加上两道防线：</p>
+<ul><li><b>每个节点都有一份账本</b>，你只改了自己手里那份，别人的副本会“揭发”你；</li>
+<li>在比特币里，重算每个区块都要做大量<b>工作量证明</b>（下一节），想追上全网算力几乎不可能。</li></ul>
+<h3>一笔交易的完整生命周期（P6-24～P6-26）</h3>
+<div class="stepper"><div class="sh"><span>区块链如何工作</span><span class="ctr"></span></div>
+<div class="st"><p><b>① 发起交易</b>：用户 A 发起一笔交易（转账或记录数据），用自己的<b>私钥签名</b>，广播给网络里的节点。</p></div>
+<div class="st"><p><b>② 验证交易</b>：节点按规则检查，比如签名对不对、A 的余额够不够。不合法的就拒绝。</p></div>
+<div class="st"><p><b>③ 打包成区块</b>：合法的交易被打包进一个新区块，区块里有交易列表、自己的哈希、前一块的哈希。</p></div>
+<div class="st"><p><b>④ 共识并上链</b>：矿工解密码学谜题（PoW）或者验证者质押代币（PoS），获胜者把区块加到链上。</p></div>
+<div class="st"><p><b>⑤ 链接与安全</b>：区块被永久记录，和前面的区块连在一起，篡改需要改掉之后所有区块。</p></div>
+<div class="st"><p><b>⑥ 完成并公开</b>：交易确认，更新后的区块链分发到所有节点，透明、安全、去中心化。</p></div>
+<div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
+</section>
+
+<section class="sec" id="cons">
+<h2><span class="n">4</span>共识算法：大家怎么同意“下一页账本写什么”</h2>
+<p>没有中心机构，谁来决定下一个区块？如果谁都能随便写，坏人就可以开几百万个假节点刷假交易。<b>共识算法</b>就是让所有节点对账本当前状态达成一致的规则（P6-13）。</p>
+<h3>工作量证明 PoW：用算力抽签</h3>
+<p>比特币的规则：想添加区块，你必须找到一个数（nonce），使得<b>区块内容 + nonce</b> 的 <b>SHA-256</b> 哈希以若干个 0 开头。哈希没法预测，只能一个个试。<b>谁先试出来，谁就有权记账</b>，还能得到奖励。</p>
+<div class="analogy box"><span class="bt">类比</span><p>像一场抽奖：每试一个 nonce 就是买一张彩票，算力越大，每秒买的彩票越多。没有捷径，所以要伪造历史，就得比全网所有诚实矿工加起来还能买彩票，几乎不可能。代价是<b>极其耗电</b>。</p></div>
+<div class="lab"><p class="lt">动手挖矿（真实的 SHA-256）</p><p class="ld">让电脑去找一个 nonce，使哈希以 k 个十六进制的 0 开头。每多要求 1 个 0，平均要试的次数就乘以 16。</p>
+<div class="fields"><div class="fld" style="grid-column:1/-1"><label for="pdata">区块数据</label><input id="pdata" type="text" value="Block 101: Alice pays Bob 5 BTC"></div><div class="fld"><label for="pk">难度（开头几个 0）</label><select id="pk"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div></div>
+<div class="row" style="display:flex;gap:8px"><button class="btn pri" id="pgo">开始挖矿</button><button class="btn" id="pstop">停止</button></div>
+<div class="out" id="pout" style="margin-top:10px">点“开始挖矿”。难度 5 平均要试约 100 万次，可能要等一会儿。</div></div>
+<h3>各种共识算法对照（P6-13、P6-14）</h3>
+<div class="tbl"><table>
+<tr><th>算法</th><th>怎么选出记账人</th><th>记忆点</th></tr>
+<tr><td><b>PoW</b> 工作量证明</td><td>解复杂数学谜题，先解出者记账</td><td><b>比特币</b>，基于 SHA-256；耗算力</td></tr>
+<tr><td><b>PoS</b> 权益证明</td><td>验证者质押代币，押注一个区块</td><td><b>Ethereum 2.0</b></td></tr>
+<tr><td><b>DPoS</b> 委托权益证明</td><td>持币人<b>投票</b>选出代表来验证</td><td>PoS 的高效版</td></tr>
+<tr><td><b>PoB</b> 燃烧证明</td><td>把币发到一个<b>无法取回的地址</b>，表示长期承诺</td><td>白白浪费资源，不流行</td></tr>
+<tr><td><b>Proof of Capacity</b></td><td>投入<b>硬盘空间</b>，空间越大越容易被选中</td><td>—</td></tr>
+<tr><td><b>PoET</b> 经过时间证明</td><td>所有节点<b>随机等待</b>，等得最短的出块</td><td>Intel 开发硬件支持；用于许可链；被认为最公平之一</td></tr>
+<tr><td><b>PoA</b> 权威证明</td><td>靠可信参与方的<b>声誉</b></td><td>适合私链；以太坊联合创始人 Gavin Wood 2017 年提出</td></tr>
+<tr><td><b>BFT</b> 拜占庭容错</td><td>即使有恶意节点也能达成共识</td><td>Hyperledger Fabric</td></tr>
+<tr><td><b>DAG</b> 有向无环图</td><td>区块链的替代结构，交易可以并行验证</td><td><b>IOTA</b></td></tr>
+</table></div>
+<div class="check" data-a="2"><p class="cq">“验证者把币发送到一个永远无法取回的地址，以表示长期承诺”，这是？</p>
+<div class="opts"><button class="opt">Proof of Stake</button><button class="opt">Proof of Capacity</button><button class="opt">Proof of Burn</button><button class="opt">Proof of Authority</button></div>
+<div class="cx"><p>Burn 就是“烧掉”，币发出去就没了。</p></div></div>
+<div class="check" data-a="0"><p class="cq">比特币的工作量证明基于哪个哈希算法？</p>
+<div class="opts"><button class="opt">SHA-256</button><button class="opt">MD5</button><button class="opt">SHA-1</button></div>
+<div class="cx"><p>SHA-256（P6-63）。模块 4 说过，MD5 和 SHA-1 已经不安全了。</p></div></div>
+</section>
+
+<section class="sec" id="types">
+<h2><span class="n">5</span>区块链的类型，以及它和数据库有什么不同</h2>
+<div class="tbl"><table>
+<tr><th>类型</th><th>谁能参与</th><th>例子</th></tr>
+<tr><td><b>Public</b> 公有链</td><td>任何人都能读、能交易、能参与共识；代码开源</td><td>Bitcoin、Ethereum</td></tr>
+<tr><td><b>Private</b> 私有链</td><td>限于一个组织或团体，由它决定谁能参与，可以限制读权限</td><td>课件举例：Ripple、Multichain、Corda</td></tr>
+<tr><td><b>Permissioned</b> 许可链</td><td>需要<b>邀请</b>才能加入</td><td>—</td></tr>
+<tr><td><b>Consortium</b> 联盟链</td><td><b>多个组织</b>合作管理；适合所有参与者都需要许可、共同承担责任的业务</td><td>R3、Hyperledger、Fabric</td></tr>
+<tr><td><b>Hybrid</b> 混合链</td><td>结合公链和私链的特点</td><td>XinFin</td></tr>
+</table></div>
+<p>私有链的可见性可以按角色分配（P6-11），例如：客户能写和看全部数据，审计员能看所有交易，供应商 A 只能写和看合作伙伴 A 的数据。</p>
+<h3>区块链 vs 关系数据库（P6-19）</h3>
+<div class="tbl"><table>
+<tr><th></th><th>区块链</th><th>关系数据库</th></tr>
+<tr><td>写入方式</td><td><b>只追加</b>（append-only），新条目链接到前一块的哈希</td><td>增、删、改、查都可以</td></tr>
+<tr><td>管理员</td><td><b>没有</b>能编辑或删除数据的管理员权限</td><td>DBA 可以改任何数据和结构</td></tr>
+<tr><td>为谁设计</td><td>去中心化应用</td><td>单一实体控制的中心化应用</td></tr>
+</table></div>
+</section>
+
+<section class="sec" id="smart">
+<h2><span class="n">6</span>智能合约：会自己执行的合同</h2>
+<p><b>Smart contract</b> 是存放在区块链上的程序，<b>条件满足时自动执行</b>预先写好的规则，不需要中间人，于是降低了成本、提高了效率（P6-15）。</p>
+<div class="analogy box"><span class="bt">类比：自动售货机</span><p>投币（满足条件）→ 自动出饮料（执行合约）。不需要售货员（中间人），也没人能“赖账”。区块链上的智能合约就是一台写在链上、谁都改不了的售货机。</p></div>
+<div class="tbl"><table>
+<tr><th>平台</th><th>语言</th><th>特点</th></tr>
+<tr><td><b>Ethereum</b></td><td><b>Solidity</b></td><td>最大的智能合约生态，DeFi、NFT</td></tr>
+<tr><td>Solana</td><td>Rust、C、C++</td><td>高吞吐、低手续费</td></tr>
+<tr><td>Binance Smart Chain</td><td>Solidity</td><td>兼容以太坊，更快更便宜</td></tr>
+<tr><td>Cardano</td><td>Plutus（基于 Haskell）</td><td>注重安全和形式化验证</td></tr>
+<tr><td>Polkadot</td><td>Ink!、Rust</td><td>跨链互操作</td></tr>
+</table></div>
+<p><b>用途</b>：金融（自动借贷、保险）、房地产（产权转让、托管）、供应链（追踪货物、自动付款）、NFT 和游戏、投票、医疗数据。例子：Uniswap（自动交易）、OpenSea（NFT 买卖）、Chainlink（把链外数据接入合约的“预言机”）。</p>
+<p><b>好处</b>：去掉中间人、减少欺诈、更快、省钱、安全。</p>
+<div class="pitfall box"><span class="bt">风险（P6-18）</span><ul style="margin:0"><li><b>代码漏洞</b>：bug 会被利用；</li><li><b>不可篡改的风险</b>：部署以后<b>改不了错</b>，区块链的优点在这里变成了缺点；</li><li>扩展性：受区块链网络性能限制；</li><li>法律问题：监管和法律效力还不明确。</li></ul></div>
+<p>课件 P6-70 的例子：在以太坊上买房。买方担心“怎么确认房子真是卖方的”，卖方担心“买方会不会按时付钱”。智能合约把产权和付款绑在一起，条件满足就自动交割，双方都不用信任对方。</p>
+<div class="check" data-a="1"><p class="cq">以太坊的智能合约主要用什么语言写？</p>
+<div class="opts"><button class="opt">Python</button><button class="opt">Solidity</button><button class="opt">Haskell</button></div>
+<div class="cx"><p>Solidity。Haskell 是 Cardano 的 Plutus 的基础。</p></div></div>
+</section>
+
+<section class="sec" id="tps">
+<h2><span class="n">7</span>计算题：交易速率 TPS 与吞吐量</h2>
+<div class="key box"><span class="bt">两个公式（P6-34～P6-36）</span><p><b>每块交易数 TPB = 区块大小 ÷ 平均交易大小</b>；<b>TPS = TPB ÷ 出块时间（秒）</b></p><p><b>吞吐量 (Mbps) = TPS × 交易大小 (bytes) × 8 ÷ 1,000,000</b></p></div>
+<p><b>例 1：</b>1 MB 的区块，平均交易 250 字节，每 10 分钟（600 秒）出一块。TPB = 1,000,000 ÷ 250 = <b>4000 笔/块</b>；TPS = 4000 ÷ 600 ≈ <b>6.67</b>。这差不多就是比特币的量级。</p>
+<p><b>例 2：</b>每 15 秒一块，每块 100 笔：TPS = 100 ÷ 15 ≈ <b>6.67</b>。</p>
+<p><b>例 3：</b>1000 TPS，每笔 250 字节：1000 × 250 = 250,000 B/s → × 8 = 2,000,000 bit/s → <b>2 Mbps</b>。</p>
+<div class="pitfall box"><span class="bt">课件笔误</span><p>P6-36 例 4（200 TPS × 750 B）中间一步写成了 “12 000 000 bits/second”，多写了一个 0。正确是 150,000 × 8 = <b>1,200,000</b> bit/s，最终结果 1.2 Mbps 没错。</p></div>
+<div class="lab"><p class="lt">TPS 与吞吐量计算器</p>
+<div class="fields"><div class="fld"><label for="tb">区块大小 (MB)</label><input id="tb" type="number" value="1" step="any"></div><div class="fld"><label for="tx">平均交易大小 (bytes)</label><input id="tx" type="number" value="250"></div><div class="fld"><label for="tt">出块时间 (秒)</label><input id="tt" type="number" value="600"></div></div>
+<div class="out" id="tpout"></div></div>
+<p>对比（P6-79）：以太坊大约每秒 15 笔，Visa 每秒能处理 65,000 笔。这就是区块链的<b>扩展性</b>问题。</p>
+</section>
+
+<section class="sec" id="money">
+<h2><span class="n">8</span>货币与支付：先搞懂“钱”是什么</h2>
+<p>货币有三个功能（P6-38）：<b>交换媒介</b>（买东西）、<b>计价单位</b>（标价）、<b>价值储存</b>（存钱）。课件的总结很精辟：<b>MONEY = VALUE = TRUST</b>，钱的本质是信任。</p>
+<h3>货币的演变（P6-40、P6-41）</h3>
+<p>以物易物和商品货币（中美洲人用可可豆，但商品会坏、体积大）→ 金银铜等贵金属（太重）→ 纸币（据说最早出现在公元 7 世纪的中国：把金子存在可信的一方，拿到一张写明存了多少金子的票据，这就是银行的雏形）→ 金本位 → 20 世纪 70 年代初放弃金本位，变成 <b>fiat money（法定货币）</b>。</p>
+<p><b>法币</b>不由金银背书，而是由<b>发行国政府</b>背书（fiat 是拉丁语“就这样吧”）。它和一张废纸的区别，只在于人们对政府的信任。缺点：中心化，发行数量不受限制（比如无限量化宽松）。</p>
+<h3>支付方式（P6-42～P6-44）</h3>
+<div class="tbl"><table>
+<tr><th>方式</th><th>特点</th></tr>
+<tr><td>Cash 现金</td><td>交易<b>笔数</b>最多；即时、匿名、免手续费；但容易被偷，只适合小额</td></tr>
+<tr><td>Checking transfer 支票转账</td><td>交易<b>金额</b>最大；不匿名，需要银行介入，可能被伪造或止付</td></tr>
+<tr><td>Credit card 信用卡</td><td>向消费者提供信用额度；涉及卡组织（Visa、MasterCard）、发卡行、清算中心</td></tr>
+<tr><td>Stored value 储值</td><td>借记卡、礼品卡、预付卡；PayPal 这类 P2P 支付是一种变体</td></tr>
+<tr><td>Accumulating balance 累积账单</td><td>水电费、电话费，先消费后定期付款</td></tr>
+</table></div>
+<p>电子支付的好处：快、方便、能查账；坏处：欺诈（电商欺诈每年增长约 30%）、缺乏匿名性（个人数据存在支付系统里，加密货币除外）、依赖网络。网上刷信用卡的局限：双方都无法被完全认证；商家要付约 3.5% 加每笔 20–30 美分的手续费；很多人（年轻人、低收入者）没有信用卡。</p>
+<h3>电子支付的三个目标（P6-49）</h3>
+<ul><li><b>Integrity 完整性</b>：钱不能被伪造，合法交易一定兑现；</li><li><b>Accountability 可问责</b>：交易事后不能否认，纠纷能高效解决；</li><li><b>Privacy 隐私</b>：某些参与方的身份不暴露给其他方，数字现金不能被追踪到付款人或收款人。</li></ul>
+<h3>数字现金的两大难题（P6-55、P6-56）</h3>
+<p>理想的数字现金应该安全、匿名、便携、可重复使用、好用，但没有已知系统能全部做到。两大难题：</p>
+<ol><li><b>怎样保证匿名？</b></li><li><b>怎样防止双花（double spending）？</b>数字代币本质上是一个文件，<b>文件可以被复制</b>，同一枚“币”就可能被花两次。银行的解法是用中心化的账本记录谁拥有什么；比特币的解法是用<b>公开的区块链 + PoW</b>，不需要银行。</li></ol>
+<div class="check" data-a="1"><p class="cq">“同一枚数字代币被花了不止一次”，这叫？</p>
+<div class="opts"><button class="opt">Fiat money</button><button class="opt">Double spending</button><button class="opt">Coinbase</button></div>
+<div class="cx"><p>双花。根源是数字文件可以被复制。</p></div></div>
+</section>
+
+<section class="sec" id="crypto">
+<h2><span class="n">9</span>加密货币：比特币、以太坊、瑞波</h2>
+<p><b>Cryptocurrency</b>：基于互联网、用密码学进行金融交易的交换媒介，最重要的特征是<b>不受任何中心机构控制</b>。双方用公钥和私钥直接转账，手续费很低（P6-59）。</p>
+<div class="tbl"><table>
+<tr><th></th><th>Bitcoin 比特币</th><th>Ethereum 以太坊</th><th>Ripple (XRP) 瑞波</th></tr>
+<tr><td>上线</td><td>2009</td><td>2015 年 7 月</td><td>2012</td></tr>
+<tr><td>定位</td><td>去中心化的数字货币</td><td>“世界的可编程区块链”，去中心化应用平台，币叫 Ether</td><td>两种货币或网络之间的中间交换媒介，用于支付结算和跨境汇款，像 SWIFT</td></tr>
+<tr><td>共识</td><td><b>PoW</b>（SHA-256）</td><td><b>PoS</b>（2020–21 年从 PoW 迁移过来）</td><td>不挖矿，节点<b>投票（poll）</b>达成共识；币是<b>预挖</b>的</td></tr>
+<tr><td>供应</td><td><b>上限 2100 万枚</b>（约 1931 万已流通）</td><td>没有固定上限</td><td>约 508 亿流通</td></tr>
+<tr><td>智能合约</td><td><b>不支持</b></td><td><b>支持</b>（Solidity）</td><td>—</td></tr>
+<tr><td>速度</td><td>分钟级</td><td>秒级</td><td>—</td></tr>
+</table></div>
+<h3>比特币挖矿（P6-63）</h3>
+<p>原则上谁都能当矿工。为了防止有人开几百万个节点刷假交易，Satoshi 规定：想记账，必须先付出<b>算力</b>，找到把新区块和上一块连起来的哈希（也就是第 4 节的实验）。找到答案的矿工可以添加一笔 <b>coinbase 交易</b>，奖励自己一定数量的比特币，这是<b>产生新比特币的唯一方式</b>。比特币诞生的动机是<b>不信任金融机构、交易成本高</b>，主要关心的是<b>交易安全和双花</b>。</p>
+<h3>加密货币的优缺点（P6-73）</h3>
+<div class="tbl"><table><tr><th>优点</th><th>缺点</th></tr><tr><td>去中心化（不需要中介）；安全（密码学保护）；更快更便宜，全天候；跨境转账方便</td><td><b>波动大</b>；<b>缺乏监管</b>，纠纷难解决；<b>接受度低</b></td></tr></table></div>
+<div class="check" data-a="1"><p class="cq">关于比特币，哪项正确？</p>
+<div class="opts"><button class="opt">没有供应上限，支持智能合约</button><button class="opt">供应上限 2100 万枚，使用工作量证明</button><button class="opt">由中央银行控制</button></div>
+<div class="cx"><p>A 说的其实是以太坊的特点（无上限、有智能合约）。</p></div></div>
+</section>
+
+<section class="sec" id="defi">
+<h2><span class="n">10</span>DeFi 与商业应用</h2>
+<h3>金融的演变</h3>
+<p>中世纪意大利出现最早的银行体系：商人坐在长凳（意大利语 banco）上做生意，banco 后来变成了 bank。商人把金币存在金匠的保险库里，金匠把闲置的金币借出去收利息，还分一部分给存款人，这就是现代银行的雏形。世界上最古老的特许银行是 1407 年意大利的圣乔治银行。</p>
+<h3>DeFi 去中心化金融（P6-78～P6-80）</h3>
+<p><b>Decentralized finance</b>：用区块链提供借贷、交易、保险等金融服务，不需要银行。</p>
+<div class="tbl"><table><tr><th>好处</th><th>风险</th></tr><tr><td><b>去中心化</b>：不需要中介；<b>可及性</b>：没有银行账户的人（比如发展中国家）也能用；<b>透明</b>：账本公开；<b>安全</b>：降低欺诈和盗窃风险</td><td><b>波动</b>：建立在高波动的加密资产上；<b>技术不成熟</b>：还没经过长期大规模的压力测试；<b>扩展性</b>：以太坊约 15 TPS，Visa 约 65,000 TPS</td></tr></table></div>
+<p>智能合约在 DeFi 里的作用：<b>自动执行</b>（借款人逾期就自动处置抵押品）、<b>不需要信任中介</b>、<b>透明</b>（谁都能检查代码）、<b>可互操作</b>（多个合约组合成复杂协议，比如自动做市、去中心化交易所、流动性池）、<b>取代中介</b>。</p>
+<h3>区块链的商业价值</h3>
+<p>传统的资产转移：每一方（买方、卖方、银行、审计）各记各的账，<b>低效、昂贵、容易出问题</b>。区块链：一个<b>共享、复制、有权限控制</b>的账本，带来共识、溯源、不可篡改、最终确定性（P6-85、P6-86）。四个好处（P6-88）：<b>省时间</b>（几天变成几乎即时）、<b>降成本</b>（减少开销和中介）、<b>降风险</b>（防篡改、防欺诈）、<b>增信任</b>（共享流程和记录）。</p>
+<p>应用领域：银行金融、网络安全（数据不能被改）、供应链、IoT、保险、交通（无第三方的拼车）、云存储、投票、医疗、去掉各种中间人（甚至慈善：你捐的钱用在哪里）。</p>
+<p>真实例子：BurstIQ（医疗数据共享）、Mediachain（音乐版税，2017 年被 Spotify 收购）、Xage（IoT 安全）；新加坡：GeTS 的跨境贸易区块链、新航 KrisFlyer 数字钱包、义安理工学院用区块链验证文凭、DLT Ledgers（供应链）、KYC 区块链原型、Averspace（房地产）、Cake DeFi。</p>
+<div class="key box"><span class="bt">第二次数字革命（P6-98）</span><p>第一次数字革命（互联网）擅长<b>传递信息</b>，但在商业、隐私和信任上有很大缺陷；第二次数字革命（区块链）让<b>点对点的价值交换</b>不再需要银行或政府这样的中介，“信任被内置在系统里”。</p></div>
+</section>
+
+<section class="sec" id="cases">
+<h2><span class="n">11</span>两个真实大案，与事件响应</h2>
+<p>课程最后用两个案例收尾。它们几乎能串起整门课的所有知识点，<b>期末论述题非常适合拿来举例</b>。</p>
+<h3>案例 1：Equifax 2017（P6-100～P6-106）</h3>
+<div class="story box"><span class="bt">时间线</span><ul style="margin:0">
+<li><b>3 月 7 日</b>：Apache 公布 Struts 框架的一个易被利用的漏洞，并发布了补丁；</li>
+<li><b>3 月 8 日</b>：美国 US-CERT 通知 Equifax，Equifax 内部把告警发给了 400 名员工；</li>
+<li><b>3 月 10 日</b>：黑客通过 Equifax <b>在线争议门户</b>里没打补丁的 Struts 入侵；</li>
+<li><b>5 月 13 日起</b>：攻击者从门户扩散到内网其他部分，5–7 月持续访问多个数据库，偷走姓名、地址、生日、社保号、信用卡号，<b>1.47 亿人</b>受影响；</li>
+<li>Equifax 的政策要求 <b>48 小时内</b>打补丁，实际 <b>5 个月后</b>才修好；</li>
+<li>一张用于监控加密流量的 <b>SSL 证书过期了近 10 个月</b>没人发现，海量数据外泄因此没被察觉；</li>
+<li>9 月 8 日才公开，此前高管已卖出股票，被查出内幕交易；最终和解金最高 <b>7 亿美元</b>，之后又花了 14 亿美元升级安全。</li></ul></div>
+<p><b>教训</b>（对应前面各模块）：</p>
+<ul>
+<li><b>做好基础工作</b>：有补丁、有政策，却没执行，这是模块 3 说的“只有政策没有执行”；</li>
+<li><b>证书管理</b>：一张过期证书让监控失明（模块 4、5）；</li>
+<li><b>限制横向移动</b>：攻击者进来后能从一台机器跳到另一台、从一个库跳到另一个库，如果被隔离在一台机器上，损失会小得多（网络分段、零信任）；</li>
+<li><b>数据治理</b>：按“需要知道”（need to know）的原则授权，不要给“可信用户”通用访问权；</li>
+<li><b>监控异常</b>：攻击者短时间内执行了 9000 次数据库查询，这本该触发告警（模块 5 的异常检测）。</li>
+</ul>
+<h3>案例 2：孟加拉央行劫案 2016（P6-107～P6-110）</h3>
+<div class="story box"><span class="bt">经过</span><ul style="margin:0">
+<li>时间选在 2016 年 2 月 5 日那个周末，赶上亚洲的长假，银行连续三天不上班；</li>
+<li>攻击者已经潜伏数月，观察银行的操作；几个员工<b>共用一个不安全的密码</b>；</li>
+<li>攻击者冒充孟加拉央行，通过 <b>SWIFT</b> 向纽约联储发送假的转账指令，要把钱转到菲律宾、斯里兰卡等地的账户；</li>
+<li>SWIFT 通常会把转账通知<b>打印出来</b>，攻击者用恶意软件<b>让打印机失灵</b>，还关掉了监控摄像头；</li>
+<li>菲律宾的一家银行允许攻击者用假驾照开户收钱；</li>
+<li>原计划转走 <b>10 亿美元</b>，但收款方 Shalika Foundation 被拼成了 “<b>Fandation</b>” 而被拦下，另外 8.5 亿美元的转账因为收款公司 “Jupiter” 在美国制裁名单上被拦截；最终被转走 <b>8100 万美元</b>，进了马尼拉的赌场。</li></ul></div>
+<p><b>原因</b>：员工的人为错误和粗心（专家甚至怀疑是内鬼）；SWIFT 本身的弱点；恶意软件很可能是通过<b>共享 U 盘</b>传播的；国际法律漏洞让骗子能轻易开户、存钱、销户。这个案例里，模块 1 到模块 3 的知识全部用上了：恶意软件、社会工程、密码管理、内部威胁、政策执行。</p>
+<h3>事件响应（Incident Response，P6-112～P6-114）</h3>
+<p>总有攻击会成功，成功的攻击叫 <b>incident（事件）</b>或 compromise（入侵）。这时进入响应阶段，而响应必须是<b>“按计划行动”</b>：出事的时候才去想该怎么办，就已经晚了。</p>
+<ul>
+<li><b>重大事件</b>（值班安全人员处理不了的）要召集 <b>CSIRT</b>（计算机安全事件响应小组），成员包括：<b>高层管理者、安全人员、IT 人员、受影响业务部门的人员，以及公关和法务部门</b>；</li>
+<li><b>四个阶段</b>：① <b>Detecting</b> 发现攻击 → ② <b>Stopping</b> 阻止攻击 → ③ <b>Repairing</b> 修复损失 → ④ <b>Punishing</b> 追究攻击者；</li>
+<li><b>灾难恢复</b>：IT 灾难恢复（专门的备份站点，或两个站点互为备份）和<b>业务连续性</b>恢复（让整个公司恢复运营，IT 只是其中一部分）；</li>
+<li><b>演练（rehearsals）</b>：既能发现计划里的问题，又能提高响应速度，因为时间就是金钱。</li>
+</ul>
+<div class="key box"><span class="bt">整门课的最后一句话（P6-116）</span><p>不可能获得完美的安全。安全是一个<b>过程</b>，而不是一劳永逸的方案；它是<b>保护与可用性之间的平衡</b>：既要防住威胁，又要让人合理地使用。组织需要多层安全：物理、人员、运营、通信、网络、信息、网络空间。</p></div>
+<div class="check" data-a="1"><p class="cq">事件响应四个阶段的正确顺序是？</p>
+<div class="opts"><button class="opt">Punish → Detect → Repair → Stop</button><button class="opt">Detect → Stop → Repair → Punish</button><button class="opt">Stop → Detect → Punish → Repair</button></div>
+<div class="cx"><p>先发现，再止损，然后修复，最后追责。</p></div></div>
+<div class="check" data-a="2"><p class="cq">Equifax 被入侵的直接原因是？</p>
+<div class="opts"><button class="opt">CEO 被鱼叉式钓鱼</button><button class="opt">Mirai 僵尸网络的 DDoS</button><button class="opt">在线争议门户里的 Apache Struts 漏洞没有及时打补丁</button></div>
+<div class="cx"><p>补丁 3 月 7 日就发布了，政策要求 48 小时内修补，实际拖了 5 个月。</p></div></div>
+</section>
+
+<section class="sec" id="sum">
+<h2><span class="n">12</span>本章小结</h2>
+<div class="key box"><span class="bt">一页纸总结</span><ul>
+<li>Mainframe → Client-server → <b>P2P</b>（去中心化，没有单点攻击）；2009 年出现第一个分布式账本。</li>
+<li>区块链：去中心化、透明、<b>不可篡改</b>、安全（哈希 + 签名）、共识；区块 = 交易 + 自身哈希 + <b>前一块的哈希</b>；1991 年 Haber & Stornetta → 2008 年 Nakamoto。</li>
+<li>改一块，后面全部对不上；加上每个节点都有副本，再加上 PoW，篡改几乎不可能。</li>
+<li>共识：<b>PoW</b>（比特币、SHA-256）、<b>PoS</b>（Ethereum 2.0）、DPoS（投票选代表）、PoB（烧币）、Capacity（硬盘）、PoET（随机等待、Intel）、PoA（声誉、Gavin Wood）、BFT（Hyperledger）、DAG（IOTA）。</li>
+<li>类型：公有、私有、许可、联盟（R3、Hyperledger）、混合；区块链只追加，没有管理员权限。</li>
+<li>智能合约：条件满足自动执行；以太坊用 Solidity；风险是代码漏洞和<b>部署后改不了</b>。</li>
+<li><b>TPS = (区块大小 ÷ 交易大小) ÷ 出块秒数</b>；<b>Mbps = TPS × 字节 × 8 ÷ 10<sup>6</sup></b>。</li>
+<li>MONEY = VALUE = TRUST；法币由政府背书；电子支付三目标：完整性、可问责、隐私；数字现金两大难题：<b>匿名、双花</b>。</li>
+<li>BTC：PoW、上限 2100 万、无智能合约、新币只来自 coinbase；ETH：PoS、无上限、有智能合约；XRP：预挖、投票共识、跨境支付。</li>
+<li>DeFi：去中心化、可及、透明、安全；风险是波动、不成熟、扩展性（15 vs 65,000 TPS）。</li>
+<li>Equifax：没打 Struts 补丁、证书过期、横向移动；孟加拉：SWIFT、打印机、长周末、拼写错误。</li>
+<li>事件响应按计划；召集 CSIRT；<b>Detect → Stop → Repair → Punish</b>；要演练；安全是过程，是平衡。</li>
+</ul></div>
+<div class="exam box"><span class="bt">去刷题</span><p>官方样题没有这一章，刷题本 P6 有 26 道自编题（共识算法、TPS、比特币与以太坊、案例）。<a href="practice.html#calc">计算题页</a>的“区块链 TPS”可以随机出题。期末前，把两个案例的教训和事件响应的四个阶段背熟，论述题很好用。</p></div>
+<p><button class="btn" data-done></button> <button class="btn" data-reset-quiz>重做本页小测</button></p>
+<nav class="pager"><a href="m5.html"><span>← 上一模块</span><b>5 · Web 安全与防火墙</b></a><a class="next" href="practice.html"><span>全部学完 →</span><b>去刷题本做模拟测验</b></a></nav>
+</section>
+</main>
+</div>
+<footer class="foot">EE6102 小白课 · 个人学习笔记，依据 NTU EE6102（Dr M Y Siyal）课件整理讲解，非官方材料。</footer>
+<script src="assets/lesson.js"></script>
+<script>
+(function(){
+  function $(i){return document.getElementById(i)}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  var enc=new TextEncoder(),hasCrypto=!!(window.crypto&&crypto.subtle);
+  function sha(s){return crypto.subtle.digest('SHA-256',enc.encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('')})}
+  /* mini chain */
+  var ORIG=['创世区块','Alice 付给 Bob 5 元','Bob 付给 Carol 10 元','Carol 付给 Dave 3 元'];
+  var data=ORIG.slice(),prevStored=[];
+  function short(h){return h.slice(0,16)+'…'}
+  function build(recompute){
+    if(!hasCrypto){$('minichain').innerHTML='<p>当前环境不支持 Web Crypto（需要 https 页面）。</p>';return}
+    var hashes=[],p=Promise.resolve();
+    data.forEach(function(d,i){p=p.then(function(){var prev=i===0?'0'.repeat(64):(recompute?hashes[i-1]:prevStored[i]);return sha(i+'|'+prev+'|'+d).then(function(h){hashes[i]=h;if(recompute||prevStored[i]===undefined)prevStored[i]=prev})})});
+    p.then(function(){render(hashes)});
+  }
+  function render(hashes){
+    var c=$('minichain'),firstBad=-1;
+    if(!c.children.length){c.innerHTML=data.map(function(d,i){return '<div class="blk" id="b'+i+'"><div class="bh"><span>Block '+i+'</span><span class="st"></span></div><label for="bd'+i+'">数据</label><textarea id="bd'+i+'" data-i="'+i+'">'+esc(d)+'</textarea><label>前一块哈希（记录在本块里）</label><div class="hx pv"></div><label>本块哈希</label><div class="hx hh"></div></div>'}).join('');
+      [].forEach.call(c.querySelectorAll('textarea'),function(t){t.addEventListener('input',function(){data[+t.getAttribute('data-i')]=t.value;build(false)})})}
+    data.forEach(function(d,i){var b=$('b'+i),ok=i===0||prevStored[i]===hashes[i-1];if(!ok&&firstBad<0)firstBad=i;var bad=firstBad>=0&&i>=firstBad;
+      b.classList.toggle('bad',bad);b.querySelector('.st').textContent=bad?'✗ 断链':'✓';
+      var pv=b.querySelector('.pv');pv.textContent=short(prevStored[i]);pv.classList.toggle('mis',!ok);b.querySelector('.hh').textContent=short(hashes[i])});
+    $('cout').innerHTML=firstBad<0?'整条链有效：每一块记录的“前一块哈希”都和真实值一致。':'Block '+firstBad+' 记录的前一块哈希，和 Block '+(firstBad-1)+' 现在的真实哈希<b style="color:var(--bad)">对不上了</b>，从这里往后整条链失效。网络里其他节点的副本会立刻发现这次篡改。'}
+  $('cfix').addEventListener('click',function(){build(true);$('cout').textContent='篡改者把后面所有区块都重算了一遍，自己手里这条链又“有效”了。但是：① 其他节点手里还是原来的版本，多数节点不会认可他；② 在比特币里，每重算一个区块都要重新做一次工作量证明（下一节），他得跑赢全网的算力。'});
+  $('creset').addEventListener('click',function(){data=ORIG.slice();prevStored=[];$('minichain').innerHTML='';build(true)});
+  build(true);
+  /* PoW miner */
+  var mining=false;
+  $('pgo').addEventListener('click',function(){if(!hasCrypto){$('pout').textContent='当前环境不支持 Web Crypto';return}if(mining)return;mining=true;
+    var d=$('pdata').value,k=+$('pk').value,target='0'.repeat(k),nonce=0,t0=performance.now();
+    function batch(){if(!mining)return;var jobs=[];for(var j=0;j<400;j++){(function(n){jobs.push(sha(d+n).then(function(h){return {n:n,h:h}}))})(nonce++)}
+      Promise.all(jobs).then(function(rs){for(var r=0;r<rs.length;r++){if(rs[r].h.slice(0,k)===target){mining=false;var secs=((performance.now()-t0)/1000).toFixed(2);
+          $('pout').innerHTML='找到了！nonce = <b class="r">'+rs[r].n+'</b>，试了 '+(rs[r].n+1).toLocaleString('en-US')+' 次，用时 '+secs+' 秒。<br><span class="hex" style="font-family:var(--f-mono);font-size:12.5px;word-break:break-all"><b style="color:var(--good)">'+rs[r].h.slice(0,k)+'</b>'+rs[r].h.slice(k)+'</span><br>理论上平均要试 16<sup>'+k+'</sup> = '+Math.pow(16,k).toLocaleString('en-US')+' 次。真实比特币的难度要求的前导零多得多，全网矿机每秒要算几百 EH（10<sup>20</sup> 次以上）。';return}}
+        $('pout').textContent='正在挖……已试 '+nonce.toLocaleString('en-US')+' 次';setTimeout(batch,0)})}
+    batch()});
+  $('pstop').addEventListener('click',function(){mining=false;$('pout').textContent='已停止。'});
+  /* TPS */
+  function tps(){var b=+$('tb').value,x=+$('tx').value,t=+$('tt').value;if(!(b>0&&x>0&&t>0)){$('tpout').textContent='请输入正数';return}
+    var tpb=Math.floor(b*1e6/x),r=tpb/t,mb=r*x*8/1e6;
+    $('tpout').innerHTML='<span class="eq">TPB = '+(b*1e6).toLocaleString('en-US')+' ÷ '+x+' = '+tpb.toLocaleString('en-US')+' 笔/块</span><span class="eq">TPS = '+tpb.toLocaleString('en-US')+' ÷ '+t+' ≈ <b class="r">'+(+r.toPrecision(4))+'</b></span><span class="eq">吞吐量 = '+(+r.toPrecision(4))+' × '+x+' × 8 ÷ 10<sup>6</sup> ≈ '+(+mb.toPrecision(4))+' Mbps</span>'}
+  ['tb','tx','tt'].forEach(function(i){$(i).addEventListener('input',tps)});tps();
+})();
+</script>
+</body>
+</html>
