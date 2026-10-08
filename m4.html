@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>模块 4 · 密码学、数字签名与证书 | EE6102 小白课</title>
+<meta name="description" content="EE6102 模块 4：从凯撒密码讲到 DES/AES、公钥加密、模运算、Diffie-Hellman 与 RSA 手算、哈希、数字签名、数字证书与 CA。">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+.calc-t{border-collapse:collapse;font-family:var(--f-mono);font-size:12.5px;width:auto;background:var(--surface)}
+.calc-t th,.calc-t td{border:1px solid var(--line);padding:4px 9px;text-align:right;white-space:nowrap}
+.calc-t th{background:var(--surface-2);font-family:var(--f-ui)}
+.calc-t tr.hit td{background:var(--good-soft)}
+.calc-t tr.dim td{color:var(--muted)}
+.hex{font-family:var(--f-mono);font-size:12.5px;word-break:break-all;line-height:1.6}
+.hex .d{background:var(--bad-soft);color:var(--bad);border-radius:2px}
+</style>
+</head>
+<body data-page="m4">
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><span class="marks" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></span><b>EE6102 小白课</b></a>
+  <span class="sp"></span>
+  <nav aria-label="模块导航"><a href="index.html">首页</a><a href="m1.html">1 入门与威胁</a><a href="m2.html">2 工业4.0与人</a><a href="m3.html">3 策略与生物识别</a><a class="on" href="m4.html">4 密码学</a><a href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="practice.html">刷题本</a></nav>
+  <button class="themeb" type="button">主题</button>
+</div></header>
+<div class="wrap">
+<aside class="toc" aria-label="本页目录"><p class="tt">本模块目录</p><ol></ol><div class="prog"><span class="pct"></span><div class="bar"><i></i></div></div></aside>
+<main class="lesson">
+<p class="eyebrow">Module 04 · 对应课件 sld4</p>
+<h1 class="title">密码学、数字签名与证书：全课最重要的一章</h1>
+<p class="sub-en">Cryptography, Digital Signature and Digital Certificates</p>
+<div class="meta"><span>约 90 分钟，建议分两次学</span><span>12 道小测</span><span>6 个动手实验</span><span>Quiz 样题 Part 4 · 35 题；Q&amp;A Q21–Q33</span></div>
+<p class="lede">样题里这一章有 35 题，是所有章节里最多的；期末的计算题（RSA、Diffie-Hellman）也全在这里。别被“密码学”吓到：你只需要会小学的乘法和除法余数，就能手算 RSA。我们从两千年前的凯撒密码开始，一步一步走到你每天上网都在用的 HTTPS 背后的数学。</p>
+<div class="goals"><h3>学完这一章，你应该能：</h3><ul>
+<li>说清明文、密文、密钥、加密、解密；对称、非对称、哈希三类密码的区别；</li>
+<li>记住 DES 和 AES 的分组长度、密钥长度、轮数，知道 DES 为什么被淘汰；</li>
+<li>判断“谁用谁的哪把钥匙”：保密用接收方公钥，签名用发送方私钥；</li>
+<li><b>手算 Diffie-Hellman 和 RSA</b>，包括选 e、求 d、按 4 位一块加密字母；</li>
+<li>解释哈希的性质，以及它和加密的区别；</li>
+<li>画出数字签名的签名和验证流程；说出验证数字证书要检查的三件事。</li></ul></div>
+
+<!-- 1 -->
+<section class="sec" id="basic">
+<h2><span class="n">1</span>密码学要解决什么问题</h2>
+<p>密码学的故事里永远有三个人：<b>Alice</b> 要给 <b>Bob</b> 发消息，<b>Eve</b>（eavesdropper，窃听者）在中间偷听。互联网就是一个“人人都能偷听”的地方：你的消息要经过路由器、Wi-Fi、运营商……任何一环都可能有 Eve。</p>
+<p>密码学（cryptography，来自希腊语 kryptós“隐藏的” + gráphein“书写”）就是<b>用数学把消息变成别人看不懂的样子</b>，只有拥有正确钥匙的人才能还原。</p>
+<h3>基本术语（P4-5）</h3>
+<dl class="gloss">
+<dt>Plaintext 明文</dt><dd>原始的、能读懂的消息，例如 HELLO</dd>
+<dt>Ciphertext 密文</dt><dd>加密后的输出，看起来像乱码，例如 XJ#94@K</dd>
+<dt>Cipher 密码算法</dt><dd>加密和解密用的数学步骤（算法）</dd>
+<dt>Key 密钥</dt><dd>一串字符或比特，和算法配合使用。<b>算法可以公开，密钥必须保密</b></dd>
+<dt>Encryption 加密</dt><dd>明文 → 密文，记作 E(M) = C</dd>
+<dt>Decryption 解密</dt><dd>密文 → 明文，记作 D(C) = M</dd>
+<dt>Cryptanalysis 密码分析</dt><dd>试图破解密码系统，例如暴力破解、字典攻击、彩虹表攻击</dd>
+</dl>
+<div class="pitfall box"><span class="bt">易错点</span><p>样题 Q4-1：“The process of converting from plaintext to cipher text is known as deciphering or decryption.” 答案是 <b>No</b>。明文 → 密文是<b>加密</b>，说反了。</p></div>
+<h3>密码学能提供什么（P4-16）</h3>
+<ul>
+<li><b>Confidentiality 机密性</b>：只有授权的人能读（靠加密）；</li>
+<li><b>Integrity 完整性</b>：收到的就是发出的（靠哈希）；</li>
+<li><b>Authentication 认证</b>：确认消息来自谁（靠数字签名）；</li>
+<li><b>Non-repudiation 不可否认</b>：发送者不能抵赖（靠数字签名）。</li>
+</ul>
+<h3>三大类密码（P4-11），本章的路线图</h3>
+<div class="tbl"><table>
+<tr><th>类别</th><th>钥匙数量</th><th>代表</th><th>主要用途</th><th>本章位置</th></tr>
+<tr><td><b>Symmetric</b> 对称</td><td>1 把（双方共享）</td><td>DES、3DES、AES、RC4</td><td>大量数据加密</td><td>第 4 节</td></tr>
+<tr><td><b>Asymmetric</b> 非对称（公钥）</td><td>2 把（公钥 + 私钥）</td><td>RSA、Diffie-Hellman、ElGamal、ECC</td><td>密钥交换、数字签名</td><td>第 5–9 节</td></tr>
+<tr><td><b>Hashing</b> 哈希</td><td>不用钥匙</td><td>SHA-2、SHA-3、MD5（已淘汰）</td><td>完整性、存储密码</td><td>第 10 节</td></tr>
+</table></div>
+</section>
+
+<!-- 2 -->
+<section class="sec" id="classic">
+<h2><span class="n">2</span>从凯撒密码开始：替换、置换与“钥匙”的意义</h2>
+<p>最古老的密码学用在军事和政治上（Q&amp;A Q21：最早用于在传递途中隐藏军事和政治机密）。凯撒大帝用过一个简单的办法：<b>每个字母往后移 3 位</b>，A→D、B→E……这就是<b>替换密码（substitution）</b>：把每个字母换成另一个。</p>
+<div class="lab"><p class="lt">凯撒密码机</p><p class="ld">“算法”是“字母往后移 k 位”，“密钥”就是 k。改改密钥看看效果，再想想：如果 Eve 知道算法，她最多要试几次就能破解？</p>
+<div class="fields"><div class="fld" style="grid-column:1/-1"><label for="cin">明文</label><input id="cin" type="text" value="ATTACK AT DAWN" autocomplete="off"></div><div class="fld"><label for="ck">密钥 k（移位数）</label><input id="ck" type="number" value="3" min="0" max="25"></div></div>
+<div class="out" id="cout"></div></div>
+<p>答案是只需试 <b>25 次</b>，因为只有 25 种有意义的移位。这说明了密码学的第一条原理：</p>
+<div class="key box"><span class="bt">核心思想</span><p><b>安全不能靠“算法保密”，要靠“密钥空间足够大”。</b>DES 的设计要求里就写着：“The security of the algorithm must depend on the key”，并且算法细节必须公开（P4-21）。算法不变，换一把钥匙，结果就完全不同（P4-13）。</p></div>
+<p>另外两类古典思路：<b>置换密码（transposition）</b>，字母不变、打乱顺序（比如把 HELLO 写成 OLLEH）；<b>乘积密码（product）</b>，把替换、置换、模运算组合起来反复做。现代的 DES 和 AES 本质上就是“多轮替换 + 置换”的乘积密码。</p>
+
+<h3>密钥长度：每多 1 位，难度翻倍</h3>
+<p>钥匙是一串比特（0 和 1），n 位的钥匙就有 2<sup>n</sup> 种可能（P4-14）：</p>
+<ul>
+<li>8 位：2<sup>8</sup> = 256 种，平均试 128 次就能猜中，不用电脑都能破；</li>
+<li><b>56 位</b>（DES）：2<sup>56</sup> 种。每秒试 100 万个，需要约 <b>2285 年</b>；</li>
+<li>64 位：约 58.5 万年；128 位：约 10<sup>25</sup> 年。</li>
+</ul>
+<p>但现实比理论危险：电脑远比每秒 100 万次快，黑客还能用几百万台僵尸机并行计算。1998 年 EFF 造了一台专用机器，<b>56 小时</b>就破解了 DES。所以：<b>安全 = 算法强度 + 密钥长度</b>。</p>
+<div class="check" data-a="1"><p class="cq">密钥从 56 位增加到 58 位，暴力破解的时间大约变成原来的多少倍？</p>
+<div class="opts"><button class="opt">2 倍</button><button class="opt">4 倍</button><button class="opt">58/56 倍</button></div>
+<div class="cx"><p>每多 1 位翻一倍，多 2 位就是 2 × 2 = <b>4 倍</b>。这就是“指数”。</p></div></div>
+</section>
+
+<!-- 3 -->
+<section class="sec" id="sym">
+<h2><span class="n">3</span>对称加密：一把钥匙锁门也开门</h2>
+<p><b>Symmetric（secret-key）cryptography</b>：加密和解密用<b>同一把钥匙</b>（样题 Q4-2）。记作 E<sub>K</sub>(M) = C，D<sub>K</sub>(C) = M。</p>
+<figure>
+<svg viewBox="0 0 680 170" role="img" aria-label="对称加密：Alice 和 Bob 用同一把密钥">
+  <defs><marker id="m4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-a"/></marker></defs>
+  <rect x="10" y="55" width="100" height="50" rx="8" class="box-s"/><text x="60" y="78" text-anchor="middle" font-size="13" font-weight="700">明文</text><text x="60" y="96" text-anchor="middle" font-size="12" class="tm">HELLO</text>
+  <rect x="150" y="50" width="110" height="60" rx="10" class="box-a"/><text x="205" y="78" text-anchor="middle" font-size="13" font-weight="700">加密 E</text><text x="205" y="96" text-anchor="middle" font-size="11" class="tm">Alice</text>
+  <rect x="295" y="55" width="100" height="50" rx="8" class="box-w"/><text x="345" y="78" text-anchor="middle" font-size="13" font-weight="700">密文</text><text x="345" y="96" text-anchor="middle" font-size="12" class="tm">XJ#94@K</text>
+  <rect x="430" y="50" width="110" height="60" rx="10" class="box-a"/><text x="485" y="78" text-anchor="middle" font-size="13" font-weight="700">解密 D</text><text x="485" y="96" text-anchor="middle" font-size="11" class="tm">Bob</text>
+  <rect x="575" y="55" width="95" height="50" rx="8" class="box-s"/><text x="622" y="78" text-anchor="middle" font-size="13" font-weight="700">明文</text><text x="622" y="96" text-anchor="middle" font-size="12" class="tm">HELLO</text>
+  <line x1="110" y1="80" x2="148" y2="80" class="la" marker-end="url(#m4a)"/><line x1="260" y1="80" x2="293" y2="80" class="la" marker-end="url(#m4a)"/><line x1="395" y1="80" x2="428" y2="80" class="la" marker-end="url(#m4a)"/><line x1="540" y1="80" x2="573" y2="80" class="la" marker-end="url(#m4a)"/>
+  <rect x="160" y="132" width="370" height="30" rx="8" class="box-g"/><text x="345" y="152" text-anchor="middle" font-size="13">同一把密钥 K：双方事先必须安全地共享它</text>
+  <line x1="205" y1="130" x2="205" y2="112" class="lg"/><line x1="485" y1="130" x2="485" y2="112" class="lg"/>
+  <text x="345" y="36" text-anchor="middle" font-size="12" class="tb">Eve 在信道上只能看到密文</text>
+</svg>
+<figcaption>对称加密：一把钥匙，双方共享。</figcaption>
+</figure>
+<div class="analogy box"><span class="bt">类比</span><p>一个带密码锁的箱子：你锁上寄出去，对方用<b>同一个密码</b>打开。问题是，<b>你怎么把密码安全地告诉对方？</b>打电话可能被窃听，写信可能被拆开。这就是对称加密最大的难题。</p></div>
+<h3>优点与缺点（P4-19）</h3>
+<div class="tbl"><table>
+<tr><th>优点</th><th>缺点</th></tr>
+<tr><td><b>快</b>：计算效率高，适合加密大量数据；实现简单；应用广泛（SSL/TLS、磁盘加密、文件加密）</td><td><b>密钥分发难</b>（最大缺点，样题 Q4-7）；<b>扩展性差</b>：n 个人两两通信需要 n(n−1)/2 把钥匙，100 人就要 4950 把</td></tr>
+</table></div>
+
+<h3>分组密码 vs 流密码（P4-15）</h3>
+<ul>
+<li><b>Block cipher 分组密码</b>：把消息切成固定大小的块，每块用算法和密钥加密（样题 Q4-3）。例子：<b>DES、AES</b>；</li>
+<li><b>Stream cipher 流密码</b>：一次加密一位（或一个字节），例子：<b>RC4</b>。</li>
+</ul>
+<p>分组密码还有不同的<b>工作模式</b>：</p>
+<figure>
+<svg viewBox="0 0 680 220" role="img" aria-label="ECB 与 CBC 模式对比">
+  <defs><marker id="m4b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-n"/></marker></defs>
+  <text x="20" y="22" font-size="14" font-weight="700">ECB：每块独立加密</text>
+  <g font-size="12"><rect x="20" y="34" width="80" height="28" rx="6" class="box-s"/><text x="60" y="53" text-anchor="middle">块 1</text><rect x="120" y="34" width="80" height="28" rx="6" class="box-s"/><text x="160" y="53" text-anchor="middle">块 2</text><rect x="220" y="34" width="80" height="28" rx="6" class="box-s"/><text x="260" y="53" text-anchor="middle">块 3</text>
+  <rect x="20" y="88" width="80" height="28" rx="6" class="box-w"/><text x="60" y="107" text-anchor="middle">密文 1</text><rect x="120" y="88" width="80" height="28" rx="6" class="box-w"/><text x="160" y="107" text-anchor="middle">密文 2</text><rect x="220" y="88" width="80" height="28" rx="6" class="box-w"/><text x="260" y="107" text-anchor="middle">密文 3</text></g>
+  <line x1="60" y1="62" x2="60" y2="86" class="ln" marker-end="url(#m4b)"/><line x1="160" y1="62" x2="160" y2="86" class="ln" marker-end="url(#m4b)"/><line x1="260" y1="62" x2="260" y2="86" class="ln" marker-end="url(#m4b)"/>
+  <text x="20" y="145" font-size="12" class="tm">相同的明文块 → 相同的密文块</text><text x="20" y="163" font-size="12" class="tm">会暴露数据的规律</text>
+  <text x="370" y="22" font-size="14" font-weight="700">CBC：下一块依赖上一块</text>
+  <g font-size="12"><rect x="370" y="34" width="80" height="28" rx="6" class="box-s"/><text x="410" y="53" text-anchor="middle">块 1</text><rect x="470" y="34" width="80" height="28" rx="6" class="box-s"/><text x="510" y="53" text-anchor="middle">块 2</text><rect x="570" y="34" width="80" height="28" rx="6" class="box-s"/><text x="610" y="53" text-anchor="middle">块 3</text>
+  <rect x="370" y="88" width="80" height="28" rx="6" class="box-g"/><text x="410" y="107" text-anchor="middle">密文 1</text><rect x="470" y="88" width="80" height="28" rx="6" class="box-g"/><text x="510" y="107" text-anchor="middle">密文 2</text><rect x="570" y="88" width="80" height="28" rx="6" class="box-g"/><text x="610" y="107" text-anchor="middle">密文 3</text></g>
+  <line x1="410" y1="62" x2="410" y2="86" class="ln" marker-end="url(#m4b)"/><line x1="510" y1="62" x2="510" y2="86" class="ln" marker-end="url(#m4b)"/><line x1="610" y1="62" x2="610" y2="86" class="ln" marker-end="url(#m4b)"/>
+  <path d="M450,102 Q462,80 498,56" class="la" marker-end="url(#m4a)"/><path d="M550,102 Q562,80 598,56" class="la" marker-end="url(#m4a)"/>
+  <text x="370" y="145" font-size="12" class="tm">上一块的密文混入下一块的输入（Chaining）</text><text x="370" y="163" font-size="12" class="tm">相同的明文块也会得到不同的密文</text>
+</svg>
+<figcaption>ECB vs CBC（P4-15）。CBC 的 C 就是 Chaining，链接。</figcaption>
+</figure>
+</section>
+
+<!-- 4 -->
+<section class="sec" id="desaes">
+<h2><span class="n">4</span>DES、3DES、AES：三代对称加密标准</h2>
+<h3>DES：第一个商用标准（P4-21～P4-26）</h3>
+<p>1973 年，美国国家标准局（NBS，现在的 NIST）公开征集国家加密标准。IBM 的 Lucifer 方案经过修改后被采纳，<b>1976–77 年</b>成为 <b>DES</b>（Data Encryption Standard）。</p>
+<div class="key box"><span class="bt">DES 三个数字（必背）</span><p><b>分组 64 位，密钥 56 位，16 轮</b>。每个 64 位的块要做 16 轮代换和置换，前后各有一次置换（初始置换和最终置换）。</p></div>
+<div class="pitfall box"><span class="bt">易错点</span><p>样题 Q4-5：DES 的密钥多长？答案是 <b>56 位</b>，不是 64 位。64 是<b>分组</b>长度。（输入的密钥其实也是 64 位，但其中 8 位是校验位，有效的只有 56 位。）</p></div>
+<p><b>争议</b>：IBM 原设计的分组和密钥都是 128 位，被改成了 64 和 56；S 盒是在保密条件下设计的，又不给理由，于是有人怀疑 NSA 留了“后门”（trapdoor）。很多专家在 DES 被采纳之前就认为 56 位太短。</p>
+<p><b>结局</b>：1998 年 EFF 用 56 小时破解了 DES。如今 DES 已经过时，只在老系统和教学里使用。</p>
+
+<h3>DES 被破了怎么办：加密两次、三次？</h3>
+<ul>
+<li><b>2DES</b>：用两把钥匙加密两次（2 × 56 = 112 位）。听起来更强，但有<b>中间相遇攻击（meet-in-the-middle）</b>：从明文一端加密、从密文一端解密，在中间对上答案，工作量和破解一次 DES 差不多。所以 2DES 基本没用；</li>
+<li><b>3DES</b>：用 DES 做三次，慢三倍，但用得当时安全性高得多。它是过渡到 AES 之前的临时方案。</li>
+</ul>
+
+<h3>AES：现在的金标准（P4-32～P4-40）</h3>
+<p>美国政府公开征集 DES 的替代者，经过 5 年严格评选（候选包括 MARS、RC6、Serpent、Twofish 等），最终选中两位比利时密码学家 Daemen 和 Rijmen 设计的 <b>Rijndael</b>，2001 年成为 <b>AES</b>（Advanced Encryption Standard）。2003 年起美国政府认可它保护机密信息，NSA 也用它加密绝密信息。</p>
+<div class="tbl"><table>
+<tr><th>算法</th><th>分组长度</th><th>密钥长度</th><th>轮数</th><th>现状</th></tr>
+<tr><td><b>DES</b></td><td>64</td><td>56</td><td>16</td><td>已被破解，淘汰</td></tr>
+<tr><td>3DES</td><td>64</td><td>112 / 168</td><td>48</td><td>过渡方案，已淘汰</td></tr>
+<tr><td><b>AES-128</b></td><td rowspan="3"><b>128</b></td><td>128</td><td>10</td><td rowspan="3">安全，全球标准</td></tr>
+<tr><td><b>AES-192</b></td><td>192</td><td>12</td></tr>
+<tr><td><b>AES-256</b></td><td>256</td><td>14</td></tr>
+</table></div>
+<p>AES 每轮做四步：<b>SubBytes 替换、ShiftRows 行移位、MixColumns 列混合、AddRoundKey 加轮密钥</b>（最后一轮没有列混合）。AES-128 有 2<sup>128</sup> ≈ 3.4 × 10<sup>38</sup> 种密钥，现有计算机不可能穷举，目前也没有能破解完整 AES 的实用攻击。它被用在银行、Wi-Fi（WPA2/WPA3）、SSL/TLS、VPN 和加密货币里。</p>
+<div class="key box"><span class="bt">记忆法</span><p>AES：块固定 <b>128</b>；钥匙 <b>128/192/256</b>；轮数 <b>10/12/14</b>（钥匙每多 64 位，轮数加 2）。</p></div>
+<div class="check" data-a="1"><p class="cq">下面哪个是使用 64 位分组的对称密码？（样题 Q4-4）</p>
+<div class="opts"><button class="opt">RSA</button><button class="opt">DES</button><button class="opt">PGP</button><button class="opt">AES</button></div>
+<div class="cx"><p>DES 分组 64 位。RSA 是非对称算法；PGP 是邮件加密软件；AES 的分组是 128 位。</p></div></div>
+<div class="check" data-a="2"><p class="cq">AES-256 有多少轮？</p>
+<div class="opts"><button class="opt">10</button><button class="opt">12</button><button class="opt">14</button><button class="opt">16</button></div>
+<div class="cx"><p>128 → 10，192 → 12，256 → 14。16 轮是 DES。</p></div></div>
+<h3>选算法时该信什么（样题 Q4-8～Q4-11 连环题）</h3>
+<ul>
+<li>最该看重：<b>算法已经存在多久</b>，是否经过多年公开检验（Q&amp;A Q23：算法要被工业界、学术界、数学和密码专家测试很多年）；</li>
+<li>宣传“牢不可破”的：多半是<b>夸大</b>；</li>
+<li>“认证过的加密”：课件的观点是<b>没有这种东西</b>（There is no such thing as certified encryption）；</li>
+<li>新算法：<b>可以用，但要谨慎</b>。</li>
+</ul>
+</section>
+
+<!-- 5 -->
+<section class="sec" id="pk">
+<h2><span class="n">5</span>公钥加密：一对钥匙，彻底解决“钥匙怎么送”</h2>
+<p>1976 年，斯坦福的两位博士生 Diffie 和 Hellman 提出了一个革命性的想法：<b>用两把不同但数学上相关的钥匙</b>（P4-47）。</p>
+<ul>
+<li><b>公钥（public key）</b>：公开给全世界，用来<b>加密</b>和<b>验证签名</b>；</li>
+<li><b>私钥（private key）</b>：只有主人自己知道，用来<b>解密</b>和<b>生成签名</b>。</li>
+</ul>
+<p>规则只有一条：<b>用其中一把加密的东西，只有另一把能解开</b>。而且从公钥<b>推不出</b>私钥（Q&amp;A Q23）。</p>
+<div class="analogy box"><span class="bt">类比：挂锁</span><p>Bob 买了很多把<b>打开着的挂锁</b>，发给所有人（这就是公钥），钥匙只有他自己有（私钥）。Alice 想给 Bob 寄东西，就把东西放进箱子，<b>咔嚓</b>锁上 Bob 的挂锁寄出。路上谁拿到箱子都打不开，连 Alice 自己也打不开了，只有 Bob 能开。钥匙从来不需要寄送，对称加密“钥匙怎么送”的难题就这样解决了。</p></div>
+<h3>两种用法：方向正好相反</h3>
+<figure>
+<svg viewBox="0 0 680 260" role="img" aria-label="公钥加密的两种用法：保密与认证">
+  <defs><marker id="m4c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-a"/></marker><marker id="m4d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-g"/></marker></defs>
+  <text x="20" y="24" font-size="14" font-weight="700" class="ta">① 保密（Confidentiality）：Bob → Alice</text>
+  <rect x="20" y="38" width="120" height="46" rx="8" class="box-s"/><text x="80" y="66" text-anchor="middle" font-size="13">Bob</text>
+  <rect x="270" y="38" width="140" height="46" rx="8" class="box-a"/><text x="340" y="58" text-anchor="middle" font-size="12">用 <tspan font-weight="700">Alice 的公钥</tspan></text><text x="340" y="75" text-anchor="middle" font-size="12">加密</text>
+  <rect x="540" y="38" width="120" height="46" rx="8" class="box-s"/><text x="600" y="58" text-anchor="middle" font-size="12">Alice 用</text><text x="600" y="75" text-anchor="middle" font-size="12" font-weight="700">自己的私钥解密</text>
+  <line x1="140" y1="61" x2="268" y2="61" class="la" marker-end="url(#m4c)"/><line x1="410" y1="61" x2="538" y2="61" class="la" marker-end="url(#m4c)"/>
+  <text x="340" y="106" text-anchor="middle" font-size="12" class="tm">只有 Alice 能解开 → 别人看不到</text>
+  <text x="20" y="150" font-size="14" font-weight="700" class="tg">② 认证 / 签名（Authentication）：Bob → Alice</text>
+  <rect x="20" y="164" width="120" height="46" rx="8" class="box-s"/><text x="80" y="192" text-anchor="middle" font-size="13">Bob</text>
+  <rect x="270" y="164" width="140" height="46" rx="8" class="box-g"/><text x="340" y="184" text-anchor="middle" font-size="12">用 <tspan font-weight="700">Bob 自己的私钥</tspan></text><text x="340" y="201" text-anchor="middle" font-size="12">“加密”（签名）</text>
+  <rect x="540" y="164" width="120" height="46" rx="8" class="box-s"/><text x="600" y="184" text-anchor="middle" font-size="12">Alice 用</text><text x="600" y="201" text-anchor="middle" font-size="12" font-weight="700">Bob 的公钥验证</text>
+  <line x1="140" y1="187" x2="268" y2="187" class="lg" marker-end="url(#m4d)"/><line x1="410" y1="187" x2="538" y2="187" class="lg" marker-end="url(#m4d)"/>
+  <text x="340" y="234" text-anchor="middle" font-size="12" class="tm">能用 Bob 的公钥解开 → 一定是 Bob 发的（任何人都能验证）</text>
+</svg>
+<figcaption>课件 P4-48、P4-49：保密用<b>接收方的公钥</b>，认证用<b>发送方的私钥</b>。</figcaption>
+</figure>
+<div class="key box"><span class="bt">万能口诀：谁用谁的哪把钥匙</span><div class="tbl" style="margin:6px 0 0"><table>
+<tr><th>目的</th><th>发送方用</th><th>接收方用</th></tr>
+<tr><td><b>保密</b>（只让对方看）</td><td><b>接收方的公钥</b>加密</td><td><b>自己的私钥</b>解密</td></tr>
+<tr><td><b>签名</b>（证明是我发的）</td><td><b>自己的私钥</b>签名</td><td><b>发送方的公钥</b>验证</td></tr>
+</table></div></div>
+<div class="pitfall box"><span class="bt">易错点</span><ul>
+<li>样题 Q4-12：“非对称加密只用公钥加密和解密”是 <b>False</b>，它用一对钥匙。</li>
+<li>样题 Q4-13：“非对称加密能用于保密但不能用于认证”是 <b>False</b>，两者都能。</li>
+<li>样题 Q4-14：“公钥加密比对称加密更安全，因为用两把钥匙”是 <b>False</b>。安全取决于算法强度和密钥长度：128 位 AES 和 3072 位 RSA 强度相当。公钥解决的是<b>分发问题</b>，不是强度问题。</li></ul></div>
+<div class="check" data-a="1"><p class="cq">Carol 要给 Bob 发一条机密消息，她用哪把钥匙加密？（样题 Q4-21）</p>
+<div class="opts"><button class="opt">一把公钥</button><button class="opt">Bob 的公钥</button><button class="opt">Carol 的私钥</button></div>
+<div class="cx"><p>保密 → 用<b>接收方</b>的公钥。A 太含糊（是谁的公钥？）；C 是签名的用法。接着样题 Q4-22：Bob 用<b>自己的私钥</b>解密；Q4-24：私钥由<b>接收方</b>用来解密。</p></div></div>
+<div class="check" data-a="3"><p class="cq">班上 30 个学生都要把加密作业交给教授，需要多少把公钥和私钥？（样题 Q4-23）</p>
+<div class="opts"><button class="opt">30 公 30 私</button><button class="opt">1 公 30 私</button><button class="opt">1 公 1 私</button><button class="opt">取决于具体应用</button></div>
+<div class="cx"><p>官方答案是 <b>D</b>。如果只要保密，大家都用教授的公钥加密，只需教授的 1 对钥匙；如果还要证明作业是哪个学生交的（签名），每个学生还要有自己的一对钥匙。<b>数量取决于需求</b>，这题考的就是这一点。</p></div></div>
+</section>
+
+<!-- 6 -->
+<section class="sec" id="mod">
+<h2><span class="n">6</span>数学准备：模运算（只要会除法就行）</h2>
+<p>RSA 和 Diffie-Hellman 都建立在<b>模运算</b>上。别怕，<code>a mod n</code> 就是 <b>a 除以 n 的余数</b>。</p>
+<div class="analogy box"><span class="bt">类比：钟表</span><p>现在 10 点，再过 5 小时是几点？10 + 5 = 15，钟表上是 3 点。这就是 15 mod 12 = 3。模运算就是“绕圈计数”。</p></div>
+<p>课件的例子（P4-50）：</p>
+<ul>
+<li>15 mod 20 = <b>15</b>（15 比 20 小，余数就是它自己）；</li>
+<li>320 mod 9：计算器上 320 ÷ 9 = 35.5555…，取整数部分 35，再算 320 − 35 × 9 = 320 − 315 = <b>5</b>。课件的方法是用小数部分 0.5555… × 9 = 5，结果一样，但小数误差容易出错，<b>推荐“减去整数倍”的方法</b>。</li>
+</ul>
+<h3>模幂：x<sup>e</sup> mod n 怎么手算</h3>
+<p>RSA 要算 1819<sup>13</sup> mod 2537 这种东西，1819<sup>13</sup> 有 43 位，计算器装不下。诀窍是：<b>每乘一次，就取一次余数</b>，数字永远不会变大。最快的方法叫<b>平方-乘法</b>：</p>
+<div class="stepper"><div class="sh"><span>例：算 5<sup>13</sup> mod 23</span><span class="ctr"></span></div>
+<div class="st"><p><b>第一步：把指数写成 2 的幂之和。</b>13 = 8 + 4 + 1（二进制 1101）。所以 5<sup>13</sup> = 5<sup>8</sup> × 5<sup>4</sup> × 5<sup>1</sup>。</p></div>
+<div class="st"><p><b>第二步：反复平方，每步取余。</b></p><div class="out"><span class="eq">5<sup>1</sup> mod 23 = 5</span><span class="eq">5<sup>2</sup> = 25 mod 23 = 2</span><span class="eq">5<sup>4</sup> = (5<sup>2</sup>)<sup>2</sup> = 2<sup>2</sup> = 4</span><span class="eq">5<sup>8</sup> = (5<sup>4</sup>)<sup>2</sup> = 4<sup>2</sup> = 16</span></div></div>
+<div class="st"><p><b>第三步：把需要的几项乘起来，每步取余。</b></p><div class="out"><span class="eq">5<sup>13</sup> = 5<sup>8</sup> × 5<sup>4</sup> × 5<sup>1</sup> ≡ 16 × 4 × 5</span><span class="eq">16 × 4 = 64 mod 23 = 18</span><span class="eq">18 × 5 = 90 mod 23 = 90 − 69 = <b>21</b></span></div><p>答案：5<sup>13</sup> mod 23 = <b>21</b>。全程最大的数只有 90。</p></div>
+<div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
+<div class="lab"><p class="lt">模幂计算器（带平方-乘法表）</p>
+<div class="fields"><div class="fld"><label for="mx">底数 x</label><input id="mx" type="number" value="5"></div><div class="fld"><label for="me">指数 e</label><input id="me" type="number" value="13"></div><div class="fld"><label for="mn">模 n</label><input id="mn" type="number" value="23"></div></div>
+<div class="out" id="mout" style="overflow-x:auto"></div></div>
+</section>
+
+<!-- 7 -->
+<section class="sec" id="dh">
+<h2><span class="n">7</span>Diffie-Hellman：在大庭广众下约定一个秘密</h2>
+<p>问题（Q&amp;A Q30）：Alice 和 Bob 想共用一把对称密钥，但他们<b>只能通过 Eve 能看到一切的信道</b>说话。怎么才能约定一把 Eve 不知道的钥匙？</p>
+<div class="analogy box"><span class="bt">类比：混颜料</span><ol>
+<li>两人公开约定一种<b>公共颜色</b>：黄色（Eve 也知道）；</li>
+<li>各自偷偷选一种<b>秘密颜色</b>：Alice 红，Bob 蓝；</li>
+<li>各自把秘密色混进黄色，把<b>混合色</b>公开发给对方：Alice 发橙色，Bob 发绿色（Eve 看得到）；</li>
+<li>各自把<b>自己的秘密色</b>加进<b>对方发来的混合色</b>：Alice 得到黄 + 蓝 + 红，Bob 得到黄 + 红 + 蓝，<b>完全相同</b>；</li>
+<li>Eve 只有黄、橙、绿三种颜色。混合容易，<b>拆分</b>极难，她调不出最终颜色。</li></ol>
+<p>在数学里，“混合”就是模幂运算，“拆不开”就是<b>离散对数难题</b>。</p></div>
+<h3>算法步骤（P4-53～P4-55）</h3>
+<div class="tbl"><table>
+<tr><th>步骤</th><th>A（Alice）</th><th>B（Bob）</th><th>Eve 能看到吗</th></tr>
+<tr><td>1. 公开参数</td><td colspan="2">选一个素数 <b>q</b> 和它的<b>原根 a</b>（课件也写作 p 和 g）</td><td>能</td></tr>
+<tr><td>2. 选私钥</td><td>随机选 X<sub>A</sub> &lt; q</td><td>随机选 X<sub>B</sub> &lt; q</td><td>不能</td></tr>
+<tr><td>3. 算公开值</td><td>Y<sub>A</sub> = a<sup>X<sub>A</sub></sup> mod q</td><td>Y<sub>B</sub> = a<sup>X<sub>B</sub></sup> mod q</td><td>—</td></tr>
+<tr><td>4. 交换</td><td>把 Y<sub>A</sub> 发给 B</td><td>把 Y<sub>B</sub> 发给 A</td><td>能</td></tr>
+<tr><td>5. 算共享密钥</td><td>K = (Y<sub>B</sub>)<sup>X<sub>A</sub></sup> mod q</td><td>K = (Y<sub>A</sub>)<sup>X<sub>B</sub></sup> mod q</td><td>不能</td></tr>
+</table></div>
+<p>为什么两边相等？(a<sup>X<sub>B</sub></sup>)<sup>X<sub>A</sub></sup> = a<sup>X<sub>A</sub>X<sub>B</sub></sup> = (a<sup>X<sub>A</sub></sup>)<sup>X<sub>B</sub></sup>，指数相乘的顺序无所谓。</p>
+<p><b>原根</b>是什么？课件定义：素数 p 的原根，是它的各次幂能生成 1 到 p−1 所有整数的那个数。考试题会直接给出，你不用自己找。</p>
+<h3>手算一个完整例子（课件 P4-62）</h3>
+<p>p = 23，g = 5；Alice 选 a = 6，Bob 选 b = 15。</p>
+<div class="out"><span class="eq">Alice 公开值 A = 5<sup>6</sup> mod 23 = 15625 mod 23 = <b>8</b>（15625 − 679 × 23 = 15625 − 15617 = 8）</span><span class="eq">Bob 公开值 B = 5<sup>15</sup> mod 23 = <b>19</b></span><span class="eq">Alice：K = 19<sup>6</sup> mod 23 = <b>2</b></span><span class="eq">Bob：K = 8<sup>15</sup> mod 23 = <b>2</b>　✓ 相同</span></div>
+<div class="lab"><p class="lt">Diffie-Hellman 计算器</p><p class="ld">默认是 Q&amp;A Q30 的例子（q = 353，g = 3，Alice 97，Bob 233，结果 40 / 248 / 160）。可以换成课件其他例题验证。</p>
+<div class="fields"><div class="fld"><label for="dq">素数 q</label><input id="dq" type="number" value="353"></div><div class="fld"><label for="dg">原根 a (g)</label><input id="dg" type="number" value="3"></div><div class="fld"><label for="dxa">Alice 私钥 X<sub>A</sub></label><input id="dxa" type="number" value="97"></div><div class="fld"><label for="dxb">Bob 私钥 X<sub>B</sub></label><input id="dxb" type="number" value="233"></div></div>
+<div class="out" id="dhout"></div></div>
+<div class="pitfall box"><span class="bt">课件勘误</span><p>P4-63 例 8（p = 29，g = 2，a = 5，b = 13）：课件写 B = 2<sup>13</sup> mod 29 = 27，K = 26，这是错的。正确值是 <b>B = 14，K = 19</b>。用上面的计算器输入就能验证。考试遇到要自己算，别照抄课件。</p></div>
+<div class="key box"><span class="bt">DH 的要点</span><ul>
+<li>DH <b>只用于交换密钥，不能加密或解密消息</b>（P4-51）；</li>
+<li>安全性基于<b>离散对数难题</b>：已知 g、x、p，求 y = g<sup>x</sup> mod p 很容易；已知 y、g、p，反求 x 极难（样题 Q4-16：True）；</li>
+<li>用于 SSL 的密钥交换；TLS 1.3 只保留了 ephemeral DH（模块 5）；</li>
+<li>弱点：DH 本身<b>不验证对方身份</b>，可能被中间人攻击，所以 TLS 会用签名保护它。</li></ul></div>
+<div class="check" data-a="2"><p class="cq">Diffie-Hellman 能直接用来加密一封邮件吗？</p>
+<div class="opts"><button class="opt">能，它是公钥加密算法</button><button class="opt">能，但只能加密短消息</button><button class="opt">不能，它只用来协商一把共享密钥，再用对称算法去加密</button></div>
+<div class="cx"><p>课件原话：“only for Key Exchange and does NOT Encrypt or Decrypt the message.”</p></div></div>
+</section>
+
+<!-- 8 -->
+<section class="sec" id="rsa">
+<h2><span class="n">8</span>RSA：最常用的公钥系统，手算全流程</h2>
+<p>RSA 以三位 MIT 教授 Rivest、Shamir、Adleman 的姓氏命名，1978 年发表（英国 GCHQ 在 1973 年就秘密发现过），是<b>最广泛使用的公钥系统</b>（样题 Q4-15、Q4-17）。和 DH 不同，它是完整的系统：<b>密钥生成 + 加密 + 解密 + 签名</b>都能做。安全性来自<b>大数分解难题</b>：两个大素数相乘很容易，把乘积分解回去几乎不可能（样题 Q4-20）。</p>
+<h3>密钥生成五步（P4-67、P4-68）</h3>
+<div class="stepper"><div class="sh"><span>用 p = 5、q = 11 生成一对 RSA 钥匙（课件 P4-70～P4-72）</span><span class="ctr"></span></div>
+<div class="st"><p><b>① 选两个素数</b> p = 5，q = 11（真实系统里是几百位的大素数）。</p></div>
+<div class="st"><p><b>② 算模数</b> n = p × q = 5 × 11 = <b>55</b>。n 是公开的。</p></div>
+<div class="st"><p><b>③ 算 φ(n)</b> = (p−1)(q−1) = 4 × 10 = <b>40</b>。φ 必须保密。</p><div class="pitfall box" style="margin:8px 0 0"><span class="bt">陷阱</span><p>样题 Q4-18 问 p = 5、q = 11 时的 φ，选项里有 55（那是 n），正确答案 40 不在选项里，选 <b>None of the above</b>。Q4-19 问 n，答 55。</p></div></div>
+<div class="st"><p><b>④ 选公钥 e</b>：要求 1 &lt; e &lt; φ，且 e 和 φ <b>没有公因子</b>（互素）。课件的做法：e 取素数，检查它和 p−1 = 4、q−1 = 10 有没有公因子：</p><ul><li>e = 2：和 4、10 都有公因子 2，✗</li><li>e = <b>3</b>：没有公因子，✓</li><li>e = 5：和 10 有公因子 5，✗</li><li>e = 7：没有公因子，✓</li></ul><p>选 <b>e = 3</b>。</p></div>
+<div class="st"><p><b>⑤ 求私钥 d</b>：要满足 e × d ≡ 1 (mod φ)，也就是 e × d = k × φ + 1。课件的方法：<b>d = (k × φ + 1) ÷ e</b>，k 从 1 开始试，直到能整除：</p><div class="out"><span class="eq">k = 1：(40 + 1) ÷ 3 = 41 ÷ 3，不能整除 ✗</span><span class="eq">k = 2：(80 + 1) ÷ 3 = 81 ÷ 3 = <b>27</b> ✓</span></div><p>所以 <b>d = 27</b>。验证：3 × 27 = 81 = 2 × 40 + 1 ✓。</p><p><b>公钥 = (n, e) = (55, 3)</b>，公开给所有人；<b>私钥 = d = 27</b>，自己保管。</p></div>
+<div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
+<h3>加密和解密</h3>
+<div class="key box"><span class="bt">公式</span><p>加密（用接收方公钥）：<b>C = M<sup>e</sup> mod n</b>　　　解密（用自己的私钥）：<b>M = C<sup>d</sup> mod n</b></p><p>要求：明文 M 必须<b>小于 n</b>。</p></div>
+<p><b>例（P4-72）：</b>加密 “DC”。按 A = 0, B = 1, C = 2, D = 3… 编码，DC → 32。</p>
+<div class="out"><span class="eq">加密：C = 32<sup>3</sup> mod 55 = 32768 mod 55 = <b>43</b></span><span class="eq">解密：M = 43<sup>27</sup> mod 55 = <b>32</b> → 3 = D，2 = C → “DC” ✓</span></div>
+
+<h3>Q&amp;A 大题：用 4 位一块加密 STOP（Q25）</h3>
+<p>p = 43，q = 59，e = 13。</p>
+<ol>
+<li>n = 43 × 59 = <b>2537</b>；</li>
+<li>字母编码（A = 00 … Z = 25）：S = 18，T = 19，O = 14，P = 15。每两个字母拼成 4 位一块：<b>1819 1415</b>（为什么能 4 位一块？最大的块 2525 也小于 n = 2537）；</li>
+<li>逐块加密：1819<sup>13</sup> mod 2537 = <b>2081</b>；1415<sup>13</sup> mod 2537 = <b>2182</b>；</li>
+<li>密文：<b>2081 2182</b>。</li>
+</ol>
+<h3>解密 0981 0461（Q26）</h3>
+<ol>
+<li>φ = 42 × 58 = <b>2436</b>；</li>
+<li>求 d：d = (k × 2436 + 1) ÷ 13。一个个试太慢，有个技巧：2436 mod 13 = 5，所以需要 5k + 1 能被 13 整除，k = 5 时 26 ÷ 13 = 2 ✓。于是 d = (5 × 2436 + 1) ÷ 13 = 12181 ÷ 13 = <b>937</b>；</li>
+<li>0981<sup>937</sup> mod 2537 = <b>0704</b> → 07 = h，04 = e；0461<sup>937</sup> mod 2537 = <b>1115</b> → 11 = l，15 = p；</li>
+<li>明文：<b>“help”</b>。</li>
+</ol>
+<div class="lab"><p class="lt">RSA 全流程计算器</p><p class="ld">输入 p、q、e（e 留空时按课件方法自动选），再输入明文（字母或数字）或密文。默认是 Q25。可以再试：p=43 q=59 e=13，密文填 0981 0461（Q26）；或者 p=13 q=17 e=5（Q27a）。</p>
+<div class="fields"><div class="fld"><label for="rp">素数 p</label><input id="rp" type="number" value="43"></div><div class="fld"><label for="rq">素数 q</label><input id="rq" type="number" value="59"></div><div class="fld"><label for="re">公钥 e</label><input id="re" type="text" value="13" inputmode="numeric"></div><div class="fld" style="grid-column:1/-1"><label for="rpt">明文（字母按 A=00 编码，或用空格隔开的数字）</label><input id="rpt" type="text" value="STOP"></div><div class="fld" style="grid-column:1/-1"><label for="rct">密文（空格隔开，可选）</label><input id="rct" type="text" value=""></div></div>
+<div class="out" id="rout" style="overflow-x:auto"></div></div>
+<div class="pitfall box"><span class="bt">Q27c 的坑</span><p>p = 19，q = 23，e = 3：n = 437，φ = 18 × 22 = 396 = 4 × 9 × 11。<b>e = 3 和 396 有公因子 3</b>，所以这组参数下私钥 d 根本不存在。题目只问 n 和 φ，大概正是这个原因。在计算器里输入试试，会看到提示。</p></div>
+<h3>RSA 的概念题（Q&amp;A Q24、Q29）</h3>
+<ul>
+<li><b>单向函数</b>：C = M<sup>e</sup> mod n，已知 M 和 e 算 C 很容易；已知 C 和 e，n 很大时反推 M 很难；</li>
+<li><b>陷门（trapdoor）</b>：私钥 d，掌握它就能轻松反推，M = C<sup>d</sup> mod n；</li>
+<li><b>公钥</b> e（连同 n），<b>私钥</b> d；</li>
+<li><b>安全性</b>主要取决于分解 n 的难度；n 很大、e 选得合适，系统就是安全的；</li>
+<li><b>p 和 q 能公开吗？不能</b>。知道 p、q 就能算出 φ，有了 φ 就能由 e 算出 d。反过来，知道 n 和 φ 也能解出 p、q。所以 p、q、φ、d 都要保密，只公开 n 和 e。</li>
+</ul>
+<div class="check" data-a="0"><p class="cq">RSA 中 p = 3，q = 11，e = 7，私钥 d 是多少？</p>
+<div class="opts"><button class="opt">3</button><button class="opt">7</button><button class="opt">11</button><button class="opt">21</button></div>
+<div class="cx"><p>φ = 2 × 10 = 20。k = 1：(20 + 1) ÷ 7 = 3 ✓，所以 d = 3（课件 P4-76）。验证：7 × 3 = 21 = 20 + 1。</p></div></div>
+<div class="check" data-a="1"><p class="cq">RSA 的安全性依赖于？</p>
+<div class="opts"><button class="opt">离散对数难题</button><button class="opt">大数分解难题</button><button class="opt">哈希碰撞难题</button></div>
+<div class="cx"><p>RSA 依赖<b>分解</b>；DH 和 ElGamal 依赖<b>离散对数</b>。这一对常被拿来对比出题。</p></div></div>
+</section>
+
+<!-- 9 -->
+<section class="sec" id="hybrid">
+<h2><span class="n">9</span>ElGamal、ECC 与混合系统</h2>
+<ul>
+<li><b>ElGamal</b>（1985）：基于 DH 的思想，安全性也基于离散对数；能加密也能签名；但<b>密文是明文的两倍长，速度慢</b>；</li>
+<li><b>ECC 椭圆曲线密码</b>（1985 年提出，2005 年后才广泛使用）：<b>用更短的密钥达到同样的安全性</b>，在加密货币里很流行。</li>
+</ul>
+<div class="tbl"><table>
+<tr><th>对称密钥</th><th>ECC</th><th>RSA</th></tr>
+<tr><td>80</td><td>160</td><td>1024</td></tr>
+<tr><td>112</td><td>224</td><td>2048</td></tr>
+<tr><td><b>128</b></td><td><b>256</b></td><td><b>3072</b></td></tr>
+<tr><td>256</td><td>512</td><td>15360</td></tr>
+</table></div>
+<p class="ref" style="white-space:normal">等效安全强度对照（P4-97）</p>
+<h3>混合系统：两全其美</h3>
+<p>公钥强大但慢，对称快但钥匙难送。<b>混合系统</b>把两者结合起来（P4-98、P4-99）：</p>
+<figure>
+<svg viewBox="0 0 680 230" role="img" aria-label="混合加密系统流程">
+  <defs><marker id="m4e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-a"/></marker><marker id="m4f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-g"/></marker></defs>
+  <rect x="20" y="20" width="140" height="190" rx="10" class="box-s"/><text x="90" y="44" text-anchor="middle" font-size="14" font-weight="700">客户端</text>
+  <rect x="520" y="20" width="140" height="190" rx="10" class="box-s"/><text x="590" y="44" text-anchor="middle" font-size="14" font-weight="700">服务器</text><text x="590" y="64" text-anchor="middle" font-size="11" class="tm">有证书和公私钥</text>
+  <line x1="518" y1="80" x2="162" y2="80" class="la" marker-end="url(#m4e)"/><text x="340" y="74" text-anchor="middle" font-size="12">① 发来证书和服务器公钥</text>
+  <text x="90" y="104" text-anchor="middle" font-size="11">② 随机生成</text><text x="90" y="119" text-anchor="middle" font-size="11">会话密钥 3486</text>
+  <line x1="162" y1="135" x2="518" y2="135" class="la" marker-end="url(#m4e)"/><text x="340" y="129" text-anchor="middle" font-size="12">③ 用服务器公钥加密会话密钥（#$%^）</text>
+  <text x="590" y="150" text-anchor="middle" font-size="11">④ 用私钥解出 3486</text>
+  <line x1="162" y1="185" x2="518" y2="185" class="lg" marker-end="url(#m4f)"/><line x1="518" y1="197" x2="162" y2="197" class="lg" marker-end="url(#m4f)"/><text x="340" y="179" text-anchor="middle" font-size="12" class="tg">⑤ 之后所有数据都用对称会话密钥加密</text>
+</svg>
+<figcaption>混合系统：公钥负责“送钥匙”，对称密钥负责“加数据”。SSL/TLS 就是这么工作的。</figcaption>
+</figure>
+<div class="check" data-a="1"><p class="cq">混合系统中，公钥密码用来做什么？会话数据用什么加密？（样题 Q4-34、Q4-35）</p>
+<div class="opts"><button class="opt">加密全部数据；用非对称加密</button><button class="opt">交换会话密钥；用对称加密</button><button class="opt">两者都做；两者都用</button></div>
+<div class="cx"><p>公钥送钥匙，对称加数据。会话数据量大，需要对称算法的速度。</p></div></div>
+</section>
+
+<!-- 10 -->
+<section class="sec" id="hash">
+<h2><span class="n">10</span>哈希：给数据按一个“指纹”</h2>
+<p><b>Hash function</b> 把<b>任意长度</b>的数据压缩成一串<b>固定长度</b>的“摘要”（digest）。它是<b>单向</b>的：从摘要无法还原原文。课件称它为“a special mathematical function that performs <b>one-way encryption</b>”（样题 Q4-33）。</p>
+<div class="analogy box"><span class="bt">类比</span><p>就像人的指纹：从一个人很容易得到他的指纹，但只看指纹没法“复原”出这个人；两个人指纹相同几乎不可能。Q&amp;A Q31 用的类比是软件包装盒上的<b>防拆封条</b>：盒子被打开过（文件被改过），一眼就能看出来。</p></div>
+<h3>哈希的性质（P4-108）</h3>
+<ul>
+<li>可以处理任意大小的数据，输出<b>固定长度</b>，计算很快；</li>
+<li><b>单向（抗原像）</b>：给定摘要 h，找不到 x 使 H(x) = h；</li>
+<li><b>弱抗碰撞</b>：给定 x，找不到另一个 y ≠ x 使 H(y) = H(x)；</li>
+<li><b>强抗碰撞</b>：找不到<b>任意一对</b> x、y 使 H(x) = H(y)；</li>
+<li><b>雪崩效应</b>：输入改一个字母，输出完全变样（P4-111）。</li>
+</ul>
+<div class="lab"><p class="lt">雪崩效应实验（真实的 SHA-256）</p><p class="ld">两段只差一个字母的文字，看看它们的 SHA-256 摘要有多少位不同。红色标出两者不同的十六进制字符。</p>
+<div class="fields"><div class="fld" style="grid-column:1/-1"><label for="h1">文本 A</label><input id="h1" type="text" value="The red fox jumps over the blue dog"></div><div class="fld" style="grid-column:1/-1"><label for="h2">文本 B</label><input id="h2" type="text" value="The red fox jumps ouer the blue dog"></div></div>
+<div class="out" id="hout"></div></div>
+<h3>常见算法</h3>
+<div class="tbl"><table>
+<tr><th>算法</th><th>摘要长度</th><th>状态</th></tr>
+<tr><td>MD5</td><td>128 位</td><td>✗ 不安全，不要再用</td></tr>
+<tr><td>SHA-1</td><td>160 位</td><td>✗ 已发现碰撞攻击，不要再用</td></tr>
+<tr><td><b>SHA-2</b>（SHA-224/256/384/512）</td><td>名字里的数字就是长度</td><td>✓ 安全，最广泛使用（样题 Q4-27），比特币用 SHA-256</td></tr>
+<tr><td>SHA-3</td><td>—</td><td>✓ 安全</td></tr>
+</table></div>
+<h3>哈希 ≠ 加密（Q&amp;A Q31）</h3>
+<div class="tbl"><table>
+<tr><th></th><th>加密</th><th>哈希</th></tr>
+<tr><td>输出长度</td><td>和明文差不多，或更长</td><td>固定且短，与输入长度无关</td></tr>
+<tr><td>能还原吗</td><td>能（解密）</td><td><b>不能</b>（不能 de-hash）</td></tr>
+<tr><td>需要密钥吗</td><td>需要</td><td>不需要</td></tr>
+<tr><td>目的</td><td>机密性</td><td><b>完整性</b>（样题 Q4-26）</td></tr>
+</table></div>
+<div class="check" data-a="0"><p class="cq">哈希函数的主要目的是？（样题 Q4-26）</p>
+<div class="opts"><button class="opt">数据完整性</button><button class="opt">认证</button><button class="opt">两者都是</button></div>
+<div class="cx"><p>哈希本身没有密钥，单独使用证明不了是谁发的，所以主要用于<b>完整性</b>。和私钥签名结合后才能提供认证，那是下一节的内容。</p></div></div>
+</section>
+
+<!-- 11 -->
+<section class="sec" id="sig">
+<h2><span class="n">11</span>数字签名：证明“这是我发的，而且没被改过”</h2>
+<p>手写签名容易伪造，靠和真迹比对来验证；<b>数字签名</b>很难伪造，用公开的算法验证（P4-103）。它就是把公钥加密“反过来用”：发送方用<b>自己的私钥</b>处理消息的<b>哈希</b>（样题 Q4-28、Q4-31）。</p>
+<figure>
+<svg viewBox="0 0 680 280" role="img" aria-label="数字签名的签名与验证流程">
+  <defs><marker id="m4g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-n"/></marker></defs>
+  <text x="150" y="22" text-anchor="middle" font-size="14" font-weight="700">发送方 Bob：签名</text>
+  <text x="510" y="22" text-anchor="middle" font-size="14" font-weight="700">接收方 Alice：验证</text>
+  <line x1="330" y1="10" x2="330" y2="270" class="ln dash"/>
+  <rect x="90" y="36" width="120" height="34" rx="8" class="box-s"/><text x="150" y="58" text-anchor="middle" font-size="13">消息 M</text>
+  <rect x="90" y="96" width="120" height="34" rx="8" class="box-t"/><text x="150" y="118" text-anchor="middle" font-size="13">哈希 → 摘要</text>
+  <rect x="60" y="156" width="180" height="40" rx="8" class="box-g"/><text x="150" y="174" text-anchor="middle" font-size="12">用 <tspan font-weight="700">Bob 的私钥</tspan>加密摘要</text><text x="150" y="189" text-anchor="middle" font-size="11" class="tm">= 数字签名</text>
+  <rect x="60" y="222" width="180" height="34" rx="8" class="box-a"/><text x="150" y="244" text-anchor="middle" font-size="12">发送：消息 M + 签名</text>
+  <line x1="150" y1="70" x2="150" y2="94" class="ln" marker-end="url(#m4g)"/><line x1="150" y1="130" x2="150" y2="154" class="ln" marker-end="url(#m4g)"/><line x1="150" y1="196" x2="150" y2="220" class="ln" marker-end="url(#m4g)"/>
+  <rect x="370" y="36" width="120" height="34" rx="8" class="box-s"/><text x="430" y="58" text-anchor="middle" font-size="13">收到的 M</text>
+  <rect x="520" y="36" width="140" height="34" rx="8" class="box-s"/><text x="590" y="58" text-anchor="middle" font-size="13">收到的签名</text>
+  <rect x="370" y="96" width="120" height="40" rx="8" class="box-t"/><text x="430" y="114" text-anchor="middle" font-size="12">① 自己算哈希</text><text x="430" y="129" text-anchor="middle" font-size="11" class="tm">新摘要</text>
+  <rect x="520" y="96" width="140" height="40" rx="8" class="box-g"/><text x="590" y="114" text-anchor="middle" font-size="12">② 用 Bob 的公钥解密</text><text x="590" y="129" text-anchor="middle" font-size="11" class="tm">原摘要</text>
+  <rect x="420" y="170" width="200" height="40" rx="8" class="box-w"/><text x="520" y="188" text-anchor="middle" font-size="12" font-weight="700">③ 两个摘要相等吗？</text><text x="520" y="203" text-anchor="middle" font-size="11">相等 → 没被改，且确实是 Bob 发的</text>
+  <line x1="430" y1="70" x2="430" y2="94" class="ln" marker-end="url(#m4g)"/><line x1="590" y1="70" x2="590" y2="94" class="ln" marker-end="url(#m4g)"/><line x1="430" y1="136" x2="480" y2="168" class="ln" marker-end="url(#m4g)"/><line x1="590" y1="136" x2="560" y2="168" class="ln" marker-end="url(#m4g)"/>
+  <text x="520" y="240" text-anchor="middle" font-size="11" class="tm">Bob 的公钥要从他的数字证书里拿</text>
+</svg>
+<figcaption>数字签名（P4-105、P4-112；Q&amp;A Q32）。</figcaption>
+</figure>
+<h3>签名提供什么、不提供什么</h3>
+<ul>
+<li>✓ <b>完整性</b>：消息改一个字，哈希就对不上；</li>
+<li>✓ <b>认证</b>：只有 Bob 有私钥，能用他的公钥解开，就证明是他签的；</li>
+<li>✓ <b>不可否认</b>：Bob 事后不能说“不是我”；</li>
+<li>✗ <b>不提供机密性</b>：消息本身是明文发送的。如果还需要保密，就再用 Alice 的公钥加密整条消息，这就是课件 P4-113 的“with message protection”。</li>
+</ul>
+<p>样题 Q4-29：签名能保证 integrity 和 source，选 <b>Both</b>；Q4-30：哈希值<b>相等</b>说明没有被篡改。</p>
+<h3>RSA 签名小例子（P4-117）</h3>
+<p>沿用 n = 55，e = 3，d = 27。签名 M = 51：S = 51<sup>27</sup> mod 55 = <b>6</b>（用私钥 d）。验证：6<sup>3</sup> mod 55 = 216 mod 55 = <b>51</b> = M ✓（用公钥 e）。和加密正好反过来。</p>
+<div class="check" data-a="1"><p class="cq">发送方给哈希做数字签名，用的是哪把钥匙？</p>
+<div class="opts"><button class="opt">发送方的公钥</button><button class="opt">发送方的私钥</button><button class="opt">接收方的公钥</button></div>
+<div class="cx"><p>签名用自己的私钥，验签用对方的公钥。</p></div></div>
+</section>
+
+<!-- 12 -->
+<section class="sec" id="cert">
+<h2><span class="n">12</span>数字证书与 CA：怎么确定这把公钥真是 Bob 的</h2>
+<p>还有一个漏洞：Alice 怎么知道手里的“Bob 公钥”真的是 Bob 的？如果 Eve 冒充 Bob 发来<b>她自己的公钥</b>，Alice 用它去验证 Eve 伪造的签名，当然“验证通过”（P4-118：不能用发送方自己提供的公钥）。这正是公钥密码的核心难题：<b>证明一把公钥确实属于某人</b>（P4-47）。</p>
+<div class="analogy box"><span class="bt">类比</span><p>陌生人说“我是张三”，你不信；他拿出政府签发的<b>身份证</b>，你就信了，因为你信任政府。数字证书就是公钥的“身份证”，<b>CA（证书颁发机构）</b>就是“发证的政府”。</p></div>
+<p><b>Digital certificate</b>：由 CA 签发并<b>数字签名</b>的电子文件，把<b>用户名字和他的公钥绑定</b>在一起（样题 Q4-25）。它的作用是<b>认证公钥</b>（样题 Q4-32），私钥永远不会出现在证书里。</p>
+<h3>X.509 证书里有什么（P4-120、P4-121）</h3>
+<div class="tbl"><table>
+<tr><th>字段</th><th>含义</th></tr>
+<tr><td>Version</td><td>X.509 版本（大多是 v3）</td></tr>
+<tr><td>Issuer</td><td>签发的 CA 的名字</td></tr>
+<tr><td>Serial number</td><td>唯一序列号，用来查询是否被吊销</td></tr>
+<tr><td><b>Subject</b></td><td>证书属于谁（真实主体，true party）</td></tr>
+<tr><td><b>Public key</b></td><td>主体的公钥</td></tr>
+<tr><td>Public key algorithm</td><td>主体签名用的算法</td></tr>
+<tr><td><b>Digital signature</b></td><td><b>CA 用自己的私钥</b>对证书的签名，用来检查证书是否被篡改</td></tr>
+<tr><td>Signature algorithm</td><td>CA 签名用的算法</td></tr>
+</table></div>
+<h3>验证证书的三件事（P4-122；Q&amp;A Q33，必背）</h3>
+<ol>
+<li><b>签名</b>：用 CA 众所周知的公钥验证证书上的签名，通过说明证书是真的、没被改过；</li>
+<li><b>有效期</b>：当前时间在证书的有效期内吗？过期的要拒绝；</li>
+<li><b>吊销</b>：有效期内 CA 也可能吊销证书。看证书字段是看不出来的，<b>必须向 CA 查询</b>，例如用 <b>OCSP</b>：把序列号发给 CA，CA 回答 good、revoked 或 unknown。</li>
+</ol>
+<div class="pitfall box"><span class="bt">现实的坑</span><p>很多国家的 CA <b>没有监管</b>，用户也能<b>自己生成证书</b>，所以公钥仍然可能被冒充（Q&amp;A Q28）。只接受<b>有信誉的 CA</b> 签发的证书。新加坡常见的 CA：Verisign、GlobalSign、Netrust。模块 6 的 Equifax 案例里，一张过期 10 个月的证书导致数据外泄没被发现。</p></div>
+<div class="check" data-a="3"><p class="cq">验证数字证书时，<b>不需要</b>检查哪一项？</p>
+<div class="opts"><button class="opt">CA 的签名</button><button class="opt">有效期</button><button class="opt">是否被吊销</button><button class="opt">主体的私钥</button></div>
+<div class="cx"><p>私钥从不出现在证书里，也无从检查。三件事：签名、期限、吊销。</p></div></div>
+</section>
+
+<!-- 13 -->
+<section class="sec" id="sum">
+<h2><span class="n">13</span>未来挑战与本章小结</h2>
+<p>课件 P4-125 列出的挑战：密钥管理（生成、存储、分发）；<b>量子计算</b>（Shor 算法能破解 RSA 和 ECC）；同态加密（直接在密文上计算）；为 IoT 设计的轻量级密码；安全与性能的权衡；淘汰过时算法（DES、MD5、SHA-1）。</p>
+<div class="key box"><span class="bt">一页纸总结</span><ul>
+<li>明文 → 密文是<b>加密</b>；安全靠<b>密钥</b>而不是靠算法保密；每多 1 位密钥，难度翻倍。</li>
+<li>对称：一把钥匙，<b>快</b>，难在<b>密钥分发</b>。Block（DES、AES）vs Stream（RC4）；ECB 各块独立，CBC 链式。</li>
+<li><b>DES 64 / 56 / 16</b>，1998 年 56 小时被破；2DES 有中间相遇攻击；3DES 是过渡；<b>AES 128 / (128, 192, 256) / (10, 12, 14)</b>。</li>
+<li>公钥：<b>保密用接收方公钥，签名用发送方私钥</b>；更安全是错误说法，它解决的是分发问题。</li>
+<li><b>DH</b>：只交换密钥，基于离散对数；Y = a<sup>X</sup> mod q，K = Y<sub>对方</sub><sup>X<sub>自己</sub></sup> mod q。</li>
+<li><b>RSA</b>：n = pq，φ = (p−1)(q−1)，e 与 φ 互素，d = (kφ + 1) / e；C = M<sup>e</sup> mod n，M = C<sup>d</sup> mod n；基于大数分解；p、q、φ 必须保密。</li>
+<li>ECC 用更短的钥匙；等效强度：AES-128 ≈ ECC-256 ≈ RSA-3072。<b>混合系统</b>：公钥送钥匙，对称加数据。</li>
+<li>哈希：固定长度、单向、抗碰撞、雪崩效应；用于<b>完整性</b>；MD5 和 SHA-1 已淘汰。</li>
+<li>签名 = 私钥处理哈希 → 完整性 + 认证 + 不可否认，<b>没有机密性</b>；验签：比较两个摘要。</li>
+<li>证书把名字和公钥绑定，由 <b>CA 的私钥</b>签名；验证三件事：<b>签名、期限、吊销（OCSP）</b>。</li>
+</ul></div>
+<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 4（35 题）</b>、刷题本 P4 的 17 道自编题，以及 Q&amp;A Q21–Q33。<a href="practice.html#calc">刷题本的计算题页</a>可以随机生成 RSA 和 DH 题目并核对答案，期末前至少各做 5 道。</p></div>
+<p><button class="btn" data-done></button> <button class="btn" data-reset-quiz>重做本页小测</button></p>
+<nav class="pager"><a href="m3.html"><span>← 上一模块</span><b>3 · 策略与生物识别</b></a><a class="next" href="m5.html"><span>下一模块 →</span><b>5 · Web 安全与防火墙</b></a></nav>
+</section>
+</main>
+</div>
+<footer class="foot">EE6102 小白课 · 个人学习笔记，依据 NTU EE6102（Dr M Y Siyal）课件整理讲解，非官方材料。</footer>
+<script src="assets/lesson.js"></script>
+<script>
+(function(){
+  function $(i){return document.getElementById(i)}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  /* Caesar */
+  function caesar(){var k=((+$('ck').value||0)%26+26)%26,t=$('cin').value.toUpperCase(),o='';
+    for(var i=0;i<t.length;i++){var c=t.charCodeAt(i);o+=(c>=65&&c<=90)?String.fromCharCode((c-65+k)%26+65):t[i]}
+    var back='';for(var j=0;j<o.length;j++){var d=o.charCodeAt(j);back+=(d>=65&&d<=90)?String.fromCharCode((d-65-k+26)%26+65):o[j]}
+    $('cout').innerHTML='密文：<b class="r">'+esc(o)+'</b><br>用同一个 k 往回移 '+k+' 位解密：'+esc(back)+'<br><span style="color:var(--muted)">Eve 只要把 k = 1…25 全试一遍，总能看到一行通顺的英文。</span>'}
+  ['cin','ck'].forEach(function(i){$(i).addEventListener('input',caesar)});caesar();
+  /* BigInt helpers */
+  function B(x){try{x=String(x).trim();if(!/^\d+$/.test(x))return null;return BigInt(x)}catch(e){return null}}
+  function gcd(a,b){while(b){var t=a%b;a=b;b=t}return a}
+  function isPrime(n){n=Number(n);if(n<2||!Number.isInteger(n))return false;for(var i=2;i*i<=n;i++)if(n%i===0)return false;return true}
+  function modpow(x,e,n){x%=n;var r=1n;while(e>0n){if(e&1n)r=r*x%n;x=x*x%n;e>>=1n}return r}
+  function powTable(x,e,n){var base=x%n,res=1n,ee=e,i=0,rows='';
+    while(ee>0n){var bit=ee&1n;if(bit)res=res*base%n;rows+='<tr class="'+(bit?'hit':'dim')+'"><td>'+x+'<sup>'+(1n<<BigInt(i))+'</sup> mod '+n+' = '+base+'</td><td>'+(bit?'1，乘进结果 → '+res:'0，跳过')+'</td></tr>';base=base*base%n;ee>>=1n;i++}
+    return {res:res,html:'<table class="calc-t"><tr><th>反复平方</th><th>指数这一位</th></tr>'+rows+'</table>'}}
+  /* modexp lab */
+  function mlab(){var x=B($('mx').value),e=B($('me').value),n=B($('mn').value);
+    if(x===null||e===null||n===null||n<2n){$('mout').textContent='请输入非负整数，n ≥ 2';return}
+    if(e>100000n){$('mout').textContent='指数太大了，换小一点的数手算练习吧';return}
+    var t=powTable(x,e,n);$('mout').innerHTML='指数 '+e+' 的二进制是 '+e.toString(2)+'。<br>'+t.html+'<span class="eq">'+x+'<sup>'+e+'</sup> mod '+n+' = <b class="r">'+t.res+'</b></span>'}
+  ['mx','me','mn'].forEach(function(i){$(i).addEventListener('input',mlab)});mlab();
+  /* DH lab */
+  function dh(){var q=B($('dq').value),g=B($('dg').value),a=B($('dxa').value),b=B($('dxb').value);
+    if([q,g,a,b].some(function(v){return v===null})){$('dhout').textContent='四个值都要填整数';return}
+    if(!isPrime(q)){$('dhout').textContent='q 必须是素数';return}
+    var A=modpow(g,a,q),Bv=modpow(g,b,q),KA=modpow(Bv,a,q),KB=modpow(A,b,q);
+    $('dhout').innerHTML='<span class="eq">Alice 公开值 Y<sub>A</sub> = '+g+'<sup>'+a+'</sup> mod '+q+' = <b class="r">'+A+'</b></span><span class="eq">Bob 公开值 Y<sub>B</sub> = '+g+'<sup>'+b+'</sup> mod '+q+' = <b class="r">'+Bv+'</b></span><span class="eq">Alice 算 K = '+Bv+'<sup>'+a+'</sup> mod '+q+' = <b class="r">'+KA+'</b></span><span class="eq">Bob 算 K = '+A+'<sup>'+b+'</sup> mod '+q+' = <b class="r">'+KB+'</b></span>'+(KA===KB?'两边一致 ✓。Eve 只看到 '+q+'、'+g+'、'+A+'、'+Bv+'。':'')}
+  ['dq','dg','dxa','dxb'].forEach(function(i){$(i).addEventListener('input',dh)});dh();
+  /* RSA lab */
+  function pad(x,w){x=String(x);while(x.length<w)x='0'+x;return x}
+  function rsa(){var o=$('rout'),p=B($('rp').value),q=B($('rq').value),eIn=$('re').value.trim();
+    if(p===null||q===null){o.textContent='请输入整数 p、q';return}
+    if(!isPrime(p)||!isPrime(q)||p===q){o.textContent='p、q 必须是两个不同的素数';return}
+    var n=p*q,phi=(p-1n)*(q-1n),h='<span class="eq">n = '+p+' × '+q+' = <b>'+n+'</b>；φ = '+(p-1n)+' × '+(q-1n)+' = <b>'+phi+'</b></span>',e;
+    if(eIn===''){var c=[3n,5n,7n,11n,13n,17n,19n,23n];e=null;for(var i=0;i<c.length;i++){if(c[i]<phi&&gcd(c[i],phi)===1n){e=c[i];break}}if(e===null){o.innerHTML=h+'找不到合适的 e';return}h+='自动选择 e = <b>'+e+'</b>（与 φ 互素的最小素数）<br>'}
+    else{e=B(eIn);if(e===null){o.textContent='e 必须是整数';return}var g=gcd(e,phi);if(e<=1n||e>=phi||g!==1n){o.innerHTML=h+'<span style="color:var(--bad)">e = '+e+' 不可用：'+(g!==1n?'它和 φ = '+phi+' 有公因子 '+g+'，私钥 d 不存在。':'需要 1 &lt; e &lt; φ。')+'</span>';return}}
+    var k=1n,d=null,rows='';while(d===null&&k<=100000n){var v=k*phi+1n;if(v%e===0n){d=v/e;rows+='<tr class="hit"><td>k = '+k+'</td><td>'+v+' ÷ '+e+' = '+d+' ✓</td></tr>'}else if(k<=4n)rows+='<tr><td>k = '+k+'</td><td>'+v+' 不能被 '+e+' 整除</td></tr>';else if(k===5n)rows+='<tr class="dim"><td>…</td><td>…</td></tr>';k++}
+    h+='求 d = (kφ + 1) / e：<table class="calc-t">'+rows+'</table><span class="eq">公钥 (n, e) = ('+n+', '+e+')；私钥 d = <b class="r">'+d+'</b></span>';
+    var pt=$('rpt').value.trim(),ct=$('rct').value.trim(),pair=n>2525n;
+    if(pt){var blocks=[],labels=[];
+      if(/[A-Za-z]/.test(pt)){var L=pt.toUpperCase().replace(/[^A-Z]/g,'');if(n<=25n){o.innerHTML=h+'<br>n 太小，无法给字母编码';return}
+        if(pair){if(L.length%2)L+='X';for(var j=0;j<L.length;j+=2){blocks.push(BigInt((L.charCodeAt(j)-65)*100+(L.charCodeAt(j+1)-65)));labels.push(L.substr(j,2))}}
+        else for(var m=0;m<L.length;m++){blocks.push(BigInt(L.charCodeAt(m)-65));labels.push(L[m])}
+        h+='<br>编码（A = 00）：'+L.split('').map(function(ch){return ch+'='+pad(ch.charCodeAt(0)-65,2)}).join(' ')+' → 分块 <b>'+blocks.map(function(b){return pad(b,pair?4:2)}).join(' ')+'</b>'+(pair?'（n &gt; 2525，两个字母一块）':'（每个字母一块）')}
+      else pt.split(/[\s,]+/).forEach(function(t){var b=B(t);if(b!==null){blocks.push(b);labels.push(t)}});
+      var bad=blocks.filter(function(b){return b>=n});if(bad.length){o.innerHTML=h+'<br><span style="color:var(--bad)">明文块 '+bad.join(', ')+' ≥ n，RSA 要求 M &lt; n</span>';return}
+      var outs=[];blocks.forEach(function(M,i){var t=powTable(M,e,n);outs.push(pad(t.res,String(n).length));h+='<details'+(i===0?' open':'')+'><summary>加密块 '+esc(labels[i])+'：'+M+'<sup>'+e+'</sup> mod '+n+' = '+t.res+'</summary>'+t.html+'</details>'});
+      h+='<span class="eq">密文 C = <b class="r">'+outs.join(' ')+'</b></span>'}
+    if(ct){var cb=[];ct.split(/[\s,]+/).forEach(function(t){var b=B(t);if(b!==null)cb.push(b)});var txt='',ok=true,ms=[];
+      cb.forEach(function(C,i){var t=powTable(C,d,n),s=pad(t.res,pair?4:2);ms.push(s);var w='';
+        if(pair){var a1=+s.slice(0,2),a2=+s.slice(2);if(s.length===4&&a1<26&&a2<26)w=String.fromCharCode(97+a1)+String.fromCharCode(97+a2);else ok=false}else{var a3=+s;if(a3<26)w=String.fromCharCode(97+a3);else ok=false}txt+=w;
+        h+='<details'+(i===0?' open':'')+'><summary>解密块 '+C+'：'+C+'<sup>'+d+'</sup> mod '+n+' = '+s+(w?' → '+w:'')+'</summary>'+t.html+'</details>'});
+      h+='<span class="eq">明文 M = <b class="r">'+ms.join(' ')+'</b>'+(ok&&txt?'　→　“'+txt+'”':'')+'</span>'}
+    o.innerHTML=h}
+  ['rp','rq','re','rpt','rct'].forEach(function(i){$(i).addEventListener('input',rsa)});rsa();
+  /* SHA-256 avalanche */
+  function hex(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2)}).join('')}
+  function hashLab(){var o=$('hout');if(!(window.crypto&&crypto.subtle)){o.textContent='当前浏览器环境不支持 Web Crypto（需要 https 页面）。';return}
+    var enc=new TextEncoder();Promise.all([crypto.subtle.digest('SHA-256',enc.encode($('h1').value)),crypto.subtle.digest('SHA-256',enc.encode($('h2').value))]).then(function(r){
+      var a=hex(r[0]),b=hex(r[1]),ha='',hb='',diff=0,bits=0;
+      for(var i=0;i<a.length;i++){var d=a[i]!==b[i];if(d)diff++;ha+=d?'<span class="d">'+a[i]+'</span>':a[i];hb+=d?'<span class="d">'+b[i]+'</span>':b[i]}
+      for(var j=0;j<64;j+=2){var x=parseInt(a.substr(j,2),16)^parseInt(b.substr(j,2),16);while(x){bits+=x&1;x>>=1}}
+      o.innerHTML='A 的 SHA-256：<div class="hex">'+ha+'</div>B 的 SHA-256：<div class="hex">'+hb+'</div>256 位里有 <b class="r">'+bits+'</b> 位不同（约 '+Math.round(bits/256*100)+'%），64 个十六进制字符里有 '+diff+' 个不同。'+(a===b?' 两段文字完全相同，摘要也相同。':' 输入只差一点点，输出却有大约一半的位都变了，这就是雪崩效应。')})}
+  ['h1','h2'].forEach(function(i){$(i).addEventListener('input',hashLab)});hashLab();
+})();
+</script>
+</body>
+</html>
