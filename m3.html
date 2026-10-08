@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>模块 3 · 安全规划、策略与生物识别 | EE6102 小白课</title>
+<meta name="description" content="EE6102 模块 3：安全计划、技术与管理两个维度、策略/标准/指南、自上而下与 DLM 四层防御、认证因素、指纹虹膜人脸、FAR/FRR/CER 互动演示。">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="m3">
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><span class="marks" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></span><b>EE6102 小白课</b></a>
+  <span class="sp"></span>
+  <nav aria-label="模块导航"><a href="index.html">首页</a><a href="m1.html">1 入门与威胁</a><a href="m2.html">2 工业4.0与人</a><a class="on" href="m3.html">3 策略与生物识别</a><a href="m4.html">4 密码学</a><a href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="practice.html">刷题本</a></nav>
+  <button class="themeb" type="button">主题</button>
+</div></header>
+<div class="wrap">
+<aside class="toc" aria-label="本页目录"><p class="tt">本模块目录</p><ol></ol><div class="prog"><span class="pct"></span><div class="bar"><i></i></div></div></aside>
+<main class="lesson">
+<p class="eyebrow">Module 03 · 对应课件 sld3</p>
+<h1 class="title">安全规划、策略与生物识别：先定规矩，再验明正身</h1>
+<p class="sub-en">Cyber Security Planning and Policies · Biometric-based Security Approaches</p>
+<div class="meta"><span>约 50 分钟</span><span>11 道小测</span><span>1 个互动图</span><span>Quiz 样题 Part 3 · 15 题；Q&amp;A Q18–Q20</span></div>
+<p class="lede">这一章分前后两半。前半讲“管理”：安全不是 IT 部门自己的事，需要计划、策略和高层支持。这正是期末大题最爱考的论述题（Q&amp;A Q18：为什么只靠技术或只靠策略一定失败）。后半讲一种具体技术：用指纹、虹膜、人脸来确认“你是你”，以及它的错误率怎么衡量。</p>
+<div class="goals"><h3>学完这一章，你应该能：</h3><ul>
+<li>说出安全计划的目标和好处，知道规划的第一步是<b>评估现状</b>；</li>
+<li>解释技术与管理两个维度，用 3–4 段写出“为什么只靠一边会失败、该怎么办”；</li>
+<li>分清 policy、procedure、standard、guideline；</li>
+<li>比较自上而下和自下而上两种做法，背出 DLM 四层防御；</li>
+<li>说出三类认证因素，分清 identification 与 verification、authentication 与 authorization；</li>
+<li>比较指纹、虹膜、视网膜、人脸的优缺点；</li>
+<li>解释 FAR、FRR、CER，以及调高灵敏度会发生什么。</li></ul></div>
+
+<section class="sec" id="plan">
+<h2><span class="n">1</span>安全计划：先想清楚，再动手</h2>
+<p><b>Cyber security plan</b> 是一份书面文件，写明组织在安全上采用的<b>策略、战略、流程和技术</b>（P3-2）。它的目标有四个：保护 CIA、管理网络风险、保证业务连续、满足法律和监管要求。</p>
+<div class="analogy box"><span class="bt">类比</span><p>装修房子先画图纸：哪里放保险柜、门锁装几道、谁有钥匙、着火了从哪逃。没有图纸就开工，钱花了不少，该防的地方却没防到。</p></div>
+<h3>安全计划的 5 个好处（P3-3、P3-4）</h3>
+<ol>
+<li><b>更好地理解风险</b>：云、手机、IoT、可穿戴设备让暴露面越来越大，计划帮你看清现在的 IT 环境；</li>
+<li><b>主动防护</b>：很多组织吃亏在“出事了才补”；计划里包括漏洞分析、渗透测试、漏洞扫描、业务连续性和灾难恢复；</li>
+<li><b>快速响应</b>：没有 100% 安全，总有攻击会成功，计划让你事先知道出事后该做什么；</li>
+<li><b>满足合规</b>：GDPR、PCI DSS、HIPAA 等；</li>
+<li><b>预防内部威胁</b>：让安全成为组织文化，员工参与培训，内部威胁就会减少。</li>
+</ol>
+<h3>第一步做什么</h3>
+<p>样题 Q3-1：制定计划时首先应该做什么？答案是<b>先评估当前的安全状况</b>，而不是先买最先进的设备。Q&amp;A Q19 也说规划的第一步是 <b>Identification</b>：识别要保护什么（资产）、要防什么（威胁）；第二步是<b>理解脆弱性</b>（人为错误、软件复杂度）。</p>
+<div class="check" data-a="1"><p class="cq">一家初创公司拿到一笔安全预算，第一件事应该是？</p>
+<div class="opts"><button class="opt">马上买最贵的防火墙</button><button class="opt">评估当前安全状况：有哪些资产、面临哪些威胁、有哪些弱点</button><button class="opt">两者同时做</button></div>
+<div class="cx"><p>不先评估就买设备，钱可能花在错误的地方。顺序是：识别资产与威胁 → 理解脆弱性 → 再选技术。</p></div></div>
+</section>
+
+<section class="sec" id="dim">
+<h2><span class="n">2</span>技术与管理：安全的两个维度</h2>
+<p>课件 P3-5 把网络安全分成两个维度：</p>
+<div class="tbl"><table>
+<tr><th></th><th>Technical 技术</th><th>Managerial 管理</th></tr>
+<tr><td>关注点</td><td>开发技术能力和安全技术</td><td>制定安全政策和流程</td></tr>
+<tr><td>例子</td><td>加密、防火墙、生物识别</td><td>政策与机制、运营问题、人的问题</td></tr>
+<tr><td>谁负责</td><td>工程师、系统管理员</td><td>管理层、合规团队</td></tr>
+</table></div>
+<h3>为什么只靠一边一定失败（Q&amp;A Q18，期末高频）</h3>
+<p>问题在于这两拨人<b>互相不理解、不欣赏对方的工作</b>，而没有对方的配合，谁都成功不了。</p>
+<ul>
+<li><b>Technology-centric（只重技术）</b>：没有强有力的政策和实践，技术再强也很脆弱。防火墙买了，没人规定谁能改规则，员工照样把密码写在便利贴上；</li>
+<li><b>Policy-centric（只重政策）</b>：没有技术去监控和执行，政策就是一纸空文。规定“密码 90 天必须改”，系统却不强制，没人会改。</li>
+</ul>
+<p><b>解决办法</b>：全面、多方面的方法，四要素缺一不可：</p>
+<ol><li><b>高层管理支持</b>（Senior management support）；</li><li><b>强有力且合理的政策</b>（Strong and sensible policies）；</li><li><b>切实可行的流程</b>（Practical procedures）；</li><li><b>现代安全技术</b>（Modern security technologies）。</li></ol>
+<p>结论句：“Information security is a management issue, a people issue.”</p>
+<figure>
+<svg viewBox="0 0 640 270" role="img" aria-label="人、流程、技术三者共同支撑网络安全">
+  <circle cx="230" cy="105" r="88" class="box-a" style="fill-opacity:.45"/>
+  <circle cx="410" cy="105" r="88" class="box-g" style="fill-opacity:.45"/>
+  <circle cx="320" cy="180" r="88" class="box-w" style="fill-opacity:.45"/>
+  <text x="185" y="80" text-anchor="middle" font-size="16" font-weight="700" class="ta">Process</text><text x="185" y="100" text-anchor="middle" font-size="12">流程说明政策</text><text x="185" y="116" text-anchor="middle" font-size="12">如何落地</text>
+  <text x="455" y="80" text-anchor="middle" font-size="16" font-weight="700" class="tg">Technology</text><text x="455" y="100" text-anchor="middle" font-size="12">系统按政策</text><text x="455" y="116" text-anchor="middle" font-size="12">技术上强制执行</text>
+  <text x="320" y="228" text-anchor="middle" font-size="16" font-weight="700">People</text><text x="320" y="248" text-anchor="middle" font-size="12">人理解自己的责任</text>
+  <text x="320" y="140" text-anchor="middle" font-size="13" font-weight="700">安全</text>
+</svg>
+<figcaption>课件 P3-16：网络安全依赖流程、技术和人三者的交集，政策必须被制定、传达、维护和执行。</figcaption>
+</figure>
+<div class="exam box"><span class="bt">期末答题模板（Q18）</span><p>① 两个方面：Technical 与 Managerial，各举 2 个例子；② 失败原因：两拨人互不理解；③ 只重技术没有政策会怎样，只重政策没有技术会怎样；④ 解决：四要素 + “management issue, people issue”；⑤ 加分：引用 DLM 四层防御（第 4 节），再举 Equifax 为例：政策规定 48 小时打补丁，实际拖了 5 个月（模块 6）。</p></div>
+<div class="check" data-a="1"><p class="cq">某公司规定“所有员工的密码必须每 90 天更换”，但系统不强制，也没人检查。这体现了哪种失败？</p>
+<div class="opts"><button class="opt">Technology-centric：只重技术</button><button class="opt">Policy-centric：只有政策，没有技术来监控和执行</button><button class="opt">没有问题</button></div>
+<div class="cx"><p>政策写得再好，没有技术强制和监控就会被忽略。</p></div></div>
+</section>
+
+<section class="sec" id="policy">
+<h2><span class="n">3</span>策略体系：Policy、Procedure、Standard、Guideline</h2>
+<p><b>Cybersecurity policy</b> 是一套正式的规则和实践，规定信息和系统如何被管理、保护和分发，还写明员工各自的角色和责任（P3-6）。这几个词容易混，用一张表分清：</p>
+<div class="tbl"><table>
+<tr><th>名称</th><th>回答什么</th><th>是否强制</th><th>例子</th></tr>
+<tr><td><b>Policy 策略/政策</b></td><td>在特定情况下<b>应该做什么</b>（what）</td><td>是</td><td>“所有远程访问必须加密”</td></tr>
+<tr><td><b>Procedure 流程</b></td><td><b>怎样</b>把政策落地（how），具体步骤</td><td>是</td><td>“第 1 步打开 VPN 客户端，第 2 步……”</td></tr>
+<tr><td><b>Standard 标准</b></td><td>统一的具体要求</td><td><b>强制（mandatory）</b></td><td>“密码至少 12 位”</td></tr>
+<tr><td><b>Guideline 指南</b></td><td>建议和最佳实践</td><td><b>酌情（discretionary）</b>，但决策者<b>必须认真考虑</b></td><td>“建议使用密码管理器”</td></tr>
+</table></div>
+<div class="pitfall box"><span class="bt">易错点</span><ul>
+<li>样题 Q3-4：“Policies are statements about <b>what</b> should be done”是 policy；“describe the actions taken to place policy guidance into operation”是 procedure，不选。</li>
+<li>样题 Q3-6：standards mandatory，guidelines discretionary。干扰项“guidelines can be <b>completely ignored</b>”是错的。</li>
+<li>样题 Q3-7：对 guideline，什么是强制的？答案是“决策者必须认真考虑它们”。可以不照做，但不能不考虑。</li></ul></div>
+<h3>政策必须被用户接受</h3>
+<p>样题 Q3-5：如果政策不合理，用户就会<b>绕过</b>它，这是很危险的趋势。比如强制每周换一个 20 位密码，员工只会把密码写在纸上。所以课件建议制定政策时<b>让员工参与</b>。</p>
+<h3>常见的政策类型（P3-6、P3-7）</h3>
+<p>可接受使用政策（AUP，规定允许怎样使用系统）、访问控制政策、事件响应政策、数据分类政策、加密政策、密码政策、远程访问政策，还有物理安全、灾难恢复与业务连续、数据保留等。</p>
+<h3>怎样实施、怎样执行</h3>
+<div class="tbl"><table>
+<tr><th>实施（P3-8）</th><th>执行（P3-9）</th></tr>
+<tr><td>识别风险；借鉴别人的经验；符合法律；让员工参与制定；培训员工；设定明确的处罚；执行政策；安装必要的工具</td><td><b>沟通</b>：让每个人清楚自己的责任；<b>访问控制</b>：用认证、授权、MFA 限制访问；<b>监控与审计</b>：发现违规；<b>后果</b>：违规必须有处罚，否则员工会以为“没事”</td></tr>
+</table></div>
+<p>治理（Governance）还包括：设立网络安全委员会做监督，由 <b>CISO</b>（首席信息安全官）负责安全战略。</p>
+<div class="check" data-a="0"><p class="cq">“Standards are mandatory while guidelines are discretionary.”这句话是否正确？</p>
+<div class="opts"><button class="opt">正确</button><button class="opt">错误：guideline 可以完全忽略</button><button class="opt">错误：两者都是可选的</button></div>
+<div class="cx"><p>正确（样题 Q3-6）。“可以完全忽略”说过头了，决策者必须考虑 guideline。</p></div></div>
+</section>
+
+<section class="sec" id="approach">
+<h2><span class="n">4</span>谁来推动：自上而下、DLM 四层防御、零信任</h2>
+<h3>自下而上 vs 自上而下（P3-10）</h3>
+<div class="tbl"><table>
+<tr><th></th><th>Bottom-up 自下而上</th><th>Top-down 自上而下</th></tr>
+<tr><td>谁发起</td><td>系统管理员自己想改进安全</td><td>高层管理发起：发布政策、流程和步骤，确定目标、预期结果和每件事的责任人</td></tr>
+<tr><td>优点</td><td>管理员懂技术</td><td><b>强有力的高层支持、专门的预算、清晰的计划</b>、有机会影响组织文化</td></tr>
+<tr><td>缺点</td><td><b>很少成功</b>：缺少参与者的支持，缺少组织层面的持续力（staying power）</td><td>（课件推荐这种做法）</td></tr>
+</table></div>
+<div class="analogy box"><span class="bt">类比</span><p>一个普通员工想推动“全公司开会都要准时”，没人听；如果是 CEO 发通知、自己带头准时、迟到要扣绩效，事情就办成了。</p></div>
+<p>样题 Q3-2、Q3-3：高层支持在项目的<b>整个过程中</b>都重要（不只是开头）；高层要<b>确保足够的预算，并且自己也遵守安全流程</b>。Q&amp;A Q20：员工看不到上级尊重安全，就不会改变自己的行为。</p>
+
+<h3>DLM：数字责任管理的四层防御（P3-12、P3-13）</h3>
+<p>Digital Liability Management 也叫“政策与技术的交汇”，体现了自上而下的思想。四层从上到下：</p>
+<figure>
+<svg viewBox="0 0 640 250" role="img" aria-label="DLM 四层防御">
+  <rect x="170" y="14" width="300" height="48" rx="8" class="box-a"/><text x="320" y="36" text-anchor="middle" font-size="14" font-weight="700">Tier 1 · 高层承诺与支持</text><text x="320" y="54" text-anchor="middle" font-size="11" class="tm">Senior management commitment and support</text>
+  <rect x="130" y="70" width="380" height="48" rx="8" class="box-t"/><text x="320" y="92" text-anchor="middle" font-size="14" font-weight="700">Tier 2 · 可接受使用政策等实践声明</text><text x="320" y="110" text-anchor="middle" font-size="11" class="tm">Acceptable-use policies and other statements of practice</text>
+  <rect x="90" y="126" width="460" height="48" rx="8" class="box-w"/><text x="320" y="148" text-anchor="middle" font-size="14" font-weight="700">Tier 3 · 安全使用流程</text><text x="320" y="166" text-anchor="middle" font-size="11" class="tm">Secure-use procedures</text>
+  <rect x="50" y="182" width="540" height="48" rx="8" class="box-g"/><text x="320" y="204" text-anchor="middle" font-size="14" font-weight="700">Tier 4 · 硬件、软件与网络安全工具</text><text x="320" y="222" text-anchor="middle" font-size="11" class="tm">Hardware, software and network security tools</text>
+</svg>
+<figcaption>DLM 四层：领导 → 政策 → 流程 → 工具。技术工具放在最后一层。</figcaption>
+</figure>
+<p>DLM 的目标：防止入侵和事件发生；一旦发生，能做好防御。</p>
+
+<h3>零信任与纵深防御（P3-14、P3-15）</h3>
+<ul>
+<li><b>Zero Trust 零信任</b>：<b>never trust, always verify</b>。不因为“在公司内网”就默认可信，每次访问都要验证身份和权限；</li>
+<li><b>Defense in depth 纵深防御</b>：层层叠加防御，像城堡有护城河、外墙、内墙、守卫，一层被攻破还有下一层。</li>
+</ul>
+<p>大多数安全战略的目的可以概括成五个动作：<b>identify、protect、detect、respond、recover</b>（识别、保护、检测、响应、恢复）。</p>
+<div class="check" data-a="3"><p class="cq">DLM 四层防御的第 1 层是？</p>
+<div class="opts"><button class="opt">硬件、软件和网络工具</button><button class="opt">安全使用流程</button><button class="opt">可接受使用政策</button><button class="opt">高层承诺与支持</button></div>
+<div class="cx"><p>领导第一，工具最后。这和“安全是管理问题”的主线一致。</p></div></div>
+<div class="check" data-a="1"><p class="cq">自下而上做法的主要缺点是？</p>
+<div class="opts"><button class="opt">缺少技术能力</button><button class="opt">缺少参与者支持和组织持续力</button><button class="opt">太贵</button></div>
+<div class="cx"><p>技术能力恰恰是它的优点。它缺的是权力和持续性。</p></div></div>
+</section>
+
+<section class="sec" id="auth">
+<h2><span class="n">5</span>认证基础：怎么证明“你是你”</h2>
+<p>后半章进入技术部分。所有门禁和登录系统都要解决一个问题：<b>怎么确认来者就是他声称的那个人？</b>课件 P3-18 给出三种证明方式：</p>
+<div class="tbl"><table>
+<tr><th>因素</th><th>含义</th><th>例子</th><th>弱点</th></tr>
+<tr><td><b>Something you know</b></td><td>你知道的东西</td><td>密码、PIN</td><td>会被猜、被偷看、被钓鱼</td></tr>
+<tr><td><b>Something you have</b></td><td>你拥有的东西</td><td>令牌、智能卡、手机验证码</td><td>会丢、会被偷</td></tr>
+<tr><td><b>Something you are</b></td><td>你本身</td><td>指纹、虹膜、人脸（生物特征）</td><td>泄露后无法更换</td></tr>
+</table></div>
+<p><b>多因素认证（MFA）</b>就是组合<b>不同类别</b>的因素，比如密码（know）+ 手机验证码（have）。两个密码加起来不算 MFA，因为它们属于同一类。</p>
+<div class="pitfall box"><span class="bt">易错点</span><p>样题 Q3-8：“Which is NOT an authentication factor?” 答案是 <b>Something you see</b>，这是编造的。</p></div>
+<h3>两组容易混的概念</h3>
+<div class="tbl"><table>
+<tr><th>概念</th><th>问的是</th><th>比对方式</th></tr>
+<tr><td><b>Identification</b> 识别</td><td>“你是谁？”</td><td><b>一对多</b>：拿你的特征去整个数据库里找</td></tr>
+<tr><td><b>Verification</b> 验证</td><td>“你是你声称的那个人吗？”</td><td><b>一对一</b>：只和你声称身份的那份模板比</td></tr>
+</table></div>
+<p>另外，<b>Authentication 认证</b>是确认你的身份（样题 Q3-9：“assessing the identity of each individual”），<b>Authorization 授权</b>是确认身份之后，决定你能做什么。先认证，后授权。</p>
+<div class="analogy box"><span class="bt">类比</span><p>机场 e-Gate：你先刷护照说“我是张三”，闸机再拍你的脸只和张三的照片比对，这是<b>一对一的验证</b>。警察拿监控里的一张脸去全国数据库里找人，是<b>一对多的识别</b>。闸机打开后，你只能去登机口，不能进驾驶舱，这是<b>授权</b>。</p></div>
+<h3>为什么还需要生物识别</h3>
+<p>样题 Q3-10：短而简单、反复使用的密码总是容易被破解吗？<b>是的</b>。模块 1 算过，6 位数字 2 秒就能穷举。课件 P3-18 也说，处理器变快、密码分析进步，让密码成了较弱的保护。</p>
+<div class="check" data-a="1"><p class="cq">手机解锁时，系统把你的指纹只和机主的指纹模板比对，这是？</p>
+<div class="opts"><button class="opt">Identification，一对多</button><button class="opt">Verification，一对一</button><button class="opt">Authorization</button></div>
+<div class="cx"><p>手机只有一个机主，只和这一个人的模板比，所以是一对一的验证。</p></div></div>
+</section>
+
+<section class="sec" id="bio">
+<h2><span class="n">6</span>生物识别怎么工作：注册、采集、比对、判决</h2>
+<p><b>Biometrics</b> 指利用一个人独特的<b>生理特征或行为特征</b>来识别和认证身份。</p>
+<h3>四个步骤（P3-24）</h3>
+<div class="stepper"><div class="sh"><span>一次指纹登录的全过程</span><span class="ctr"></span></div>
+<div class="st"><p><b>① Enrollment 注册</b>：第一次使用时，系统扫描你的指纹，<b>提取关键特征</b>（不是存整张图片），存成一份<b>模板（template）</b>，例如一串编码 <code>01101001</code>。</p></div>
+<div class="st"><p><b>② Capture 采集</b>：下次登录时，再扫描一次你的手指。</p></div>
+<div class="st"><p><b>③ Comparison 比对</b>：从新扫描中提取特征（比如得到 <code>01111001</code>），和存储的模板 <code>01101001</code> 比较。两次扫描<b>永远不会完全一样</b>（按压力度、角度、手指干湿都会变），只能算一个<b>相似度分数</b>。</p></div>
+<div class="st"><p><b>④ Decision 判决</b>：相似度超过<b>阈值</b>，就认为“足够接近”（close enough），放行；否则拒绝。课件 P3-46 的图就是在问 “Close enough?”。</p><p>正因为只能看“够不够像”，才会出现下一节的两种错误：把别人判成你，或者把你判成别人。</p></div>
+<div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
+<h3>生理特征 vs 行为特征（P3-21）</h3>
+<div class="tbl"><table>
+<tr><th>Physiological 生理特征（身体）</th><th>Behavioral 行为特征（习惯）</th></tr>
+<tr><td>指纹、虹膜、视网膜、人脸、手形、DNA</td><td>声音、<b>击键动态</b>（打字节奏、速度、力度）、步态、签名</td></tr>
+<tr><td>通常<b>更稳定</b></td><td>会随情绪、身体状态变化</td></tr>
+</table></div>
+<p>应用：门禁和设备登录、多因素认证、机场 e-Gate 和生物护照、手机 Face ID 和指纹解锁、银行的 e-KYC（线上身份核验）、员工考勤。样题 Q3-11：生物识别能<b>增强客户信任、打击欺诈</b>。</p>
+<h3>优点与局限（P3-23）</h3>
+<div class="tbl"><table>
+<tr><th>优点</th><th>局限</th></tr>
+<tr><td>方便（不用记密码）；难伪造；不会忘、不会丢；速度快；不能转让给别人</td><td>隐私问题（属于敏感个人数据）；可能被伪造（spoofing）；<b>不可撤销</b>（泄露了没法“改指纹”）；受伤或生病会影响识别；成本高</td></tr>
+</table></div>
+</section>
+
+<section class="sec" id="types">
+<h2><span class="n">7</span>四种主要生物特征：指纹、虹膜、视网膜、人脸</h2>
+<div class="tbl"><table>
+<tr><th>类型</th><th>原理</th><th>优点</th><th>缺点</th><th>记忆点</th></tr>
+<tr><td><b>Fingerprint</b> 指纹</td><td>识别指尖的脊（ridge）和谷（valley），以及<b>细节点 minutiae</b>（脊线的终点和分叉，约 30 个）</td><td>便宜、快、容易集成、非侵入</td><td><b>容易被偷</b>（摸过的东西上到处都是）；可以做出高质量复制品（明胶假指纹、高清照片还原）；受环境影响；泄露后无法重置</td><td><b>最常用</b></td></tr>
+<tr><td><b>Iris</b> 虹膜</td><td>瞳孔周围彩色环的复杂纹理；用近红外光拍摄</td><td>可测量的信息多，误识率和拒识率都很低；1–3 英尺外即可采集；纹理终身稳定</td><td>不太好用；系统集成复杂；贵；受光线、睫毛、反光影响；高清照片或隐形眼镜有时能骗过</td><td><b>最准确</b>；1939 年提出，1990 年 Daugman 实现（Gabor 小波 + 汉明距离）</td></tr>
+<tr><td><b>Retina</b> 视网膜</td><td>眼底血管的分布图案，用低强度红外光照射</td><td>极准、极难伪造（图案在眼球内部）</td><td>要贴近镜头、盯住一点几秒钟；设备贵；有人觉得不适；戴眼镜或有白内障效果差</td><td>很准但<b>不是主流</b></td></tr>
+<tr><td><b>Face</b> 人脸</td><td>眼距、鼻宽、眼窝深度、颧骨形状、下颌线长度等</td><td>人们习惯拍照；可远距离、无接触</td><td>不如指纹准确；光线、角度、表情影响大；可以用照片或模型骗过</td><td>3D 人脸不受光线影响；最好算法误差约 0.08%</td></tr>
+</table></div>
+<p>人脸识别算法课件列了很多：PCA（Eigenfaces）、LDA、LBP、HOG、CNN、FaceNet、ArcFace 等。小白记住一点就够：<b>早期是人工设计特征，现在主流是深度学习（CNN）</b>，后者对姿态、光照、表情的变化更鲁棒。</p>
+<div class="exam box"><span class="bt">考试怎么考</span><ul><li>样题 Q3-12：最常见的生物识别设备是？<b>指纹扫描器</b>。</li><li>样题 Q3-15：哪句话准确描述了指纹识别？<b>容易被欺骗</b>（easily deceived）。它不贵，也不是很少用。</li></ul></div>
+<div class="check" data-a="2"><p class="cq">课件认为哪种生物特征“最准确”，理由是可测量的信息多得多？</p>
+<div class="opts"><button class="opt">指纹</button><button class="opt">人脸</button><button class="opt">虹膜</button><button class="opt">声音</button></div>
+<div class="cx"><p>虹膜：“iris is considered the most accurate biometric”。指纹是最<b>常用</b>的，别搞混。</p></div></div>
+<div class="check" data-a="1"><p class="cq">以下哪个是行为生物特征？</p>
+<div class="opts"><button class="opt">手形</button><button class="opt">击键动态</button><button class="opt">DNA</button></div>
+<div class="cx"><p>“做出来的”是行为特征，“长出来的”是生理特征。</p></div></div>
+</section>
+
+<section class="sec" id="err">
+<h2><span class="n">8</span>FAR、FRR、CER：生物识别的两种错误</h2>
+<p>上一节说过，比对只能得到一个“相似度分数”，再用<b>阈值</b>决定放不放行。于是有两种可能的错误（P3-47）：</p>
+<div class="tbl"><table>
+<tr><th>错误</th><th>别名</th><th>发生了什么</th><th>后果</th></tr>
+<tr><td><b>FRR</b> False Rejection Rate 错误拒绝率</td><td><b>Type I error</b></td><td>合法用户被拒（把你判成别人）</td><td>烦人：用户要反复刷</td></tr>
+<tr><td><b>FAR</b> False Acceptance Rate 错误接受率</td><td><b>Type II error</b></td><td>非法用户被放行（把别人判成你）</td><td>危险：坏人进来了</td></tr>
+<tr><td><b>CER</b> Crossover Error Rate 交叉错误率</td><td>—</td><td>FAR = FRR 的那一点</td><td>用来比较不同系统：<b>CER 越低越好</b></td></tr>
+</table></div>
+<p>记忆法：<b>FRR 拒绝（Reject）好人 → Type I；FAR 接受（Accept）坏人 → Type II</b>。考试最常考的就是这两个编号别配反。</p>
+<h3>动手看：拖动阈值，FAR 和 FRR 怎么变</h3>
+<div class="lab"><p class="lt">FAR / FRR 互动图</p><p class="ld">蓝色曲线是<b>合法用户</b>的相似度分布，红色曲线是<b>冒充者</b>的相似度分布。竖线是阈值：分数在线右边放行，在线左边拒绝。</p>
+<svg id="farsvg" viewBox="0 0 640 260" role="img" aria-label="合法用户与冒充者的相似度分布及阈值" style="width:100%;height:auto;display:block"></svg>
+<div class="fields" style="margin-top:8px"><div class="fld" style="grid-column:1/-1"><label for="thr">阈值（灵敏度）：<span id="thrv" class="mono"></span></label><input id="thr" type="range" min="20" max="80" value="50" step="1" style="padding:0"></div></div>
+<div class="out" id="farout"></div></div>
+<p>你会看到：<b>阈值调高（更严格、更“灵敏”）</b>，冒充者更难通过，<b>FAR 下降</b>；但合法用户也更容易被拒，<b>FRR 上升</b>。这就是课件 P3-47 的原话：“As we increase the sensitivity of the biometrics sensors, the <b>FRR increases, and the FAR decreases</b>.” 两者此消彼长，在中间某处相等，那就是 CER。</p>
+<div class="key box"><span class="bt">选哪个阈值？</span><p>看应用场景：<b>金库、核电站</b>宁可让员工多刷几次，也不能放进一个坏人，阈值调高（低 FAR）；<b>手机解锁</b>更在乎体验，阈值稍低（低 FRR），再配合其他保护。课件：“choose the one that fits the specific application”。</p></div>
+<h3>错误 vs 欺骗（P3-49）</h3>
+<ul>
+<li><b>Errors</b>：被识别的人<b>没有</b>想骗系统，只是系统判错了；</li>
+<li><b>Deception</b>：被识别的人<b>故意</b>想骗系统，比如用假指纹（样题 Q3-14）。</li>
+</ul>
+<p>另外：厂商宣称的 FAR/FRR 往往<b>被夸大</b>，因为是在理想条件下测的；<b>FTE（Failure to Enroll，注册失败）</b>指有人根本注册不进系统，比如建筑工人、文员或老人的指纹磨损严重。影响识别效果的还有：人口特征、模板老化、生理变化（受伤、生病）、外表（眼镜、化妆、绷带）、行为（紧张、口音、姿势）。</p>
+<div class="check" data-a="0"><p class="cq">“A false acceptance occurs when a person is improperly matched to a template.”</p>
+<div class="opts"><button class="opt">Yes</button><button class="opt">No</button></div>
+<div class="cx"><p>Yes（样题 Q3-13）。错误接受就是把一个人错误地匹配到了（别人的）模板上。</p></div></div>
+<div class="check" data-a="1"><p class="cq">提高生物识别传感器的灵敏度，会怎样？</p>
+<div class="opts"><button class="opt">FAR 上升，FRR 下降</button><button class="opt">FRR 上升，FAR 下降</button><button class="opt">两者都下降</button></div>
+<div class="cx"><p>更严格就更难通过：坏人进不来（FAR↓），好人也常被拒（FRR↑）。在上面的互动图里把阈值往右拖，就能看到。</p></div></div>
+<div class="check" data-a="2"><p class="cq">攻击者故意用明胶假指纹去骗系统，这叫？</p>
+<div class="opts"><button class="opt">False acceptance</button><button class="opt">False rejection</button><button class="opt">Deception</button></div>
+<div class="cx"><p>“故意”就是 deception。它<b>造成</b>的结果可能是一次错误接受，但题目问的是这种行为叫什么。</p></div></div>
+</section>
+
+<section class="sec" id="attack">
+<h2><span class="n">9</span>生物识别会被怎样攻击，它能取代密码吗</h2>
+<h3>五种攻击方式（P3-50）</h3>
+<ul>
+<li><b>Presentation attack 呈现攻击</b>：在传感器前出示人造物（假指纹、照片、面具）；</li>
+<li><b>Sensor output interception</b>：截获传感器的输出或参考模板，之后用来攻击；</li>
+<li><b>Reference &amp; database</b>：利用漏洞直接访问模板数据库；</li>
+<li><b>Integrity of enrollment</b>：攻击者用<b>自己的</b>特征替某个授权用户注册；</li>
+<li><b>Insider threats</b>：内部人员偷取或滥用模板。</li>
+</ul>
+<h3>生物识别 vs 密码（P3-52）</h3>
+<div class="tbl"><table>
+<tr><th>因素</th><th>生物识别</th><th>密码</th></tr>
+<tr><td>安全性</td><td>高（难偷）</td><td>中（可被猜到）</td></tr>
+<tr><td>方便性</td><td>高（不用记）</td><td>低（容易忘）</td></tr>
+<tr><td><b>可撤销性</b></td><td><b>不可以</b></td><td>可以</td></tr>
+<tr><td>伪造</td><td>费点功夫可以做到</td><td>泄露后很容易被冒用</td></tr>
+<tr><td>成本</td><td>高</td><td>低</td></tr>
+</table></div>
+<p>其他风险：太方便会让人<b>大意</b>；生物特征比门卡更容易被复制，因为我们到处留下指纹，社交媒体上的照片可以拿来做人脸模型。</p>
+<div class="key box"><span class="bt">课件结论（P3-53）</span><p>生物识别提供了便利和额外一层安全，但<b>不是万无一失</b>：不可更改、可能被滥用、可能被伪造。所以它最好<b>和密码一起用，而不是取代密码</b>：“Biometrics can enhance, but not replace, passwords.”</p></div>
+<p>未来趋势：无接触生物识别（人脸、虹膜、声音）、AI 提高准确率、基于行为的持续认证、用区块链去中心化存储生物数据。</p>
+</section>
+
+<section class="sec" id="sum">
+<h2><span class="n">10</span>本章小结</h2>
+<div class="key box"><span class="bt">一页纸总结</span><ul>
+<li>安全计划：书面文件；第一步<b>评估现状</b>（识别资产和威胁 → 理解脆弱性）；好处是理解风险、主动防护、快速响应、合规、防内鬼。</li>
+<li>两个维度：<b>Technical + Managerial</b>；只靠技术或只靠政策都会失败；解决靠<b>高层支持 + 合理政策 + 可行流程 + 现代技术</b>。</li>
+<li>Policy 说 what，procedure 说 how；standard <b>强制</b>，guideline <b>酌情但必须考虑</b>；政策要合理，否则会被绕过。</li>
+<li><b>Top-down</b> 胜过 bottom-up（后者缺支持、缺持续力）；高层要给预算并以身作则，全程支持。</li>
+<li>DLM 四层：<b>高层支持 → 使用政策 → 安全流程 → 技术工具</b>；零信任：never trust, always verify。</li>
+<li>认证因素：<b>know / have / are</b>；identification 一对多，verification 一对一；先认证（AuthN）后授权（AuthZ）。</li>
+<li>指纹<b>最常用、易被骗</b>；虹膜<b>最准</b>；视网膜很准但不普及；人脸方便但不如指纹准。</li>
+<li><b>FRR = Type I</b>（拒好人），<b>FAR = Type II</b>（放坏人），<b>CER</b> 是两者相等处，越低越好；灵敏度↑ → FRR↑、FAR↓。</li>
+<li>Error 无意，<b>Deception</b> 故意；厂商数据常被夸大；FTE 是注册失败。</li>
+<li>生物识别<b>增强而不取代</b>密码，因为它不可撤销。</li>
+</ul></div>
+<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 3（15 题）</b>、刷题本 P3 的 12 道自编题，以及 Q&amp;A Q18–Q20 三道论述题。去<a href="practice.html#qa">刷题本的问答题页</a>写一遍 Q18。</p></div>
+<p><button class="btn" data-done></button> <button class="btn" data-reset-quiz>重做本页小测</button></p>
+<nav class="pager"><a href="m2.html"><span>← 上一模块</span><b>2 · 工业 4.0 与人</b></a><a class="next" href="m4.html"><span>下一模块 →</span><b>4 · 密码学</b></a></nav>
+</section>
+</main>
+</div>
+<footer class="foot">EE6102 小白课 · 个人学习笔记，依据 NTU EE6102（Dr M Y Siyal）课件整理讲解，非官方材料。</footer>
+<script src="assets/lesson.js"></script>
+<script>
+(function(){
+  var svg=document.getElementById('farsvg'),thr=document.getElementById('thr'),NS='http://www.w3.org/2000/svg';
+  var MU_I=35,MU_G=65,SD=10,X0=40,X1=620,Y0=210,H=150;
+  function pdf(x,m){return Math.exp(-(x-m)*(x-m)/(2*SD*SD))}
+  function erf(x){var t=1/(1+0.3275911*Math.abs(x));var y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);return x>=0?y:-y}
+  function cdf(x,m){return 0.5*(1+erf((x-m)/(SD*Math.SQRT2)))}
+  function sx(v){return X0+(v-10)/(90-10)*(X1-X0)}
+  function path(m,clip){var d='';for(var v=10;v<=90;v+=0.5){var x=sx(v),y=Y0-pdf(v,m)*H;d+=(d?'L':'M')+x.toFixed(1)+','+y.toFixed(1)}return d}
+  function area(m,a,b){var d='M'+sx(a).toFixed(1)+','+Y0;for(var v=a;v<=b;v+=0.5)d+='L'+sx(v).toFixed(1)+','+(Y0-pdf(v,m)*H).toFixed(1);return d+'L'+sx(b).toFixed(1)+','+Y0+'Z'}
+  function el(tag,attrs,txt){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(txt!==undefined)e.textContent=txt;svg.appendChild(e);return e}
+  function draw(){
+    var t=+thr.value;svg.innerHTML='';
+    el('line',{x1:X0,y1:Y0,x2:X1,y2:Y0,'class':'ln'});
+    for(var v=10;v<=90;v+=10){el('line',{x1:sx(v),y1:Y0,x2:sx(v),y2:Y0+4,'class':'ln'});el('text',{x:sx(v),y:Y0+18,'text-anchor':'middle','font-size':11,'class':'tm'},v)}
+    el('text',{x:(X0+X1)/2,y:Y0+38,'text-anchor':'middle','font-size':12,'class':'tm'},'相似度分数（越大越像）');
+    el('path',{d:area(MU_I,t,90),style:'fill:var(--bad);fill-opacity:.28;stroke:none'});
+    el('path',{d:area(MU_G,10,t),style:'fill:var(--accent);fill-opacity:.28;stroke:none'});
+    el('path',{d:path(MU_I),'class':'lb'});el('path',{d:path(MU_G),'class':'la'});
+    el('text',{x:sx(MU_I),y:Y0-H-10,'text-anchor':'middle','font-size':13,'class':'tb','font-weight':700},'冒充者');
+    el('text',{x:sx(MU_G),y:Y0-H-10,'text-anchor':'middle','font-size':13,'class':'ta','font-weight':700},'合法用户');
+    el('line',{x1:sx(t),y1:22,x2:sx(t),y2:Y0,style:'stroke:var(--ink);stroke-width:2'});
+    el('text',{x:sx(t)-6,y:20,'text-anchor':'end','font-size':12},'← 拒绝');
+    el('text',{x:sx(t)+6,y:20,'font-size':12},'放行 →');
+    var far=(1-cdf(t,MU_I))*100,frr=cdf(t,MU_G)*100;
+    document.getElementById('thrv').textContent=t;
+    document.getElementById('farout').innerHTML='红色阴影 = <b>FAR</b>（冒充者分数过了线，被放行）≈ <b class="r" style="color:var(--bad)">'+far.toFixed(2)+'%</b>；蓝色阴影 = <b>FRR</b>（合法用户没过线，被拒）≈ <b class="r" style="color:var(--accent)">'+frr.toFixed(2)+'%</b>。'+(Math.abs(t-50)<1?' 现在两者相等，这就是 <b>CER</b> 点。':t>50?' 阈值偏严：更安全，但合法用户更常被拒。':' 阈值偏松：用起来方便，但更容易放进冒充者。')}
+  thr.addEventListener('input',draw);draw();
+})();
+</script>
+</body>
+</html>
