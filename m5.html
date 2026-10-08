@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>模块 5 · Web 安全、防火墙与入侵检测 | EE6102 小白课</title>
+<meta name="description" content="EE6102 模块 5：HTTP 与 HTTPS、SSL/TLS 握手与记录协议、TLS 1.3 前向保密、SET、防火墙类型与架构、规则匹配、IDS/IPS 与蜜罐。">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+.rules td.hit{background:var(--good-soft)}.rules td.miss{color:var(--muted)}
+.rules tr.win td{background:var(--accent-soft);font-weight:600}
+</style>
+</head>
+<body data-page="m5">
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><span class="marks" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></span><b>EE6102 小白课</b></a>
+  <span class="sp"></span>
+  <nav aria-label="模块导航"><a href="index.html">首页</a><a href="m1.html">1 入门与威胁</a><a href="m2.html">2 工业4.0与人</a><a href="m3.html">3 策略与生物识别</a><a href="m4.html">4 密码学</a><a class="on" href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="practice.html">刷题本</a></nav>
+  <button class="themeb" type="button">主题</button>
+</div></header>
+<div class="wrap">
+<aside class="toc" aria-label="本页目录"><p class="tt">本模块目录</p><ol></ol><div class="prog"><span class="pct"></span><div class="bar"><i></i></div></div></aside>
+<main class="lesson">
+<p class="eyebrow">Module 05 · 对应课件 sld5</p>
+<h1 class="title">Web 安全、防火墙与入侵检测：把密码学用到网络上</h1>
+<p class="sub-en">Web Security (SSL, TLS, SET) · Firewalls · Intrusion Detection</p>
+<div class="meta"><span>约 60 分钟</span><span>10 道小测</span><span>2 个动手实验</span><span>Quiz 样题 Part 5 · 18 题</span></div>
+<p class="lede">模块 4 学了加密、签名、证书、混合系统这些“零件”，这一章看它们怎么组装成你每天都在用的 <b>HTTPS</b>。后半章讲网络的“门卫”<b>防火墙</b>和“监控摄像头”<b>入侵检测系统</b>。建议先学完模块 4 再来。</p>
+<div class="goals"><h3>学完这一章，你应该能：</h3><ul>
+<li>说出 HTTP 为什么不安全，HTTPS 加了什么（端口 80 vs 443）；</li>
+<li>画出 SSL/TLS 的协议分层，说出 Record、Handshake、Alert、Change Cipher Spec 各管什么；</li>
+<li>按顺序讲出一次 TLS 握手，并说清 TLS 1.3 为什么去掉了 RSA 密钥交换（前向保密）；</li>
+<li>比较 SSL 和 SET；</li>
+<li>区分包过滤、状态检测（SPI）、代理防火墙，手算规则匹配和防火墙吞吐量；</li>
+<li>认出四种防火墙架构，尤其是带 DMZ 的 screened subnet；</li>
+<li>区分 HIDS 和 NIDS、特征检测和异常检测、IDS 和 IPS。</li></ul></div>
+
+<section class="sec" id="http">
+<h2><span class="n">1</span>HTTP 为什么不安全，HTTPS 加了什么</h2>
+<p>你在浏览器里打开一个网页，浏览器（客户端）用 <b>HTTP</b> 协议向服务器发请求，服务器返回网页。HTTP 是一问一答式的<b>请求-响应</b>模型，而且<b>无状态</b>：每个请求都是独立的，网站靠 <b>cookie</b> 记住你是谁（所以模块 1 说 cookie 记录太多信息时会变成“间谍”）。常见请求方法：GET 取数据，POST 提交数据，PUT 更新，DELETE 删除，HEAD 只取头部。</p>
+<p>问题在于：<b>HTTP 是明文的</b>。课件 P5-3 列出了它面临的威胁，正好对上 CIA 和认证：</p>
+<div class="tbl"><table>
+<tr><th>威胁</th><th>具体表现</th></tr>
+<tr><td>Integrity 完整性</td><td>数据在传输途中被修改、插入内容</td></tr>
+<tr><td>Confidentiality 机密性</td><td>网络上被窃听；服务器上的数据被偷</td></tr>
+<tr><td>Authentication 认证</td><td>冒充网站、伪造数据</td></tr>
+<tr><td>Denial of service</td><td>Web 服务器被黑、被打瘫</td></tr>
+</table></div>
+<h3>HTTPS = HTTP + TLS</h3>
+<div class="tbl"><table>
+<tr><th></th><th>HTTP</th><th>HTTPS</th></tr>
+<tr><td>端口</td><td><b>80</b></td><td><b>443</b></td></tr>
+<tr><td>加密</td><td>无，明文</td><td>TLS/SSL 加密</td></tr>
+<tr><td>认证</td><td>无</td><td>验证服务器身份（证书）</td></tr>
+<tr><td>完整性</td><td>数据可被修改</td><td>数据不能被篡改</td></tr>
+<tr><td>速度</td><td>略快</td><td>略慢（要先做 TLS 握手）</td></tr>
+</table></div>
+<div class="analogy box"><span class="bt">类比</span><p>HTTP 像寄明信片：邮递员、分拣员谁都能看，甚至能改上面的字。HTTPS 像把信装进上锁的保险袋，而且袋子上有收件方的防伪印章。</p></div>
+<p>课件 P5-6 说：如果你今天网购过、叫过 Grab、用过 WhatsApp 或 Zoom、刷过 YouTube、查过邮件，或者见过地址栏里的小锁，你就已经用过 SSL/TLS 了。网页和邮件是 99% 成功入侵的关键入口，所以 Web 安全格外重要。</p>
+<div class="check" data-a="1"><p class="cq">HTTPS 默认使用哪个端口？</p>
+<div class="opts"><button class="opt">80</button><button class="opt">443</button><button class="opt">22</button></div>
+<div class="cx"><p>HTTP 用 80，HTTPS 用 443（22 是 SSH）。</p></div></div>
+</section>
+
+<section class="sec" id="tls">
+<h2><span class="n">2</span>SSL/TLS 的来历与分层结构</h2>
+<h3>历史（P5-8～P5-10）</h3>
+<div class="tbl"><table>
+<tr><th>时间</th><th>事件</th></tr>
+<tr><td>1994</td><td>Netscape 内部设计 SSL；SSLv1 在发布会上就被观众当场破解</td></tr>
+<tr><td>1994–95</td><td>SSLv2 随 Navigator 发布，但有中间人攻击漏洞</td></tr>
+<tr><td>1996</td><td>SSLv3，Netscape 和密码学家 Paul Kocher 设计，公开征求意见</td></tr>
+<tr><td>1999</td><td>IETF 接手，把 SSL 3.0 改名为 <b>TLS 1.0</b>（可以看作 SSL 3.1）</td></tr>
+<tr><td>2006 / 2008</td><td>TLS 1.1；TLS 1.2（支持 AES、SHA-256，至今仍广泛使用）</td></tr>
+<tr><td>2015</td><td>SSL 3.0 被禁用（POODLE 攻击），SSL 正式淘汰</td></tr>
+<tr><td>2018</td><td><b>TLS 1.3</b> 定稿：握手更快、前向保密、去掉弱算法</td></tr>
+<tr><td>2020</td><td>TLS 1.0 和 1.1 被弃用</td></tr>
+</table></div>
+<p>很多人还习惯说“SSL”，但现在实际用的都是 TLS。</p>
+<h3>SSL 的目标</h3>
+<p>机密性和完整性（靠加密），以及认证（用数字证书认证服务器，认证客户端的情况很少见）。它内置在所有主流浏览器和服务器里，开箱即用（样题 Q5-5：True）。</p>
+<h3>两层协议（P5-12）</h3>
+<figure>
+<svg viewBox="0 0 640 250" role="img" aria-label="SSL/TLS 协议分层">
+  <rect x="40" y="14" width="130" height="56" rx="8" class="box-a"/><text x="105" y="38" text-anchor="middle" font-size="13" font-weight="700">Handshake</text><text x="105" y="56" text-anchor="middle" font-size="11">握手：认证 + 协商</text>
+  <rect x="180" y="14" width="130" height="56" rx="8" class="box-t"/><text x="245" y="38" text-anchor="middle" font-size="13" font-weight="700">Change Cipher</text><text x="245" y="56" text-anchor="middle" font-size="11">Spec：启用新参数</text>
+  <rect x="320" y="14" width="130" height="56" rx="8" class="box-w"/><text x="385" y="38" text-anchor="middle" font-size="13" font-weight="700">Alert</text><text x="385" y="56" text-anchor="middle" font-size="11">告警</text>
+  <rect x="460" y="14" width="140" height="56" rx="8" class="box-s"/><text x="530" y="38" text-anchor="middle" font-size="13" font-weight="700">HTTP</text><text x="530" y="56" text-anchor="middle" font-size="11">应用数据</text>
+  <rect x="40" y="84" width="560" height="50" rx="8" class="box-g"/><text x="320" y="106" text-anchor="middle" font-size="14" font-weight="700">SSL/TLS Record Protocol 记录协议</text><text x="320" y="124" text-anchor="middle" font-size="11">提供机密性 + 消息完整性（用握手协商出的密钥）</text>
+  <rect x="40" y="148" width="560" height="38" rx="8" class="box-s"/><text x="320" y="172" text-anchor="middle" font-size="13">TCP</text>
+  <rect x="40" y="196" width="560" height="38" rx="8" class="box-s"/><text x="320" y="220" text-anchor="middle" font-size="13">IP</text>
+</svg>
+<figcaption>SSL/TLS 夹在 HTTP 和 TCP 之间：上层三个子协议，下层是记录协议。</figcaption>
+</figure>
+<ul>
+<li><b>Session（会话）</b>：客户端和服务器之间的一种关联，由握手协议建立，定义了一组安全参数，<b>可以被多个连接共享</b>；</li>
+<li><b>Connection（连接）</b>：一条端到端的可靠安全通道，每个连接都属于某个会话。</li>
+</ul>
+<h3>Record 协议怎么处理数据（P5-14）</h3>
+<div class="out"><span class="eq">应用数据 → ① Fragment 分片 → ② Compress 压缩 → ③ Add MAC 加消息认证码 → ④ Encrypt 加密 → ⑤ 加 SSL 记录头</span></div>
+<p>MAC 保证<b>完整性</b>，加密保证<b>机密性</b>（样题 Q5-3：记录协议提供 message integrity 和 <b>confidentiality</b>）。为什么先压缩再加密？因为密文看起来是随机的，压缩不了。</p>
+<h3>另外两个小协议</h3>
+<ul>
+<li><b>Change Cipher Spec</b>：非常简单，只做一件事：把“待定”（pending）的参数切换成“当前”（current），也就是正式启用协商好的加密套件；</li>
+<li><b>Alert</b>：向对方发送告警（样题 Q5-4），每条 2 字节：一个字节表示 fatal 或 warning，一个字节是告警代码，比如 bad record MAC、handshake failure、bad certificate、certificate expired、certificate revoked。</li>
+</ul>
+<h3>密钥长度（P5-11）</h3>
+<p>SSL/TLS 用两种密钥：<b>公私钥</b>建议 2048 位（512 位弱，1024 位也能被破解）；<b>会话密钥</b>每次连接时生成，一般 40–256 位，<b>低于 128 位就不安全</b>。如果浏览器支持 256 位而服务器只支持 128 位，连接按 128 位建立。会话密钥可以比公钥短，因为它被破解只影响一次会话，而且能减轻服务器负担。</p>
+<div class="check" data-a="0"><p class="cq">SSL 记录协议为连接提供的两项服务是消息完整性和什么？（样题 Q5-3）</p>
+<div class="opts"><button class="opt">Confidentiality</button><button class="opt">Availability</button><button class="opt">Authentication</button></div>
+<div class="cx"><p>记录协议负责“加 MAC（完整性）+ 加密（机密性）”。认证是握手协议做的事。</p></div></div>
+</section>
+
+<section class="sec" id="hs">
+<h2><span class="n">3</span>一次 TLS 握手：最复杂的部分</h2>
+<p><b>握手协议是 SSL/TLS 最复杂的部分</b>（样题 Q5-1）。它要完成三件事：双方互相认证、协商加密和 MAC 算法、协商出密钥。其实就是模块 4 的<b>混合系统</b>在真实世界里的样子。</p>
+<div class="stepper"><div class="sh"><span>经典 TLS 握手（RSA 密钥交换，P5-17）</span><span class="ctr"></span></div>
+<div class="st"><p><b>① ClientHello（客户端 → 服务器）</b></p><p>“你好，我想建立安全连接。我支持这些算法组合：……”这份算法组合的列表就是 <b>cipher suite（密码套件）</b>（样题 Q5-2）。一个套件包括：密钥交换算法 + 加密算法 + 哈希/MAC 算法，例如 RSA + AES-128 + SHA-256。</p></div>
+<div class="st"><p><b>② ServerHello（服务器 → 客户端）</b></p><p>“好的，我们就用这个套件。”服务器从客户端的列表里<b>选一个</b>。</p></div>
+<div class="st"><p><b>③ Certificate（服务器 → 客户端）</b></p><p>服务器发来自己的<b>数字证书</b>，里面有它的公钥。客户端按模块 4 的三步验证证书：CA 签名、有效期、吊销状态。</p></div>
+<div class="st"><p><b>④ ServerHelloDone</b></p><p>“我这边说完了。”</p></div>
+<div class="st"><p><b>⑤ ClientKeyExchange（客户端 → 服务器）</b></p><p>客户端<b>随机生成一把对称会话密钥</b>，用<b>服务器的公钥</b>加密后发过去。服务器用自己的私钥解开，现在双方都有了同一把会话密钥，Eve 没有。</p></div>
+<div class="st"><p><b>⑥ ChangeCipherSpec</b></p><p>客户端把选定的加密套件从“待定”切换为“启用”。</p></div>
+<div class="st"><p><b>⑦ Finished</b></p><p>客户端表示握手结束。从此进入正常通信阶段，<b>所有数据都用对称会话密钥加密</b>，由记录协议负责。</p></div>
+<div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
+<div class="key box"><span class="bt">把模块 4 串起来</span><p>证书（认证服务器）+ 公钥加密（安全地送出会话密钥）+ 对称加密（快速加密数据）+ MAC/哈希（完整性）。一次握手把整章密码学都用上了。</p></div>
+<div class="check" data-a="2"><p class="cq">客户端在 ClientHello 里列出的“自己支持的密码算法组合”叫什么？</p>
+<div class="opts"><button class="opt">Session ID</button><button class="opt">Compression method</button><button class="opt">Cipher suite</button></div>
+<div class="cx"><p>Cipher suite（样题 Q5-2）。服务器在 ServerHello 里从中选一个。</p></div></div>
+</section>
+
+<section class="sec" id="tls13">
+<h2><span class="n">4</span>TLS 1.3：为什么去掉了 RSA 密钥交换</h2>
+<p>TLS 有两种交换密钥的方式（P5-18～P5-20）：</p>
+<ol>
+<li><b>RSA 密钥交换</b>：上一节那种，客户端决定会话密钥，用服务器公钥加密后发出；</li>
+<li><b>Diffie-Hellman 密钥协商</b>：双方各自生成密钥对，交换公开部分，各自算出同一个值（pre-master secret）。服务器用数字签名保证交换没被篡改。如果每次连接都换一对<b>新的</b>密钥，就叫 <b>ephemeral（临时的）DH</b>。</li>
+</ol>
+<h3>RSA 方式的致命问题：没有前向保密</h3>
+<div class="story box"><span class="bt">一个故事</span><p>Eve 没法破解你和银行的通信，于是她<b>先全部录下来存着</b>。三年后，银行服务器被黑，RSA 私钥泄露。Eve 拿出三年前的录音，用这把私钥解开当年加密的会话密钥，<b>你过去三年的所有通信全部被解密</b>。</p></div>
+<p>这就是课件说的 “RSA mode … is <b>not forward secret</b>”。<b>前向保密（Forward Secrecy / PFS）</b>的意思是：即使长期私钥日后泄露，<b>过去</b>的会话也依然安全。ephemeral DH 能做到这一点，因为每次会话的密钥都是临时生成、用完就扔的，私钥泄露也推不出当年的会话密钥。</p>
+<p>所以 <b>TLS 1.3 去掉了 RSA 密钥交换，只保留 ephemeral Diffie-Hellman</b>。RSA 仍可以在 TLS 1.3 里用于<b>签名</b>（另外两种签名算法是 ECDSA 和 EdDSA）。</p>
+<h3>TLS 1.3 的其他改进（P5-21、P5-26、P5-27）</h3>
+<ul>
+<li>支持的密码套件从 37 个减到 5 个，客户端可以直接猜对方用哪种，并提前发出自己的密钥份额；</li>
+<li><b>握手往返从 2 次减到 1 次</b>（1-RTT），更快；</li>
+<li>去掉了已知有漏洞的旧算法：<b>DES、3DES、MD5、RC4、SHA-1</b>、RSA 密钥交换；</li>
+<li>更强的加密（AES、ChaCha20）；</li>
+<li>协议更简单，管理员<b>更不容易配置出错</b>，而这正是 TLS 1.2 的主要问题；</li>
+<li>取消了对 SSL 的向后兼容。</li>
+</ul>
+<h3>常见攻击与最佳实践（P5-28、P5-29）</h3>
+<div class="tbl"><table>
+<tr><th>攻击</th><th>说明</th><th>对策</th></tr>
+<tr><td>MITM</td><td>中间人截获通信</td><td>用 HTTPS，验证证书</td></tr>
+<tr><td>Downgrade</td><td>逼双方降级到旧的、不安全的版本</td><td>禁用 TLS 1.0/1.1，强制 1.2 或 1.3</td></tr>
+<tr><td>BEAST</td><td>利用 TLS 1.0 的弱点</td><td>升级到 1.2 或 1.3</td></tr>
+<tr><td>POODLE</td><td>SSL 3.0 漏洞</td><td>禁用 SSL 3.0</td></tr>
+<tr><td>Heartbleed</td><td>OpenSSL 漏洞，会泄露内存</td><td>给 OpenSSL 打补丁</td></tr>
+<tr><td>DROWN</td><td>利用配置不当的服务器上的 SSLv2</td><td>禁用 SSLv2 和弱密码套件</td></tr>
+</table></div>
+<p>服务器端：只用 TLS 1.2/1.3、强密码套件、开启 PFS、开启 HSTS（强制 HTTPS）、用 OCSP Stapling 检查证书、及时更新 OpenSSL。客户端：验证证书、用证书固定（certificate pinning）防中间人、在浏览器里禁用弱协议。另外要选<b>有信誉的 CA</b>，保管好私钥。</p>
+<div class="check" data-a="1"><p class="cq">TLS 1.3 为什么去掉了 RSA 密钥交换？</p>
+<div class="opts"><button class="opt">RSA 太快了</button><button class="opt">它没有前向保密：私钥日后泄露，录下的旧会话都能被解密</button><button class="opt">浏览器不支持 RSA</button></div>
+<div class="cx"><p>RSA 在 TLS 1.3 里仍可用于<b>签名</b>，被去掉的只是“用 RSA 加密会话密钥”这种交换方式。</p></div></div>
+</section>
+
+<section class="sec" id="set">
+<h2><span class="n">5</span>SSL 的局限与 SET</h2>
+<h3>SSL/TLS 做不到什么（P5-30）</h3>
+<ul>
+<li>会拖慢服务器；只保护<b>传输中</b>的数据，不保护数据库里的数据；</li>
+<li>不能认证电脑前<b>真正操作的人</b>，不能认证网店老板，不能认证真正的消费者；</li>
+<li><b>不能防止有人用偷来的信用卡网购</b>；</li>
+<li>证书要花钱；它是<b>两方</b>协议。</li>
+</ul>
+<h3>SET：专门为刷卡支付设计的协议</h3>
+<p>1996 年，MasterCard、Visa、Microsoft、IBM、Netscape 等一起设计了 <b>SET（Secure Electronic Transaction）</b>，专门保护在开放网络上的银行卡支付。它不是一个支付系统，而是一套安全协议和格式。</p>
+<div class="tbl"><table>
+<tr><th></th><th>SSL/TLS</th><th>SET</th></tr>
+<tr><td>目的</td><td>加密交换数据</td><td>电商支付</td></tr>
+<tr><td>参与方</td><td><b>两方</b>（浏览器和服务器）</td><td><b>多方</b>：持卡人、商家、银行、支付网关</td></tr>
+<tr><td>认证</td><td>主要认证服务器，不太强</td><td><b>所有参与方</b>都有数字证书，认证很强</td></tr>
+<tr><td>加密对象</td><td>信道</td><td>消息</td></tr>
+<tr><td>商家欺诈风险</td><td>有，客户把卡号交给了商家</td><td>小，商家<b>看不到</b>卡号，卡号交给支付网关</td></tr>
+<tr><td>客户欺诈风险</td><td>有，客户事后可以拒付</td><td>小，客户要对支付指令<b>数字签名</b>，不能抵赖</td></tr>
+<tr><td>出了问题谁负责</td><td>商家</td><td>支付网关</td></tr>
+<tr><td>实际使用</td><td><b>非常广泛</b></td><td><b>几乎没人用</b>，因为银行、商家、客户都要装专门的软件</td></tr>
+</table></div>
+<p>SET 用到的密码学：对称加密保证机密性，RSA 公钥做授权，哈希保证完整性。课件的几个问答：SET 会取代 SSL 吗？<b>不会</b>，两者除了都用密码学和证书，没有技术上的相似之处。SSL 对电商够用吗？<b>不够，但没有别的选择</b>。SSL 下商家知道客户是谁吗？<b>不知道</b>。</p>
+<div class="check" data-a="1"><p class="cq">关于 SET 和 SSL，哪项正确？</p>
+<div class="opts"><button class="opt">SET 和 SSL 一样是两方协议</button><button class="opt">SET 用证书认证所有参与方，商家看不到客户的卡号</button><button class="opt">SET 是今天最流行的电商协议</button></div>
+<div class="cx"><p>SSL 才是两方协议；SET 几乎没人用。</p></div></div>
+</section>
+
+<section class="sec" id="fw">
+<h2><span class="n">6</span>防火墙基础：网络的门卫</h2>
+<p><b>Firewall</b> 是一种网络安全设备或软件，根据组织事先制定的安全策略，<b>监控和过滤进出网络的流量</b>。它是内部私有网络和公共互联网之间的那道墙，目的就是放行无害流量、挡住危险流量（样题 Q5-8）。</p>
+<ul>
+<li>防火墙可以是单台计算机，也可以是<b>两台或更多系统协同</b>完成（样题 Q5-6：True）；</li>
+<li><b>硬件防火墙</b>：保护整个网络，部署在路由器层面，一般更贵、更难配置；</li>
+<li><b>软件防火墙</b>：保护单台电脑，便宜、易配置。</li>
+</ul>
+<p>进入网络的流量叫 <b>ingress</b>，离开网络的叫 <b>egress</b>。课件有一句很重要的话：防火墙<b>只丢弃能被证明是攻击的包</b>，所以总有一些“看起来正常”的攻击包能溜进来，防火墙不是万能的。</p>
+<div class="analogy box"><span class="bt">类比：房子与房间（P5-51）</span><p>把 IP 地址想成房子，端口号想成房子里的房间。只有可信的人（源地址）能进这栋房子（目的地址），进来以后还要看身份决定能进哪些房间（目的端口）：主人哪个房间都能进，孩子和客人只能进某些房间。</p></div>
+<h3>动手：防火墙规则匹配（P5-52）</h3>
+<p>规则<b>从上到下</b>逐条检查，<b>第一条完全匹配的规则说了算</b>，后面的不再看。最后一条通常是 “Any Any Any → Deny”（默认拒绝）。</p>
+<div class="lab"><p class="lt">规则匹配器</p><p class="ld">规则表就是课件上的那三条。改一改数据包的源地址、目的地址和端口，看它命中哪一条。</p>
+<div class="tbl" style="margin:0 0 12px"><table class="rules" id="rtab"><tr><th>#</th><th>源 IP</th><th>目的 IP</th><th>端口</th><th>动作</th></tr></table></div>
+<div class="fields"><div class="fld"><label for="ps">数据包源 IP</label><input id="ps" type="text" value="192.168.1.30"></div><div class="fld"><label for="pd">目的 IP</label><input id="pd" type="text" value="10.0.0.5"></div><div class="fld"><label for="pp">目的端口</label><input id="pp" type="number" value="443"></div></div>
+<div class="out" id="fwout"></div>
+<p class="ld" style="margin:10px 0 0">试试课件的三个例子：① 192.168.1.25 → 8.8.8.8 : 80（Allow，Rule 1）；② 172.16.5.10 → 10.0.0.5 : 22（Deny，Rule 2）；③ 192.168.1.30 → 10.0.0.5 : 443（Deny，Rule 3）。</p></div>
+<h3>IP 地址欺骗</h3>
+<p>入侵者从外部发送数据包，却把源地址填成<b>内部主机的地址</b>，冒充自己人，这叫 <b>IP address spoofing</b>（样题 Q5-10）。好在外部接口上不可能出现合法的“内部源地址”，包过滤防火墙很容易识别并丢弃这种包。</p>
+<h3>个人防火墙（P5-53）</h3>
+<p>保护<b>单台</b>联网电脑的软件（样题 Q5-11 把 personal 误印成了 personnel）。<b>能做</b>：阻止黑客访问电脑、保护个人信息、拦截弹窗和某些 cookie、决定哪些程序能上网。<b>不能做</b>：防邮件病毒（要靠杀毒软件）；装好以后就不管（规则和软件都需要定期更新）。</p>
+<h3>防火墙的优缺点（P5-54）</h3>
+<p>优点：阻止未授权访问、过滤流量、记录日志并告警。缺点：降低网络速度、配置复杂、<b>防不了内部人员</b>、能被隧道和加密流量<b>绕过</b>、挡不住社会工程和零日漏洞。所以样题 Q5-12“防火墙能防御绕过它的攻击”是 <b>False</b>。</p>
+<div class="check" data-a="1"><p class="cq">“The firewall can protect against attacks that bypass the firewall.”</p>
+<div class="opts"><button class="opt">TRUE</button><button class="opt">FALSE</button></div>
+<div class="cx"><p>FALSE（样题 Q5-12）。流量不经过它，它就管不着：内鬼、U 盘、私接的热点都能绕过。</p></div></div>
+</section>
+
+<section class="sec" id="fwtypes">
+<h2><span class="n">7</span>防火墙的类型：看得越深越安全，也越慢</h2>
+<div class="tbl"><table>
+<tr><th>类型</th><th>怎么工作</th><th>特点</th></tr>
+<tr><td><b>Packet filtering</b> 包过滤</td><td>逐个检查包头：源 IP、目的 IP、端口，按规则放行或丢弃（样题 Q5-9）</td><td>快、便宜；<b>无状态</b>，不记得之前的包，也不看更高层的内容（样题 Q5-7：True）</td></tr>
+<tr><td><b>Stateful inspection（SPI）</b> 状态检测</td><td>除了包头，还用<b>状态表</b>记录每条连接（IP、端口、序列号），只放行“内网主动发起的连接”的回包</td><td>比包过滤更安全，资源消耗更多；维护状态表可能被 DoS 拖垮；如今几乎所有边界防火墙都用它</td></tr>
+<tr><td><b>Proxy / Application gateway</b> 代理</td><td>作为中间人：用户向代理请求，代理检查请求合法后替你去取，再把结果返回</td><td>能看懂完整的应用协议，<b>最安全</b>，日志审计方便；但<b>最慢</b></td></tr>
+<tr><td><b>NGFW</b> 下一代防火墙</td><td>传统功能 + 入侵防御（IPS）+ 深度包检测（DPI）+ 应用识别</td><td>更先进，也更贵；“下一代”没有统一定义</td></tr>
+<tr><td>Cloud firewall</td><td>部署在云上，保护远程用户（Firewall-as-a-Service）</td><td>弹性好，但依赖第三方</td></tr>
+<tr><td>WAF</td><td>专门保护 Web 应用</td><td>防 SQL 注入、XSS</td></tr>
+</table></div>
+<p>包过滤又分三种：<b>static</b>（按固定规则匹配）、<b>dynamic</b>（能根据突发事件临时更新规则）、<b>stateful</b>（即 SPI）。</p>
+<div class="analogy box"><span class="bt">类比：小区门卫</span><ul style="margin:0"><li><b>包过滤</b>：只看车牌，名单上有就放行，不记得这辆车刚才有没有出去过；</li><li><b>SPI</b>：有一本登记簿，“这辆车是业主刚开出去的，现在回来，放行”；陌生车想主动进来就拦下；</li><li><b>代理</b>：外人一律不准进，你要什么，门卫替你出去拿回来，还会检查东西里面有没有问题。</li></ul></div>
+<div class="tbl"><table>
+<tr><th>（数字越小越好）</th><th>安全性</th><th>性能</th></tr>
+<tr><td>Packet filter</td><td>3</td><td>1（最快）</td></tr>
+<tr><td>SPI</td><td>2</td><td>2</td></tr>
+<tr><td>App gateway</td><td>1（最安全）</td><td>4（最慢）</td></tr>
+</table></div>
+<p class="ref" style="white-space:normal">课件 P5-68 的对比表</p>
+<h3>吞吐量计算（P5-76～P5-78）</h3>
+<p>和模块 1 的 Ping flood 是同一个公式：<b>所需包速率 = 带宽 ÷ (包大小 × 8)</b>，再和防火墙的处理能力比较。</p>
+<div class="lab"><p class="lt">防火墙吞吐量计算器</p>
+<div class="fields"><div class="fld"><label for="tl">链路速率 (Gbps)</label><input id="tl" type="number" value="1" step="any"></div><div class="fld"><label for="ts">平均包大小 (bytes)</label><input id="ts" type="number" value="1000"></div><div class="fld"><label for="tc">防火墙能力 (pps)</label><input id="tc" type="number" value="100000"></div></div>
+<div class="out" id="tout"></div></div>
+<div class="check" data-a="0"><p class="cq">“A traditional packet filter makes filtering decisions on an individual packet basis and does not take into consideration any higher layer context.”</p>
+<div class="opts"><button class="opt">TRUE</button><button class="opt">FALSE</button></div>
+<div class="cx"><p>传统包过滤就是无状态、逐包判断（样题 Q5-7）。</p></div></div>
+</section>
+
+<section class="sec" id="arch">
+<h2><span class="n">8</span>防火墙架构：从单个路由器到 DMZ</h2>
+<p>选哪种架构，取决于网络的目标、组织的实施能力和预算。课件介绍了四种（P5-69～P5-75）：</p>
+<ol>
+<li><b>Packet filtering router</b>：用连接互联网的路由器做包过滤，是第一代防火墙。缺点：缺少审计，也没有强认证；</li>
+<li><b>Screened host（单主机）</b>：路由器先预筛一遍，后面再接一台专门的防火墙（比如应用代理）。这台主机叫 <b>bastion host（堡垒主机）</b>或牺牲主机，会直接面对外部攻击，必须加固。它被攻破，整个防线就没了；</li>
+<li><b>Dual-homed host（双宿主机）</b>：防火墙有<b>两块网卡</b>，一块接互联网，一块接内网，还能做 NAT（内网用私有地址）。比 screened host 更安全，但仍是<b>单点故障</b>；</li>
+<li><b>Screened subnet（屏蔽子网，带 DMZ）</b>：用<b>两台</b>过滤路由器或防火墙，中间夹一块 <b>DMZ（非军事区）</b>，对外提供服务的 Web 服务器放在 DMZ 里。</li>
+</ol>
+<figure>
+<svg viewBox="0 0 680 220" role="img" aria-label="屏蔽子网防火墙架构：外部路由器、DMZ、内部路由器">
+  <defs><marker id="m5a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-n"/></marker></defs>
+  <rect x="10" y="80" width="110" height="56" rx="10" class="box-b"/><text x="65" y="104" text-anchor="middle" font-size="13" font-weight="700">互联网</text><text x="65" y="122" text-anchor="middle" font-size="11" class="tm">不可信</text>
+  <rect x="160" y="84" width="100" height="48" rx="8" class="box-w"/><text x="210" y="104" text-anchor="middle" font-size="12" font-weight="700">外部</text><text x="210" y="120" text-anchor="middle" font-size="12">过滤路由器</text>
+  <rect x="300" y="30" width="150" height="150" rx="12" class="box-t" style="fill-opacity:.5"/><text x="375" y="54" text-anchor="middle" font-size="14" font-weight="700">DMZ</text>
+  <rect x="320" y="70" width="110" height="34" rx="6" class="box-s"/><text x="375" y="92" text-anchor="middle" font-size="12">Web 服务器</text>
+  <rect x="320" y="118" width="110" height="34" rx="6" class="box-s"/><text x="375" y="140" text-anchor="middle" font-size="12">邮件 / 代理</text>
+  <rect x="490" y="84" width="100" height="48" rx="8" class="box-w"/><text x="540" y="104" text-anchor="middle" font-size="12" font-weight="700">内部</text><text x="540" y="120" text-anchor="middle" font-size="12">过滤路由器</text>
+  <rect x="610" y="70" width="64" height="76" rx="10" class="box-g"/><text x="642" y="102" text-anchor="middle" font-size="12" font-weight="700">内网</text><text x="642" y="120" text-anchor="middle" font-size="11" class="tm">可信</text>
+  <line x1="120" y1="108" x2="158" y2="108" class="ln" marker-end="url(#m5a)"/><line x1="260" y1="108" x2="298" y2="108" class="ln" marker-end="url(#m5a)"/><line x1="450" y1="108" x2="488" y2="108" class="ln" marker-end="url(#m5a)"/><line x1="590" y1="108" x2="608" y2="108" class="ln" marker-end="url(#m5a)"/>
+  <text x="340" y="206" text-anchor="middle" font-size="12">外部路由器只对互联网宣告 DMZ，内网对互联网“隐身”：一共三层防御</text>
+</svg>
+<figcaption>Screened subnet：考试看到 DMZ 就选它（P5-74、P5-75）。</figcaption>
+</figure>
+<p>它的优点：入侵者要过<b>三层防御</b>；外部路由器只向互联网宣告 DMZ 的存在，<b>内网对互联网不可见</b>；内部路由器只向内网宣告 DMZ，所以<b>内网主机也无法直接建立通往互联网的路由</b>。</p>
+<h3>“边界已死”？防火墙还需要吗（P5-79～P5-82）</h3>
+<p>传统思路是“内网可信、外网不可信”，防火墙守在边界上。但云计算、远程办公和 BYOD、零信任、越来越多的加密流量、钓鱼和内鬼这类复杂威胁，让“固定边界”逐渐瓦解。课件的结论是：<b>边界没有消失，只是移动了</b>，从固定位置变成跟着用户、设备和数据走的、以身份为基础的边界。防火墙仍然重要，但不再是唯一防线，要和下一代防火墙、云防火墙、网络分段、零信任一起用。</p>
+<h3>推荐做法（P5-84）</h3>
+<ul><li>允许内网流量出站；防火墙设备本身不能从公网直接访问；</li><li>SMTP 邮件通过配置好的邮件网关转发；<b>拒绝所有 ICMP</b>；阻止外部对内部服务器的 telnet；</li><li>对外提供 Web 服务时，用代理或 DMZ，不让 HTTP 流量直接进入内网。</li></ul>
+<p>永恒的权衡：<b>和外界沟通的程度 vs 安全级别</b>。安全规则一旦和业务冲突，安全往往会让步，因为组织宁可接受潜在风险，也不愿接受确定的业务中断。</p>
+<div class="check" data-a="3"><p class="cq">用两台过滤路由器、中间放置面向公众服务器的架构是？</p>
+<div class="opts"><button class="opt">Packet filtering router</button><button class="opt">Screened host</button><button class="opt">Dual-homed host</button><button class="opt">Screened subnet</button></div>
+<div class="cx"><p>两台路由器 + DMZ = screened subnet。</p></div></div>
+</section>
+
+<section class="sec" id="ids">
+<h2><span class="n">9</span>入侵检测（IDS）与入侵防御（IPS）</h2>
+<p>防火墙是门卫，<b>IDS 是监控摄像头</b>：它监视网络或系统的活动，发现可疑行为就告警。它的基本假设是：<b>入侵者的行为和合法用户不同，而且这种差异可以量化</b>（样题 Q5-13：True）。</p>
+<p>优点：早期发现威胁、实时监控、提供取证日志、帮助满足合规。缺点：会有误报和漏报，消耗计算资源，而且只告警、不拦截。</p>
+<h3>按“看哪里”分：HIDS vs NIDS</h3>
+<div class="tbl"><table>
+<tr><th></th><th>HIDS 主机型</th><th>NIDS 网络型</th></tr>
+<tr><td>监视什么</td><td><b>单台主机</b>上的活动：日志、审计记录、进出该主机的流量（样题 Q5-15）</td><td><b>网段</b>的流量，分析网络层、传输层、应用层协议（样题 Q5-16）</td></tr>
+<tr><td>告警线索</td><td>登录失败、非正常时段登录、权限提升、新增用户账户</td><td>流量里出现已知的攻击特征</td></tr>
+<tr><td>优点</td><td>能看<b>解密后</b>的数据；误报少；可以针对具体操作系统和应用</td><td>少量设备就能覆盖整个网段；部署和维护成本低；能关联多台机器上的攻击</td></tr>
+<tr><td>缺点</td><td>每台要监视的机器都要装，拥有成本高，占用本机资源</td><td><b>流量加密后就失效</b>；看不到主机内部的活动</td></tr>
+</table></div>
+<p>HIDS 还分被动的（只分析、告警）和主动的（能执行脚本、终止进程）；现代的 HIDS 常被称为 HIPS，集成了主机防火墙、行为和特征检测、恶意软件防护。</p>
+<h3>按“怎么判断”分：特征检测 vs 异常检测</h3>
+<div class="tbl"><table>
+<tr><th></th><th>Signature-based 特征检测</th><th>Anomaly-based 异常检测</th></tr>
+<tr><td>别名</td><td>knowledge-based 基于知识</td><td>statistical / behavior-based 基于统计或行为</td></tr>
+<tr><td>原理</td><td>拿流量和<b>已知攻击模式</b>（特征库）比对，像杀毒软件的病毒库</td><td>先收集<b>合法用户在一段时间内的正常行为</b>，建立基线；之后定期采样比较，超出阈值（clipping level）就告警</td></tr>
+<tr><td>擅长</td><td>已知攻击，误报少</td><td><b>能发现新型攻击</b></td></tr>
+<tr><td>缺点</td><td>特征库要不断更新；对新攻击会<b>漏报</b>（false negative）</td><td><b>误报多</b>（false positive）；细微变化可能察觉不到</td></tr>
+</table></div>
+<div class="analogy box"><span class="bt">类比</span><p>特征检测像拿着<b>通缉令</b>认人：照片上的人一眼就能认出，没上过通缉令的新罪犯认不出来。异常检测像小区保安对住户很熟，<b>“这人平时不这样”</b>就会起疑心，能发现陌生的坏人，但也常误会正常住户。</p></div>
+<div class="pitfall box"><span class="bt">易错点（样题 Q5-14、Q5-17）</span><ul>
+<li>Q5-14 说“signature 定义正常行为，anomaly 定义恰当行为”，这是把两者说反了，答 <b>FALSE</b>。</li>
+<li>Q5-17“定义一组规则或攻击模式，用来判断某行为是否来自入侵者”：按定义应该是 <b>Signature detection</b>，但样题 PDF 标的是 Anomaly detection，疑似标错。刷题本里两个都判对。正式考试遇到原题时，请留意老师的口径。</li>
+<li>Q5-18“收集合法用户在一段时间内的行为数据”是 <b>Anomaly detection</b>，没有争议。</li></ul></div>
+<h3>IDS vs IPS（P5-94）</h3>
+<div class="tbl"><table>
+<tr><th></th><th>IDS 入侵检测</th><th>IPS 入侵防御</th></tr>
+<tr><td>做什么</td><td>检测并<b>告警</b></td><td>检测并<b>拦截</b></td></tr>
+<tr><td>性质</td><td>被动（记录日志、告警）</td><td>主动（实时阻断）</td></tr>
+<tr><td>位置</td><td>监视网络或主机</td><td>在流量到达系统之前检查</td></tr>
+<tr><td>适合</td><td>取证分析和监控</td><td>实时执行安全策略</td></tr>
+<tr><td>工具</td><td>Snort、Zeek、OSSEC</td><td>Palo Alto NGFW、Suricata、Cisco Firepower</td></tr>
+</table></div>
+<h3>蜜罐 Honeypot（P5-95）</h3>
+<p>故意设置一台<b>诱饵系统</b>，看起来像真的（比如假的客户计费系统），还故意留下漏洞，吸引攻击者进来。用途：观察攻击者的手法，改进真实网络的防护；或者把攻击者从真实目标引开。局限：它发现不了真实系统上的入侵，也不一定能查出攻击者是谁。</p>
+<div class="check" data-a="2"><p class="cq">公司的流量大部分走 HTTPS 加密，想检查解密后的内容，应该更依赖？</p>
+<div class="opts"><button class="opt">NIDS</button><button class="opt">包过滤防火墙</button><button class="opt">HIDS</button></div>
+<div class="cx"><p>NIDS 遇到加密流量就“失明”；HIDS 在主机上，能看到解密后的数据。</p></div></div>
+<div class="check" data-a="1"><p class="cq">一种全新的攻击（零日），哪种检测方法更有可能发现它？</p>
+<div class="opts"><button class="opt">特征检测</button><button class="opt">异常检测</button><button class="opt">两者都发现不了</button></div>
+<div class="cx"><p>零日攻击不在特征库里；但它的行为偏离了正常基线，异常检测有机会发现，代价是误报多。</p></div></div>
+</section>
+
+<section class="sec" id="sum">
+<h2><span class="n">10</span>本章小结</h2>
+<div class="key box"><span class="bt">一页纸总结</span><ul>
+<li>HTTP 明文、无状态、端口 80；<b>HTTPS = HTTP + TLS</b>、端口 443，提供机密性、完整性和服务器认证。</li>
+<li>SSL 由 Netscape 设计 → 1999 年改名 TLS 1.0 → 2018 年 TLS 1.3；SSL 在 2015 年淘汰。</li>
+<li>分层：Handshake、Change Cipher Spec、Alert 在上，<b>Record</b> 在下（机密性 + 完整性：分片 → 压缩 → MAC → 加密 → 加头）。</li>
+<li><b>握手最复杂</b>：ClientHello（列出 cipher suites）→ ServerHello（选一个）→ Certificate → ServerHelloDone → ClientKeyExchange（用服务器公钥加密会话密钥）→ ChangeCipherSpec → Finished。</li>
+<li>TLS 1.3：去掉 RSA 密钥交换（没有<b>前向保密</b>），只用 ephemeral DH；1-RTT；去掉 DES、3DES、MD5、RC4、SHA-1。会话密钥 ≥ 128 位。</li>
+<li>SSL 是两方协议，用得多；SET 是多方协议，所有参与方都有证书、商家看不到卡号，但几乎没人用。</li>
+<li>防火墙：只挡能证明是攻击的包；<b>防不了绕过它的攻击和内鬼</b>。包过滤无状态最快，SPI 有状态表，代理最安全最慢。</li>
+<li>规则<b>从上到下，第一条匹配即生效</b>，最后一条默认拒绝；吞吐量 pps = 带宽 ÷ (包大小 × 8)。</li>
+<li>架构：包过滤路由器 → screened host（堡垒主机）→ dual-homed（双网卡 + NAT）→ <b>screened subnet（两台路由器 + DMZ）</b>。</li>
+<li>HIDS 看单机、能看解密后的数据；NIDS 看网段、怕加密。<b>Signature 认已知攻击</b>（漏报新攻击），<b>Anomaly 认正常基线</b>（能发现新攻击，误报多）。IDS 只告警，<b>IPS 会拦截</b>；蜜罐是诱饵。</li>
+</ul></div>
+<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 5（18 题）</b>和刷题本 P5 的 14 道自编题。去<a href="practice.html#practice">刷题本</a>，在章节里选 P5。</p></div>
+<p><button class="btn" data-done></button> <button class="btn" data-reset-quiz>重做本页小测</button></p>
+<nav class="pager"><a href="m4.html"><span>← 上一模块</span><b>4 · 密码学</b></a><a class="next" href="m6.html"><span>下一模块 →</span><b>6 · 区块链</b></a></nav>
+</section>
+</main>
+</div>
+<footer class="foot">EE6102 小白课 · 个人学习笔记，依据 NTU EE6102（Dr M Y Siyal）课件整理讲解，非官方材料。</footer>
+<script src="assets/lesson.js"></script>
+<script>
+(function(){
+  function $(i){return document.getElementById(i)}
+  var RULES=[{src:'192.168.1.0/24',dst:'Any',port:'80',act:'Allow'},{src:'Any',dst:'10.0.0.5',port:'22',act:'Deny'},{src:'Any',dst:'Any',port:'Any',act:'Deny'}];
+  function ip2n(s){var p=String(s).trim().split('.');if(p.length!==4)return null;var n=0;for(var i=0;i<4;i++){var v=+p[i];if(!/^\d+$/.test(p[i])||v>255)return null;n=n*256+v}return n}
+  function ipMatch(rule,ip){if(rule==='Any')return true;var n=ip2n(ip);if(n===null)return false;var parts=rule.split('/'),base=ip2n(parts[0]),bits=parts[1]?+parts[1]:32;var div=Math.pow(2,32-bits);return Math.floor(n/div)===Math.floor(base/div)}
+  function fw(){var s=$('ps').value,d=$('pd').value,p=String($('pp').value).trim();
+    if(ip2n(s)===null||ip2n(d)===null){$('fwout').innerHTML='请输入合法的 IPv4 地址，例如 192.168.1.30';return}
+    var html='<tr><th>#</th><th>源 IP</th><th>目的 IP</th><th>端口</th><th>动作</th></tr>',win=-1,lines=[];
+    RULES.forEach(function(r,i){var ms=ipMatch(r.src,s),md=ipMatch(r.dst,d),mp=r.port==='Any'||r.port===p;var all=ms&&md&&mp;if(all&&win<0)win=i;
+      var after=win>=0&&i>win;
+      html+='<tr class="'+(i===win?'win':'')+'"><td>'+(i+1)+'</td><td class="'+(after?'miss':ms?'hit':'miss')+'">'+r.src+'</td><td class="'+(after?'miss':md?'hit':'miss')+'">'+r.dst+'</td><td class="'+(after?'miss':mp?'hit':'miss')+'">'+r.port+'</td><td>'+r.act+'</td></tr>';
+      if(win<0||i===win)lines.push('Rule '+(i+1)+'：'+(all?'全部字段匹配 → <b>'+r.act+'</b>，停止检查':'不匹配（'+[!ms?'源地址不符':'',!md?'目的地址不符':'',!mp?'端口不符':''].filter(Boolean).join('，')+'）'))});
+    $('rtab').innerHTML=html;
+    $('fwout').innerHTML=lines.join('<br>')+'<br>结果：<b class="r" style="color:'+(RULES[win].act==='Allow'?'var(--good)':'var(--bad)')+'">'+RULES[win].act+'</b>（命中 Rule '+(win+1)+'）'}
+  ['ps','pd','pp'].forEach(function(i){$(i).addEventListener('input',fw)});fw();
+  function tp(){var l=+$('tl').value,s=+$('ts').value,c=+$('tc').value;if(!(l>0&&s>0)){$('tout').textContent='请输入正数';return}
+    var need=l*1e9/(s*8);$('tout').innerHTML='<span class="eq">所需 pps = '+(l*1e9).toLocaleString('en-US')+' ÷ ('+s+' × 8) = '+Math.round(need).toLocaleString('en-US')+' pps</span>'+(c>0?'防火墙能力 '+c.toLocaleString('en-US')+' pps '+(c>=need?'≥':'&lt;')+' 所需 → <b class="r" style="color:'+(c>=need?'var(--good)':'var(--bad)')+'">'+(c>=need?'能处理 ✓':'处理不了 ✗')+'</b>':'')}
+  ['tl','ts','tc'].forEach(function(i){$(i).addEventListener('input',tp)});tp();
+})();
+</script>
+</body>
+</html>
