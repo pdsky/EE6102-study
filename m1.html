@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>模块 1 · 网络安全入门与威胁 | EE6102 小白课</title>
+<meta name="description" content="EE6102 模块 1：从零讲解 CIA 三要素、互联网为什么容易被攻击、六大攻击类型、DoS 计算和黑客分类。">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="m1">
+<header class="top"><div class="top-in">
+  <a class="logo" href="index.html"><span class="marks" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></span><b>EE6102 小白课</b></a>
+  <span class="sp"></span>
+  <nav aria-label="模块导航"><a href="index.html">首页</a><a class="on" href="m1.html">1 入门与威胁</a><a href="m2.html">2 工业4.0与人</a><a href="m3.html">3 策略与生物识别</a><a href="m4.html">4 密码学</a><a href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="practice.html">刷题本</a></nav>
+  <button class="themeb" type="button">主题</button>
+</div></header>
+
+<div class="wrap">
+<aside class="toc" aria-label="本页目录"><p class="tt">本模块目录</p><ol></ol><div class="prog"><span class="pct"></span><div class="bar"><i></i></div></div></aside>
+<main class="lesson">
+<p class="eyebrow">Module 01 · 对应课件 sld1</p>
+<h1 class="title">网络安全入门：我们在保护什么，谁在攻击</h1>
+<p class="sub-en">Introduction to Cyber Security &amp; the Threat Landscape</p>
+<div class="meta"><span>约 50 分钟</span><span>12 道小测</span><span>3 个动手实验</span><span>Quiz 样题 Part 1 · 27 题对应本章</span></div>
+<p class="lede">这是整门课的地基。别担心你没有任何计算机安全背景，这一章只需要你会用手机、会上网。我们会从“到底在保护什么”讲起，一步步走到“黑客是怎么攻击的”“为什么挡不住”。</p>
+<div class="goals"><h3>学完这一章，你应该能：</h3><ul>
+<li>用自己的话解释 <b>CIA 三要素</b>，并判断一次攻击破坏了哪一个；</li>
+<li>说出互联网让攻击变容易的<b>三个特征</b>；</li>
+<li>分清病毒、蠕虫、木马、逻辑炸弹、Rootkit、僵尸网络、勒索软件；</li>
+<li>认出各种钓鱼（spear、whaling、smishing、vishing）；</li>
+<li>会算<b>暴力破解时间</b>和 <b>DoS 需要的包速率</b>；</li>
+<li>分清白帽、黑帽、灰帽和 script kiddie。</li></ul></div>
+
+<!-- ============ 1 ============ -->
+<section class="sec" id="what">
+<h2><span class="n">1</span>网络安全到底在保护什么</h2>
+<p>先想象你家。你会锁门（别人不能随便进），会把贵重物品放保险箱（别人看不到），会装监控（东西被动过能发现），还希望水电随时能用。网络安全做的是同样的事，只不过保护对象换成了<b>连上网的电脑、手机、服务器，以及里面的数据</b>。</p>
+<p>课件的定义很朴素：网络安全就是保护联网的<b>硬件、软件和数据</b>，不被<b>未经授权地使用、修改、窃取或破坏</b>。注意关键词 <span class="t">unauthorized（未经授权）</span>，整门课都绕着它转：同样是“看一份文件”，有权限的人看是正常工作，没权限的人看就是安全事件。</p>
+
+<h3>CIA 三要素：判断“出事没有”的三把尺子</h3>
+<p>安全领域用三个英文单词的首字母 <b>CIA</b> 来描述“安全”的三个方面。它和美国中情局没有关系，是考试必考的第一个概念。</p>
+<figure>
+<svg viewBox="0 0 660 330" role="img" aria-label="CIA 三角：机密性、完整性、可用性围绕信息资产">
+  <polygon points="330,30 90,290 570,290" class="box-a" style="fill-opacity:.35"/>
+  <circle cx="330" cy="205" r="52" class="box-s"/>
+  <text x="330" y="200" text-anchor="middle" font-size="15" font-weight="700">信息资产</text>
+  <text x="330" y="222" text-anchor="middle" font-size="12" class="tm">数据 · 系统 · 服务</text>
+  <rect x="245" y="6" width="170" height="58" rx="10" class="box-a"/>
+  <text x="330" y="31" text-anchor="middle" font-size="16" font-weight="700" class="ta">C · Confidentiality</text>
+  <text x="330" y="52" text-anchor="middle" font-size="13">机密性：不该看的人看不到</text>
+  <rect x="10" y="262" width="200" height="58" rx="10" class="box-g"/>
+  <text x="110" y="287" text-anchor="middle" font-size="16" font-weight="700" class="tg">I · Integrity</text>
+  <text x="110" y="308" text-anchor="middle" font-size="13">完整性：不该改的人改不了</text>
+  <rect x="450" y="262" width="200" height="58" rx="10" class="box-w"/>
+  <text x="550" y="287" text-anchor="middle" font-size="16" font-weight="700">A · Availability</text>
+  <text x="550" y="308" text-anchor="middle" font-size="13">可用性：该用的人随时能用</text>
+</svg>
+<figcaption>CIA 三要素（课件 P1-8）。任何一次安全事件，至少会破坏其中一个。</figcaption>
+</figure>
+<div class="tbl"><table>
+<tr><th>要素</th><th>一句话</th><th>生活例子</th><th>网络中被破坏的例子</th></tr>
+<tr><td><b>Confidentiality</b><br>机密性</td><td>防止未授权的访问或泄露</td><td>日记锁在抽屉里</td><td>黑客偷走 1.47 亿人的信用资料（Equifax 2017）</td></tr>
+<tr><td><b>Integrity</b><br>完整性</td><td>数据不能被未授权的人修改</td><td>合同盖骑缝章，改了能看出来</td><td>有人把转账金额从 100 改成 10000；黑客把水厂的氢氧化钠浓度调到危险值（2021 佛州）</td></tr>
+<tr><td><b>Availability</b><br>可用性</td><td>授权用户需要时能用上</td><td>银行营业时间你能去取钱</td><td>DDoS 把网站打瘫；勒索软件把文件锁住</td></tr>
+</table></div>
+<div class="analogy box"><span class="bt">类比</span><p>把你的微信聊天记录想成一封信：被别人偷看了，是 <b>C</b> 出事；被人偷偷改了几个字，是 <b>I</b> 出事；邮局罢工信寄不出去，是 <b>A</b> 出事。</p></div>
+
+<h3>几个必须认识的术语</h3>
+<p>课件 P1-13 列了一组基础术语。英文原词要认得，考试题干是英文的：</p>
+<dl class="gloss">
+<dt>Authentication 认证</dt><dd>确认“对方就是他声称的那个人”。登录时输密码就是在认证。</dd>
+<dt>Access control 访问控制</dt><dd>防止资源被未授权使用。认证之后，系统决定你能看哪些文件。</dd>
+<dt>Data confidentiality</dt><dd>防止数据被未授权地披露，即 CIA 中的 C。</dd>
+<dt>Data integrity</dt><dd>保证收到的数据和授权方发出的一样，即 CIA 中的 I。</dd>
+<dt>Non-repudiation 不可否认</dt><dd>通信一方事后不能抵赖“我没发过”。第 4 章的数字签名就是干这个的。</dd>
+<dt>Availability</dt><dd>资源可访问、可使用，即 CIA 中的 A。</dd>
+<dt>Security mechanism</dt><dd>用来检测、阻止攻击或从攻击中恢复的手段，例如加密、防火墙。</dd>
+</dl>
+
+<h3>安全靠什么实现：产品、人、流程</h3>
+<p>很多人以为“买个杀毒软件就安全了”。课件 P1-10 明确说，安全要靠<b>三类实体</b>共同实现：</p>
+<ul>
+<li><span class="t">Products 产品</span>：门锁、服务器、防火墙、杀毒软件这类东西；</li>
+<li><span class="t">People 人</span>：正确使用这些产品的员工；</li>
+<li><span class="t">Procedures 流程</span>：规定员工怎么正确使用产品的计划和政策。</li>
+</ul>
+<p>买了最好的锁，员工却把钥匙挂在门上，等于没锁。这就是本课程反复强调的观点：<b>技术和管理缺一不可</b>（第 3 章会深入讲）。</p>
+<p>课件还提到一个组织应该有<b>多层安全</b>：物理安全、人员安全、组织（流程）安全、通信安全、网络安全、网络空间安全（CIA）。像洋葱一样一层套一层，一层被突破还有下一层。</p>
+<p>需要保护的“资产”也不只是数据。课件 P1-12 列了：数据资产、知识资产、软件资产、物理资产、金融资产、员工、客户与合作伙伴，以及 <b>goodwill（商誉）</b>。商誉最容易被忽略：一家银行被黑上新闻，客户流失的损失可能比被偷的钱还多。</p>
+
+<div class="exam box"><span class="bt">考试怎么考</span><p>样题第 1 题：“What is cyber security?” 正确答案是“技术、标准、策略和管理实践的<b>集合</b>”。错误选项都带着 <i>only technology</i>、<i>just policy</i> 这样的字眼。规律：<b>看到 only / just 这种把安全缩成单一手段的说法，基本就是错的。</b></p></div>
+
+<div class="check" data-a="0"><p class="cl">小测 1</p><p class="cq">你访问某公司网站，发现自己竟然能看到服务器上的员工工资表。这不是你的错，这算安全事故（breach）吗？</p>
+<div class="opts"><button class="opt">算，机密性已经被破坏了</button><button class="opt">不算，因为你没有恶意</button><button class="opt">不算，因为数据没有被修改</button></div>
+<div class="cx"><p>是不是 breach，看的是<b>结果</b>：没有权限的人看到了敏感数据，机密性（C）就已经被破坏了，跟谁的错、有没有恶意无关。这正是样题 Q1-4，答案是 True。现实中大量泄露都是因为数据库配置错误、对公网敞开导致的（课件 P1-21、P1-24 的 MongoDB 和 Elasticsearch 案例）。</p></div></div>
+
+<div class="check" data-a="2"><p class="cq">“验证用户就是他们声称的人，并且每个输入都来自可信来源”，描述的是哪个属性？</p>
+<div class="opts"><button class="opt">Integrity</button><button class="opt">Confidentiality</button><button class="opt">Authenticity（真实性/认证）</button></div>
+<div class="cx"><p>关键词是 “who they say they are”：确认<b>身份是真的</b>，就是认证或真实性。速记口诀：<b>是谁 → Authenticity；改没改 → Integrity；谁能看 → Confidentiality；能不能用 → Availability。</b></p></div></div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section class="sec" id="why">
+<h2><span class="n">2</span>为什么网络世界这么容易被攻击</h2>
+<p>传统小偷要亲自跑到你家门口，一晚上偷一两户，还可能被邻居看到。网络罪犯为什么能一晚上攻击几百万人，还很难被抓？课件 P1-37 总结了互联网的<b>三个特征</b>，这是必背考点：</p>
+<div class="tbl"><table>
+<tr><th>特征</th><th>意思</th><th>和传统犯罪对比</th></tr>
+<tr><td><b>1. Automation</b><br>自动化</td><td>电脑和网络速度极快，攻击可以自动化、批量发起；借助数据挖掘或 AI，很容易找到合适的受害者。</td><td>小偷一晚偷一户；程序一秒钟可以扫描上万台电脑。哪怕每次只骗到几块钱，乘以几百万次也很可观。</td></tr>
+<tr><td><b>2. Action at a distance</b><br>远程作案</td><td>攻击者可以远在千里之外；各国法律不同，跨国起诉很困难。</td><td>小偷得出现在现场；黑客可以坐在另一个国家，攻击你的电脑。</td></tr>
+<tr><td><b>3. Electronic techniques easily transferable / duplicated</b><br>技术易复制传播</td><td>一个人就能写出攻击工具，复制到全世界，稍作修改又能对付新目标；电子货币也可能被伪造。</td><td>撬锁技术要学好几年；攻击脚本复制粘贴就能用（这也是 script kiddie 存在的原因）。</td></tr>
+</table></div>
+<div class="analogy box"><span class="bt">类比</span><p>传统犯罪像手工作坊，网络犯罪像全自动流水线：机器自动干活（自动化），工厂可以开在海外（远程），图纸一复制就能多开几家厂（易复制）。</p></div>
+
+<h3>威胁有多大：几个让人印象深刻的数字</h3>
+<p>课件花了很多页列举 2015–2026 年的真实攻击事件。不用背每一个，但要有“量级”的概念：</p>
+<ul>
+<li>网络犯罪的全球经济损失：2021 年约 6 万亿美元，2025 年约 <b>10.5 万亿美元</b>，超过德国 GDP 的两倍。如果它是一个国家，会是世界第三大经济体；</li>
+<li>2023 年全球每次数据泄露的平均成本约 <b>445 万美元</b>（IBM）；</li>
+<li>Equifax（2017）：1.47 亿人的身份资料被盗；Yahoo（2016）：最多 30 亿个账户受影响；</li>
+<li>勒索软件（2017 年 WannaCry）：150 个国家、30 多万台设备受害，损失超过 50 亿美元；Acer 2021 年被要价 5000 万美元赎金；</li>
+<li>孟加拉央行（2016）：黑客通过 SWIFT 转走 8100 万美元，本来想偷 10 亿美元，因为把 foundation 拼成 fandation 才露馅。</li>
+</ul>
+<div class="key box"><span class="bt">为什么老师要列这么多案例？</span><p>两个原因。第一，让你意识到：<b>再大的公司也会被攻破，100% 的安全是不存在的</b>（Q&amp;A 第 3 题就问这个）。第二，期末大题经常让你“用例子说明”，手里有几个案例，写起来会顺很多。</p></div>
+
+<h3>攻击背后的四类目的</h3>
+<p>Q&amp;A 第 3 题和样题 Q1-12 提到攻击的几类原因：</p>
+<ul>
+<li><b>Criminal attacks 犯罪型</b>：为了钱，包括诈骗、盗窃身份、盗窃品牌；</li>
+<li><b>Privacy violations 侵犯隐私</b>：未经授权收集个人信息，例如监控、数据库倒卖、流量分析；</li>
+<li><b>Publicity attacks 出名型</b>：为了上新闻、出名，任何系统都可能被盯上；</li>
+<li><b>Legal attacks 法律型</b>：利用司法程序（比如打官司时要求对方提交证据）获取信息。</li>
+</ul>
+<p>样题问“most obvious reasons”，答案是 <b>All of the above</b>。</p>
+
+<div class="check" data-a="1"><p class="cq">一个黑客在东欧，用自动化脚本每天向全世界发送几百万封诈骗邮件，警方很难跨国抓他。这同时体现了三个特征里的哪两个？</p>
+<div class="opts"><button class="opt">技术易复制 + 远程作案</button><button class="opt">自动化 + 远程作案</button><button class="opt">自动化 + 技术易复制</button></div>
+<div class="cx"><p>“脚本每天发几百万封”是<b>自动化</b>；“在东欧、跨国难抓”是<b>远程作案</b>。如果题目还说“他从网上下载了别人写好的工具”，那就再加上“技术易复制”。</p></div></div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section class="sec" id="malware">
+<h2><span class="n">3</span>恶意软件家族：病毒、蠕虫、木马……分别是什么</h2>
+<p><span class="t">Malware</span> = malicious（恶意的）+ software（软件），是所有“坏软件”的统称（样题 Q1-14：True）。课件 P1-38 把网络攻击分成六大类：<b>恶意软件、社会工程、密码攻击、中间人、SQL 注入、拒绝服务</b>。这一节先讲第一类，它下面还有很多成员，最容易混淆，我们一个个拆开。</p>
+
+<h3>病毒 vs 蠕虫：最常考的一对</h3>
+<div class="tbl"><table>
+<tr><th></th><th>Virus 病毒</th><th>Worm 蠕虫</th></tr>
+<tr><td>要不要宿主</td><td><b>要</b>。必须附着在别的程序或文件上（比如藏在一个 Word 文档里）</td><td><b>不要</b>。它本身就是一个完整的独立程序</td></tr>
+<tr><td>怎么传播</td><td>宿主被复制、被打开时跟着传播，通常需要人去操作</td><td>自己通过网络复制到别的电脑，不需要人帮忙</td></tr>
+<tr><td>生物类比</td><td>像流感病毒，必须进入细胞才能复制</td><td>像会自己爬的虫子</td></tr>
+<tr><td>著名例子</td><td>藏在邮件附件里的宏病毒</td><td>Morris 蠕虫（1988 年，Q&amp;A 第 2 题）</td></tr>
+</table></div>
+<div class="pitfall box"><span class="bt">易错点</span><p>样题 Q1-15 的干扰项说“蠕虫不能被杀毒软件检测、病毒能”，这是错的。两者都能被检测，<b>区别只在于要不要宿主程序</b>。</p></div>
+
+<h3>其他成员</h3>
+<dl class="gloss">
+<dt>Trojan horse 木马</dt><dd>伪装成有用的软件（免费游戏、破解工具、“明星照片”），装上后偷偷干坏事：装键盘记录器、开后门。名字来自特洛伊木马的故事。</dd>
+<dt>Logic bomb 逻辑炸弹</dt><dd>平时潜伏不动，<b>满足预设条件</b>时才发作，比如到了愚人节、圣诞节，或者某个员工的账号被删除时。</dd>
+<dt>Rootkit</dt><dd>拿到系统最高权限（root），并且<b>把自己和其他恶意软件藏起来</b>，让你根本发现不了电脑被入侵。最难检测的一类。</dd>
+<dt>Botnet 僵尸网络</dt><dd>一大群被感染的电脑（bots / zombies），听从一个主控者（master）的指挥，可以用来发起 DDoS、破解密码、发垃圾邮件，而且很难追查到真正的攻击者。</dd>
+<dt>Ransomware 勒索软件</dt><dd>把你的文件加密锁住，要求你用比特币付赎金。<b>付了钱也不一定能拿回数据。</b></dd>
+<dt>Spyware 间谍软件</dt><dd>在你不知情的情况下偷你的信息（密码、浏览记录）并交给攻击者。</dd>
+<dt>Adware 广告软件</dt><dd>在屏幕上弹广告条，烦人，危害相对较小。</dd>
+<dt>Payload 有效载荷</dt><dd>恶意代码里真正“干坏事”的那部分（删文件、加密、偷数据）。恶意软件 = 传播机制 + payload。</dd>
+</dl>
+<div class="key box"><span class="bt">一张口诀表</span><p>病毒要<b>寄生</b>，蠕虫会<b>自爬</b>，木马靠<b>伪装</b>，逻辑炸弹等<b>条件</b>，Rootkit 会<b>隐身</b>，Botnet 是<b>一群僵尸</b>，勒索软件要<b>赎金</b>，间谍软件<b>偷信息</b>，广告软件<b>弹广告</b>。</p></div>
+
+<h3>它们是怎么进到你电脑里的</h3>
+<p>课件 P1-42：用户点了可疑链接、下载了附件，或者插了被感染的 U 盘。样题 Q1-17 的答案也是“主要通过电子邮件，也通过 U 盘、文件共享、恶意网站下载、社交网络”。所以预防也很朴素：</p>
+<ul><li>安装并更新杀毒软件；</li><li>打开系统自带防火墙；</li><li>不点可疑链接；</li><li>定期更新操作系统和浏览器（打补丁）。</li></ul>
+
+<h3>动手实验：蠕虫为什么能拖垮整个互联网</h3>
+<p>Q&amp;A 第 2 题是一道经典大题：一个程序复制到电脑 X 后，就把自己复制到 6 台邻居电脑上，<b>不删也不改任何文件</b>。它有危害吗？</p>
+<div class="lab" id="wormlab"><p class="lt">蠕虫传播模拟器</p><p class="ld">每一轮，每个副本都会把自己复制给 k 台邻居。调整参数，看看几轮之后有多少副本。</p>
+<div class="fields"><div class="fld"><label for="wk">每次复制给几台邻居 k</label><input id="wk" type="number" value="6" min="1" max="20"></div><div class="fld"><label for="wr">传播轮数</label><input id="wr" type="number" value="8" min="1" max="30"></div><div class="fld"><label for="wsize">每个副本大小 (KB)</label><input id="wsize" type="number" value="100" min="1"></div></div>
+<div class="out" id="wout"></div></div>
+<p>答案的思路：副本按 6、36、216、1296……<b>指数增长</b>，很快会塞满磁盘，占满带宽和 CPU，机器就崩溃了。所以即使它“什么坏事都不干”，结果也是一次<b>拒绝服务（DoS）</b>，破坏的是 CIA 里的 <b>A</b>。1988 年的 Morris 蠕虫就是这样拖垮了当时的互联网。</p>
+<p>怎么检测？它每次都换随机文件名，按特征码查杀很难。要看<b>异常行为</b>：网络流量、邮件量突然暴涨，机器莫名变慢。这里提前用到了第 5 章“异常检测”的思想，写进答案里会加分。</p>
+
+<div class="check" data-a="2"><p class="cq">一个程序平时毫无动静，只在公司把某位程序员的账号删除那天，自动删掉整个数据库。它是：</p>
+<div class="opts"><button class="opt">蠕虫</button><button class="opt">木马</button><button class="opt">逻辑炸弹</button><button class="opt">Rootkit</button></div>
+<div class="cx"><p><b>满足条件才发作</b>，就是逻辑炸弹（样题 Q1-18）。常见场景是心怀不满的内部员工埋下的“报复炸弹”。</p></div></div>
+<div class="check" data-a="1"><p class="cq">Eve 把间谍软件装进 1000 个 U 盘，U 盘印上知名杂志 logo，里面还有明星照片，然后撒在几家大公司的停车场。这是哪类攻击？（Q&amp;A 第 13 题）</p>
+<div class="opts"><button class="opt">蠕虫，因为它会自动传播</button><button class="opt">木马，再加上社会工程</button><button class="opt">DDoS</button></div>
+<div class="cx"><p>员工以为里面是明星照片（有用的东西），实际上带着间谍软件，这是伪装，也就是<b>木马</b>。利用的漏洞是：电脑开启了<b>自动运行（autorun）</b>，加上人的<b>好奇心</b>（社会工程）。U 盘是员工亲手插进内网电脑的，所以<b>防火墙完全挡不住</b>。</p></div></div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="sec" id="social">
+<h2><span class="n">4</span>社会工程与钓鱼：攻击“人”而不是“机器”</h2>
+<p><span class="t">Social engineering 社会工程</span> 是“操纵人的艺术”（课件 P1-44）：不去破解电脑，而是<b>骗人</b>主动交出密码、转账或者打开文件。为什么这招最有效？因为再强的防火墙，也挡不住员工自己把密码告诉“IT 管理员”。</p>
+<div class="analogy box"><span class="bt">类比</span><p>小偷想进小区，与其撬门禁，不如穿上快递服，对保安说“我来送件”。社会工程就是网络世界里的“穿快递服”。</p></div>
+
+<h3>钓鱼（Phishing）家族</h3>
+<p>Phishing 读音同 fishing（钓鱼）：撒下诱饵，等你上钩。课件区分了好几种：</p>
+<div class="tbl"><table>
+<tr><th>名称</th><th>渠道 / 对象</th><th>特点</th></tr>
+<tr><td><b>Phishing</b></td><td>群发邮件</td><td>冒充银行、PayPal、Amazon 甚至你的 CEO，广撒网</td></tr>
+<tr><td><b>Spear phishing</b> 鱼叉式</td><td>定向某个人或某个小团体</td><td>事先研究过你：知道你的家人、单位、老板，所以骗到你的几率高得多。CISCO 2021 报告：多达 90% 的攻击是钓鱼，其中 65% 是鱼叉式</td></tr>
+<tr><td><b>Whaling</b> 捕鲸</td><td>高管、高权限人员</td><td>“鲸鱼”就是大人物。也常冒充高管给下属发指令：FACC 公司被冒充 CEO 骗走 4700 万美元</td></tr>
+<tr><td><b>Smishing</b></td><td>短信（SMS）</td><td>人们回短信比回邮件快</td></tr>
+<tr><td><b>Vishing</b></td><td>电话（Voice）</td><td>来电号码可以伪造得和银行一模一样</td></tr>
+<tr><td><b>Angler phishing</b></td><td>社交媒体</td><td>假冒客服账号、假好友</td></tr>
+<tr><td><b>Quishing</b></td><td>二维码</td><td>把自己的二维码贴纸贴在餐厅的真二维码上</td></tr>
+</table></div>
+
+<h3>怎么识破钓鱼邮件</h3>
+<div class="stepper"><div class="sh"><span>拆解一封钓鱼邮件</span><span class="ctr"></span></div>
+<div class="st"><p><b>收到的邮件：</b></p><div class="out" style="font-family:var(--f-en)">From: DBS Bank Security &lt;security@dbs-alerts-verify.com&gt;<br>Subject: <b>URGENT</b>: Your account will be suspended in 24 hours<br><br>Dear Customer,<br>We have noticed unusual activity on you account. Please verify your password within 24 hours by clicking the link below or your account will be permanantly locked.<br><span style="color:var(--accent);text-decoration:underline">https://www.dbs.com.sg/verify</span></div><p>先自己找找有几个破绽，再点“下一步”。</p></div>
+<div class="st"><p><b>破绽 1：发件人域名。</b>真正的银行域名是 <code>dbs.com</code>，这里是 <code>dbs-alerts-verify.com</code>，一个完全不同的网站。<b>永远看 @ 后面的域名。</b></p></div>
+<div class="st"><p><b>破绽 2：制造紧急感。</b>“24 小时内”“账户会被冻结”。课件 P2-46 第一条建议就是：<b>越紧急，越不要让情绪左右判断。</b></p></div>
+<div class="st"><p><b>破绽 3：拼写和语法错误。</b>“you account”“permanantly”。正规公司的邮件很少这样。课件 P1-52：“Most phishing emails have significant errors like spelling mistakes.”（不过 AI 时代的钓鱼邮件越来越通顺，这条不能单独依赖。）</p></div>
+<div class="st"><p><b>破绽 4：链接文字和真实地址不一致。</b>显示的是 dbs.com.sg，鼠标悬停后看到的真实地址可能是别的网站。<b>不要点，自己手动输入官网地址。</b></p></div>
+<div class="st"><p><b>破绽 5：索要密码。</b>银行和 IT 部门<b>永远不会</b>通过邮件或电话问你要密码（样题 Q2-12 的两个例子都是这一招）。</p><p>正确做法：不点链接，用官方电话回拨核实，开启多因素认证（MFA），向公司 IT 报告。</p></div>
+<div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
+
+<h3>为什么社交网络让骗子如鱼得水</h3>
+<p>Q&amp;A 第 16 题：你在社交网络上公开了生日、宠物名字、在哪工作、今天去哪吃饭，而很多人的密码提示问题恰恰是“你的宠物叫什么”；骗子知道你喜欢什么、朋友是谁，取得信任就很容易。平台本身也在收集和出售你的数据。课件的结论是：大多数社交网络风险都是<b>“老骗术换新包装”</b>。</p>
+
+<div class="check" data-a="3"><p class="cq">财务部小王收到一封“CEO 本人”发来的邮件：“我在开会不方便接电话，马上给这个供应商转 50 万，别声张。”这最接近：</p>
+<div class="opts"><button class="opt">Smishing</button><button class="opt">Vishing</button><button class="opt">普通 spam</button><button class="opt">Whaling 类的高管冒充诈骗</button></div>
+<div class="cx"><p>冒充高管、利用下属<b>不敢质疑上级</b>的心理，这是 whaling 的典型套路（课件 P1-47、P1-48 的 FACC 案例）。对策：任何转账请求，都用已知的电话号码打过去核实。</p></div></div>
+<div class="check" data-a="0"><p class="cq">“怎么用社会工程拿到一份敏感文件？”最直接的答案是：</p>
+<div class="opts"><button class="opt">直接骗人把文件发给你，或者骗人给你开权限</button><button class="opt">用暴力破解找出密码</button><button class="opt">用社交网络破解密码</button></div>
+<div class="cx"><p>社会工程的精髓是<b>不用技术</b>（样题 Q1-27）。B 是技术攻击；C 把“社交网络”和“破解”混在一起，概念不对。</p></div></div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section class="sec" id="password">
+<h2><span class="n">5</span>密码攻击：黑客是怎么“猜”出你的密码的</h2>
+<p>课件 P1-53 列了五种拿到密码的方法：</p>
+<div class="tbl"><table>
+<tr><th>方法</th><th>怎么做</th><th>对付什么样的密码</th></tr>
+<tr><td><b>Dictionary attack</b> 字典攻击</td><td>把字典里的词、常见密码（123456、password）挨个试一遍</td><td>用单词或常见组合当密码</td></tr>
+<tr><td><b>Brute force</b> 暴力破解</td><td>所有可能的组合全部试一遍，直到猜中</td><td>短密码</td></tr>
+<tr><td><b>Keylogger</b> 键盘记录</td><td>恶意软件记录你按下的每一个键</td><td>任何密码，多强都没用</td></tr>
+<tr><td><b>Shoulder surfing</b> 偷窥</td><td>站在你身后看你输入</td><td>任何密码</td></tr>
+<tr><td><b>Rainbow table</b> 彩虹表</td><td>用预先算好的“哈希值 → 密码”对照表反查</td><td>被偷走的密码哈希（第 4 章讲哈希）</td></tr>
+</table></div>
+
+<h3>暴力破解要多久？一个公式就够了</h3>
+<p>暴力破解是数学问题，期末可能考计算。只要两步：</p>
+<div class="key box"><span class="bt">公式</span>
+<p><b>组合数 = (字符集大小)<sup>密码长度</sup></b></p>
+<p><b>最坏情况下的时间 = 组合数 ÷ 每秒尝试次数</b>　　（换算成年：再除以 365 × 24 × 3600 = 31,536,000）</p></div>
+<p><b>例 1（课件 P1-55）：</b>6 位纯数字 PIN。每一位有 0–9 共 10 种可能，组合数 = 10<sup>6</sup> = 1,000,000。每秒试 50 万次：1,000,000 ÷ 500,000 = <b>2 秒</b>。所以 6 位数字密码几乎没有防护力。</p>
+<p><b>例 2（P1-56）：</b>95 个可打印字符、10 位密码、每秒 640 万次。组合数 = 95<sup>10</sup> ≈ 6 × 10<sup>19</sup>；时间 ≈ 6 × 10<sup>19</sup> ÷ 6.4 × 10<sup>6</sup> ≈ 9.4 × 10<sup>12</sup> 秒 ≈ <b>30 万年</b>。</p>
+<p>对比一下：长度从 6 位变成 10 位、字符种类从 10 变成 95，时间从 2 秒变成 30 万年。<b>长度是指数，字符种类是底数，长度的影响更大。</b></p>
+<div class="lab" id="bflab"><p class="lt">暴力破解计算器</p><p class="ld">改改字符集和长度，体会一下“指数”的威力。</p>
+<div class="fields"><div class="fld"><label for="bn">字符集</label><select id="bn"><option value="10">纯数字 (10)</option><option value="26">小写字母 (26)</option><option value="62">大小写+数字 (62)</option><option value="95" selected>全部可打印字符 (95)</option><option value="102">课件例 3 (102)</option></select></div><div class="fld"><label for="bl">密码长度</label><input id="bl" type="number" value="10" min="1" max="40"></div><div class="fld"><label for="br">每秒尝试次数</label><select id="br"><option value="500000">50 万（课件例 1）</option><option value="6400000" selected>640 万（课件例 2）</option><option value="400000000">4 亿（课件例 3）</option><option value="1e10">100 亿（GPU 集群）</option></select></div><div class="fld"><label for="bb">僵尸机数量</label><input id="bb" type="number" value="1" min="1"></div></div>
+<div class="out" id="bfout"></div></div>
+
+<h3>怎么防</h3>
+<ul>
+<li>用长且包含大小写、数字、符号的密码；不同网站不要用同一个密码（防止“撞库”）；</li>
+<li>定期更换（课件建议 90 天）；不要把密码提示公开；</li>
+<li>网站一侧：<b>账户锁定</b>（错 5 次锁定）、<b>限速</b>（每次失败后延迟）、<b>MFA 多因素认证</b>、封禁可疑 IP。</li>
+</ul>
+<p>课件 P1-59 有个结论很关键：暴力破解只在<b>没有限速、没有锁定、没有 MFA</b> 时才有效。2013 年 GitHub 就是因为缺这些保护，被黑客拿其他网站泄露的密码批量试出了几十个账户。</p>
+
+<div class="check" data-a="1"><p class="cq">在网吧登录网银，怀疑电脑有键盘记录器。Q&amp;A 第 14 题给的办法是什么？</p>
+<div class="opts"><button class="opt">把密码设成 20 位</button><button class="opt">同时打开浏览器和记事本，每在浏览器里输一个真实字符，就切到记事本乱打一串字符，交替进行</button><button class="opt">只用手机登录</button></div>
+<div class="cx"><p>键盘记录器只记录<b>按键顺序</b>，不知道每个键落在哪个窗口（题目设定它不截屏、不记录鼠标）。真实字符淹没在大量噪声里，记录器拼不出你的密码。答题时要呼应这个前提：如果它能截屏，这招就失效了。</p></div></div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section class="sec" id="mitm">
+<h2><span class="n">6</span>中间人攻击与 SQL 注入</h2>
+<h3>中间人攻击（Man-in-the-Middle, MITM）</h3>
+<p>你以为自己在和银行说话，其实中间站着一个人：你说的话他先听，再转给银行；银行的回答也先经过他。他可以偷看（破坏 C），也可以篡改（破坏 I）。课件说它<b>也叫 eavesdropping attack（窃听攻击）</b>。</p>
+<figure>
+<svg viewBox="0 0 660 200" role="img" aria-label="中间人攻击示意：用户和服务器之间的通信被攻击者劫持">
+  <defs><marker id="m1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-a"/></marker><marker id="m1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-b"/></marker></defs>
+  <rect x="20" y="70" width="130" height="60" rx="10" class="box-a"/><text x="85" y="97" text-anchor="middle" font-size="15" font-weight="700">你</text><text x="85" y="117" text-anchor="middle" font-size="12" class="tm">Client</text>
+  <rect x="510" y="70" width="130" height="60" rx="10" class="box-a"/><text x="575" y="97" text-anchor="middle" font-size="15" font-weight="700">银行</text><text x="575" y="117" text-anchor="middle" font-size="12" class="tm">Server</text>
+  <rect x="265" y="70" width="130" height="60" rx="10" class="box-b"/><text x="330" y="97" text-anchor="middle" font-size="15" font-weight="700" class="tb">攻击者</text><text x="330" y="117" text-anchor="middle" font-size="12" class="tm">偷看 / 篡改</text>
+  <line x1="150" y1="30" x2="510" y2="30" class="ln dash"/><text x="330" y="22" text-anchor="middle" font-size="12" class="tm">你以为的直连（实际已被切断）</text>
+  <line x1="152" y1="92" x2="262" y2="92" class="lb" marker-end="url(#m1b)"/><line x1="397" y1="92" x2="507" y2="92" class="lb" marker-end="url(#m1b)"/>
+  <line x1="508" y1="112" x2="398" y2="112" class="lb" marker-end="url(#m1b)"/><line x1="263" y1="112" x2="153" y2="112" class="lb" marker-end="url(#m1b)"/>
+  <text x="330" y="170" text-anchor="middle" font-size="13">常见场景：公共 Wi-Fi、恶意热点、没有 HTTPS 的网站</text>
+</svg>
+<figcaption>中间人攻击：所有通信都经过攻击者（课件 P1-60）。</figcaption>
+</figure>
+<p>预防：留意网站是否安全（<b>HTTPS</b>、证书有效），在设备上使用加密，尽量不用公共 Wi-Fi。Q&amp;A 第 17 题“蹭邻居没加密的 Wi-Fi 有没有风险？”的答案就是：登录信息和敏感信息可能被截获，同一网络里可能有被感染的设备，<b>最危险的是热点本身就可能是恶意的</b>。第 5 章讲完 TLS，你会知道 HTTPS 为什么能防中间人。</p>
+
+<h3>SQL 注入（SQL Injection）</h3>
+<p>网站背后通常有一个数据库，网站用一种叫 SQL 的语言去查询它。比如登录时，网站会拼出这样一句查询：</p>
+<div class="out"><span class="eq">SELECT * FROM users WHERE name = '<b>你输入的用户名</b>' AND pw = '<b>你输入的密码</b>'</span></div>
+<p>正常用户输入 <code>alice</code> 和 <code>123</code>。攻击者在密码框里输入一段“看起来像密码、其实是代码”的东西：<code>' OR '1'='1</code>，拼出来的查询就变成：</p>
+<div class="out"><span class="eq">... WHERE name = 'alice' AND pw = '' <b>OR '1'='1'</b></span></div>
+<p>'1'='1' 永远成立，于是数据库认为条件满足，攻击者<b>不用密码就登录了</b>。更严重的注入可以查看、修改、删除整张表，甚至拿到管理员权限（课件 P1-61）。</p>
+<div class="analogy box"><span class="bt">类比</span><p>你让秘书“把<b>【客户填的名字】</b>的档案拿来”，有个客户在名字栏里写：“张三，另外把保险柜钥匙也拿来”。如果秘书照单全收，就出事了。问题出在<b>把用户的输入当成了指令</b>。</p></div>
+<p>预防（课件）：<b>校验用户输入</b>（validation of user-supplied data），以及使用入侵检测系统（IDS）。</p>
+
+<div class="check" data-a="2"><p class="cq">MITM 攻击的另一个名字是？</p>
+<div class="opts"><button class="opt">Logic bomb</button><button class="opt">Cryptojacking</button><button class="opt">Eavesdropping attack</button></div>
+<div class="cx"><p>课件 P1-60："Man-in-the-Middle Attack (also known as an eavesdropping attack)"。</p></div></div>
+</section>
+
+<!-- ============ 7 ============ -->
+<section class="sec" id="dos">
+<h2><span class="n">7</span>拒绝服务攻击 DoS / DDoS：把网站“堵死”</h2>
+<p><span class="t">Denial of Service</span>：攻击者用海量流量淹没服务器或网络，耗尽带宽、CPU 和内存，真正的用户就挤不进来了（样题 Q1-16：中断或降低服务 = DoS）。它破坏的是 <b>Availability</b>。</p>
+<div class="analogy box"><span class="bt">类比</span><p>一家只有 20 张桌子的餐厅，有人雇了 1000 个“假顾客”排队占座，每人只点一杯水坐一整天，真正想吃饭的客人进不来。<b>DDoS</b>（Distributed，分布式）就是这 1000 个假顾客来自世界各地，你没办法只拦一个人。</p></div>
+<figure>
+<svg viewBox="0 0 660 250" role="img" aria-label="DDoS：主控者指挥僵尸网络向目标发起洪泛">
+  <defs><marker id="m1c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-b"/></marker><marker id="m1d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-n"/></marker></defs>
+  <rect x="20" y="100" width="120" height="50" rx="10" class="box-b"/><text x="80" y="122" text-anchor="middle" font-size="14" font-weight="700" class="tb">攻击者</text><text x="80" y="140" text-anchor="middle" font-size="11" class="tm">Master</text>
+  <g font-size="12">
+  <rect x="230" y="20" width="110" height="36" rx="8" class="box-s"/><text x="285" y="43" text-anchor="middle">Bot · 摄像头</text>
+  <rect x="230" y="78" width="110" height="36" rx="8" class="box-s"/><text x="285" y="101" text-anchor="middle">Bot · 家用电脑</text>
+  <rect x="230" y="136" width="110" height="36" rx="8" class="box-s"/><text x="285" y="159" text-anchor="middle">Bot · 智能电视</text>
+  <rect x="230" y="194" width="110" height="36" rx="8" class="box-s"/><text x="285" y="217" text-anchor="middle">Bot · 打印机</text></g>
+  <line x1="140" y1="118" x2="228" y2="40" class="ln dash" marker-end="url(#m1d)"/><line x1="140" y1="122" x2="228" y2="96" class="ln dash" marker-end="url(#m1d)"/><line x1="140" y1="128" x2="228" y2="152" class="ln dash" marker-end="url(#m1d)"/><line x1="140" y1="132" x2="228" y2="210" class="ln dash" marker-end="url(#m1d)"/>
+  <text x="185" y="70" text-anchor="middle" font-size="11" class="tm">下指令</text>
+  <rect x="500" y="95" width="140" height="60" rx="10" class="box-w"/><text x="570" y="120" text-anchor="middle" font-size="14" font-weight="700">目标网站</text><text x="570" y="140" text-anchor="middle" font-size="11" class="tm">带宽 / CPU 被耗尽</text>
+  <line x1="342" y1="38" x2="497" y2="110" class="lb" marker-end="url(#m1c)"/><line x1="342" y1="96" x2="497" y2="120" class="lb" marker-end="url(#m1c)"/><line x1="342" y1="154" x2="497" y2="130" class="lb" marker-end="url(#m1c)"/><line x1="342" y1="212" x2="497" y2="140" class="lb" marker-end="url(#m1c)"/>
+</svg>
+<figcaption>DDoS：攻击者控制大量被感染的设备（botnet），同时向目标发流量。2016 年 Mirai 就是用摄像头这类 IoT 设备打瘫了 DNS 服务商 Dyn。</figcaption>
+</figure>
+
+<h3>DDoS 的三大类（课件 P1-62）</h3>
+<div class="tbl"><table>
+<tr><th>类别</th><th>打哪里</th><th>例子</th></tr>
+<tr><td><b>Volume based</b> 流量型</td><td>用超大流量塞满带宽</td><td>Ping (ICMP) flood、UDP flood</td></tr>
+<tr><td><b>Protocol</b> 协议型</td><td>利用网络协议的工作机制</td><td>SYN flood、Ping of Death（发送畸形超大包）</td></tr>
+<tr><td><b>Application layer</b> 应用层</td><td>直接打 Web 服务器</td><td>HTTP GET/POST flood、DNS flood</td></tr>
+</table></div>
+
+<h3>SYN flood：TCP 握手被“只握一半”</h3>
+<p>电脑之间建立 TCP 连接，要先“握三次手”。理解了正常流程，SYN flood 就一目了然：</p>
+<div class="stepper"><div class="sh"><span>TCP 三次握手 → SYN flood</span><span class="ctr"></span></div>
+<div class="st"><p><b>正常第 1 步：</b>客户端发送 <code>SYN</code>（“你好，我想和你建立连接”）。</p></div>
+<div class="st"><p><b>正常第 2 步：</b>服务器回复 <code>SYN/ACK</code>（“收到，可以连”），并<b>预留一个位置</b>（半开连接）等客户端确认。</p></div>
+<div class="st"><p><b>正常第 3 步：</b>客户端回 <code>ACK</code>（“好的”），连接建立，开始传数据。</p></div>
+<div class="st"><p><b>攻击来了：</b>攻击者疯狂发送 <code>SYN</code>，而且<b>伪造源 IP 地址</b>。服务器对每一个都回 <code>SYN/ACK</code>，各留一个位置等第 3 步……</p></div>
+<div class="st"><p><b>但第 3 步的 ACK 永远不会来</b>（源地址是假的）。服务器的位置一个个被占满，等超时才释放，而攻击者发得比释放快。</p></div>
+<div class="st"><p><b>结果：</b>所有位置被占满，真实用户的 SYN 再也没有地方接待，服务就此瘫痪。这就是协议型攻击：它利用的不是带宽，而是<b>协议的“礼貌”</b>。</p></div>
+<div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
+
+<h3>计算题：Ping flood 需要每秒多少个包</h3>
+<p>课件 P1-68～70 有一组固定题型：用 ICMP 包去塞满对方的链路，每秒要发多少个包？</p>
+<div class="key box"><span class="bt">公式</span><p><b>包速率 (pps) = 链路速率 (bit/s) ÷ (包大小 bytes × 8)</b></p><p>为什么要 ×8？因为链路速率用的是 <b>bit</b>（Mbps = 百万 bit 每秒），包大小用的是 <b>byte</b>（字节），1 byte = 8 bit。<b>忘记 ×8 是最常见的错误。</b></p></div>
+<p><b>例：</b>500 字节的包，10 Mbps 链路。pps = 10,000,000 ÷ (500 × 8) = 10,000,000 ÷ 4,000 = <b>2,500 包/秒</b>。</p>
+<div class="lab" id="dlab"><p class="lt">Ping flood 包速率计算器</p>
+<div class="fields"><div class="fld"><label for="dsp">链路速率</label><input id="dsp" type="number" value="10" step="any"></div><div class="fld"><label for="du">单位</label><select id="du"><option value="1e6" selected>Mbps</option><option value="1e9">Gbps</option></select></div><div class="fld"><label for="dsz">包大小 (bytes)</label><input id="dsz" type="number" value="500"></div></div>
+<div class="out" id="dout"></div></div>
+<p>规律：<b>链路越快，需要的包越多；包越大，需要的包越少。</b>课件用 500、1000、50000 字节三种包，在 1.5、2、10、100 Mbps 四种链路上各算了一遍，你可以用上面的计算器逐个核对。</p>
+
+<h3>著名攻击与防御</h3>
+<ul>
+<li><b>GitHub 2018</b>：峰值 1.3 Tbps，利用 Memcached 服务器把流量<b>放大约 5 万倍</b>，<b>没有用 botnet</b>。GitHub 有 DDoS 防护服务，10 分钟内就被告警，整场攻击约 20 分钟结束；</li>
+<li><b>Dyn 2016</b>：<b>Mirai</b> 把 IoT 设备变成僵尸网络，Netflix、PayPal、GitHub 等大站都打不开；</li>
+<li><b>Spamhaus 2013</b>：300 Gbps，作案者是一名受雇的英国少年；2025 年还出现了 <b>29.7 Tbps</b> 的史上最大攻击。</li>
+</ul>
+<p>防御（P1-86）：做流量分析识别恶意流量；留意网络变慢等预警信号；准备好事件响应计划；把 DDoS 防护外包给 Cloudflare、Akamai、AWS 这类云服务。</p>
+
+<div class="check" data-a="2"><p class="cq">1000 字节的 ICMP 包，要塞满 100 Mbps 链路，每秒需要多少个包？</p>
+<div class="opts"><button class="opt">100,000</button><button class="opt">1,250</button><button class="opt">12,500</button><button class="opt">125,000</button></div>
+<div class="cx"><p>100,000,000 ÷ (1000 × 8) = 100,000,000 ÷ 8,000 = <b>12,500</b>（课件 P1-69）。选 A 说明忘了 ×8 又除错了；选 B 是用 10 Mbps 算的。</p></div></div>
+<div class="check" data-a="1"><p class="cq">SYN flood 属于 DDoS 的哪一类？</p>
+<div class="opts"><button class="opt">Volume based</button><button class="opt">Protocol attack</button><button class="opt">Application layer</button></div>
+<div class="cx"><p>它利用的是 TCP 三次握手<b>协议机制</b>，不是单纯靠流量大，所以是协议型。Ping flood、UDP flood 才是流量型。</p></div></div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section class="sec" id="other">
+<h2><span class="n">8</span>另外两种威胁：内鬼与加密劫持</h2>
+<h3>Insider threat 内部威胁</h3>
+<p>攻击者不是外人，而是<b>组织内部的人</b>：员工、合同工、前员工。他们本来就熟悉系统、有权限，所以危害巨大，也最难预测。动机可能是贪婪、恶意报复，也可能只是<b>粗心</b>。小公司里一个人往往掌握多个账户，问题更突出。</p>
+<p>预防（P1-87）：建立安全意识文化；<b>按岗位限制访问权限</b>（只给工作需要的权限，也就是“最小权限”）；培训员工识别内部威胁。第 2 章还会细讲“人”的因素。</p>
+<h3>Cryptojacking 加密劫持</h3>
+<p>攻击者偷偷用<b>你电脑的算力</b>去挖加密货币。他们感染一个网站，或者骗你点链接，挖矿代码就在后台运行。你唯一能察觉的是<b>电脑变慢、风扇狂转</b>。</p>
+<p>预防：及时更新软件；培训员工；装广告拦截器（广告是挖矿脚本的主要来源）；用 MinerBlock 这类扩展。</p>
+<div class="pitfall box"><span class="bt">易错点</span><p>Cryptojacking 偷的是<b>算力</b>，不是你钱包里的币；勒索软件要的是<b>赎金</b>。不要混淆。</p></div>
+</section>
+
+<!-- ============ 9 ============ -->
+<section class="sec" id="hackers">
+<h2><span class="n">9</span>谁在攻击：黑客的帽子颜色和动机</h2>
+<p>Hacker 本来指“技术高手”。<b>Hacking 的定义</b>（样题 Q1-21）是：<b>故意</b>在<b>未经授权或超出授权范围</b>的情况下访问计算机资源。注意“超出授权”也算：你有权看 A 文件夹，却去翻了 B 文件夹，同样构成 hacking。</p>
+<div class="tbl"><table>
+<tr><th>类型</th><th>谁</th><th>关键区别</th></tr>
+<tr><td><b>White hat</b> 白帽</td><td>道德黑客，受雇做渗透测试、帮忙清除病毒</td><td><b>有授权</b></td></tr>
+<tr><td><b>Black hat</b> 黑帽</td><td>偷钱、偷信用卡信息</td><td>为了私利</td></tr>
+<tr><td><b>Gray hat</b> 灰帽</td><td>未经允许就利用漏洞，目的是<b>提醒所有者</b>修补</td><td>手段越界，动机偏善</td></tr>
+<tr><td><b>Script kiddies</b></td><td>“hackers in training”，只会用别人写好的工具</td><td>技术差，为了被人认可</td></tr>
+<tr><td>Hacktivist</td><td>为政治或社会理念攻击（例如 Anonymous）</td><td>为了宣传立场</td></tr>
+<tr><td>Nation-sponsored</td><td>国家支持的黑客：网络战、间谍</td><td>资源最雄厚</td></tr>
+</table></div>
+<p>公司为什么要雇白帽？他们能抢在坏人之前发现漏洞，Google、Facebook、Tesla 每年都会通过 <b>bug bounty（漏洞赏金）</b>付给黑客数百万美元。</p>
+
+<h3>熟练黑客 vs 不熟练黑客（Q&amp;A 第 15 题）</h3>
+<p><b>熟练黑客</b>自己写代码，攻击<b>还没人知道的漏洞</b>，也就是<b>零日攻击（zero-day）</b>，一开始几乎没法防。<b>不熟练的</b>（script kiddie）用的是公开工具，所以只要<b>及时打补丁</b>、关注已公开的攻击工具，就能防住大部分。</p>
+
+<h3>动机（课件 P1-95）</h3>
+<ul>
+<li>政府支持：网络战、网络恐怖主义、间谍；</li>
+<li>产业间谍：偷商业机密；</li>
+<li>精英黑客：公开漏洞、挑战自我、赚钱；</li>
+<li>Script kiddies：<b>获得尊重</b>（炫耀）；</li>
+<li>内部人员：<b>报复</b>。</li>
+</ul>
+<p>所以样题 Q1-19“黑客的动机有哪些”，答案是 <b>All of the above</b>。</p>
+
+<div class="check" data-a="2"><p class="cq">一个人未经允许侵入了某公司的系统，然后发邮件告诉公司“你们有个漏洞，赶紧修”，没有拿任何东西。他属于：</p>
+<div class="opts"><button class="opt">White hat</button><button class="opt">Black hat</button><button class="opt">Gray hat</button><button class="opt">Script kiddie</button></div>
+<div class="cx"><p>没有授权（所以不是白帽），但目的是提醒所有者（所以不是黑帽），这就是灰帽。<b>判断白帽的关键是“有没有授权”。</b></p></div></div>
+</section>
+
+<!-- ============ 10 ============ -->
+<section class="sec" id="sum">
+<h2><span class="n">10</span>本章小结与考前清单</h2>
+<div class="key box"><span class="bt">一页纸总结</span><ul>
+<li><b>网络安全</b> = 保护联网的硬件、软件、数据，防止未授权的使用、修改、窃取；靠<b>产品 + 人 + 流程</b>，不能只靠技术。</li>
+<li><b>CIA</b>：机密性（谁能看）、完整性（谁能改）、可用性（能不能用）。</li>
+<li><b>互联网三特征</b>：自动化、远程作案、技术易复制。</li>
+<li><b>六大攻击</b>：恶意软件、社会工程、密码攻击、中间人、SQL 注入、DoS/DDoS。</li>
+<li><b>病毒要宿主，蠕虫不要</b>；木马伪装；逻辑炸弹条件触发；Rootkit 隐身；Botnet 僵尸网络。</li>
+<li><b>钓鱼家族</b>：spear（定向）、whaling（高管）、smishing（短信）、vishing（电话）、angler（社交媒体）。</li>
+<li><b>两个公式</b>：暴力破解时间 = 字符集<sup>长度</sup> ÷ 速度；Ping flood pps = 链路 bit/s ÷ (包字节 × 8)。</li>
+<li><b>DDoS 三类</b>：流量型（Ping、UDP flood）、协议型（SYN flood）、应用层（HTTP、DNS flood）。</li>
+<li><b>白帽有授权</b>；灰帽为了提醒；黑帽为了私利；script kiddie 用别人的工具。</li>
+<li><b>没有 100% 的安全</b>：安全永远是保护与可用性之间的平衡。</li>
+</ul></div>
+
+<h3>英文术语对照（考试题干是英文的）</h3>
+<dl class="gloss">
+<dt>breach</dt><dd>安全事件、泄露</dd>
+<dt>threat landscape</dt><dd>威胁态势（都有哪些攻击者和攻击方式）</dd>
+<dt>masquerading</dt><dd>冒充身份（伪造“来自某人”的信息，样题 Q1-13）</dd>
+<dt>spoofing</dt><dd>伪造地址等技术标识（如伪造 IP）</dd>
+<dt>eavesdropping</dt><dd>窃听</dd>
+<dt>payload</dt><dd>恶意代码中执行破坏的部分</dd>
+<dt>unsolicited commercial e-mail</dt><dd>spam 垃圾邮件的定义</dd>
+<dt>zero-day attack</dt><dd>利用尚未公开、尚无补丁的漏洞的攻击</dd>
+<dt>plan – protect – respond</dt><dd>安全管理循环：规划、保护（最耗时，日常运维）、响应（按计划恢复）</dd>
+</dl>
+
+<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 1（27 题）</b>，以及刷题本里 P1 的 14 道自编题和 Q&amp;A 第 1–17 题。学完马上去<a href="practice.html#practice">刷题本</a>做一遍，错题会自动收进错题本。</p></div>
+<p><button class="btn" data-done></button> <button class="btn" data-reset-quiz>重做本页小测</button></p>
+<nav class="pager"><a href="index.html"><span>← 返回</span><b>课程首页</b></a><a class="next" href="m2.html"><span>下一模块 →</span><b>2 · 工业 4.0 与人的因素</b></a></nav>
+</section>
+</main>
+</div>
+<footer class="foot">EE6102 小白课 · 个人学习笔记，依据 NTU EE6102（Dr M Y Siyal）课件整理讲解，非官方材料。</footer>
+<script src="assets/lesson.js"></script>
+<script>
+(function(){
+  function $(i){return document.getElementById(i)}
+  function fmt(n){return Math.round(n).toLocaleString('en-US')}
+  function sci(L){if(L<6)return fmt(Math.pow(10,L));var e=Math.floor(L),m=Math.pow(10,L-e);if(m>=9.995){m=1;e++}return m.toFixed(2)+' × 10<sup>'+e+'</sup>'}
+  function human(Ls){var s=Math.pow(10,Ls);if(s<1)return '不到 1 秒';if(s<60)return s.toFixed(1)+' 秒';if(s<3600)return (s/60).toFixed(1)+' 分钟';if(s<86400)return (s/3600).toFixed(1)+' 小时';if(s<31536000)return (s/86400).toFixed(1)+' 天';var y=Ls-Math.log10(31536000);return (y<6?fmt(Math.pow(10,y)):sci(y))+' 年'}
+  function worm(){var k=Math.max(1,+$('wk').value||6),r=Math.max(1,Math.min(30,+$('wr').value||8)),kb=Math.max(1,+$('wsize').value||100);
+    var rows='',tot=0;for(var i=1;i<=Math.min(r,8);i++){var c=Math.pow(k,i);tot+=c;rows+=i+' 轮：'+fmt(c)+' 个新副本<br>'}
+    if(r>8){tot=0;for(var j=1;j<=r;j++)tot+=Math.pow(k,j);rows+='……<br>'}
+    var L=Math.log10(Math.pow(k,r)),gb=Math.pow(k,r)*kb/1048576;
+    $('wout').innerHTML=rows+'第 '+r+' 轮新增副本 ≈ <b class="r">'+sci(L)+'</b>；只算这一轮，就要占用约 <b class="r">'+(gb<1024?gb.toFixed(1)+' GB':(gb/1024).toFixed(1)+' TB')+'</b> 的磁盘，还没算它们同时发包占用的带宽和 CPU。<br>结论：没有任何破坏代码，光是指数增长就足以造成 DoS。'}
+  ['wk','wr','wsize'].forEach(function(i){$(i).addEventListener('input',worm)});worm();
+  function bf(){var N=+$('bn').value,L=Math.max(1,+$('bl').value||1),R=+$('br').value,B=Math.max(1,+$('bb').value||1);
+    var Lc=L*Math.log10(N),Ls=Lc-Math.log10(R*B);
+    $('bfout').innerHTML='<span class="eq">组合数 = '+N+'<sup>'+L+'</sup> ≈ '+sci(Lc)+'</span><span class="eq">时间 = 组合数 ÷ ('+fmt(R)+' 次/秒'+(B>1?' × '+fmt(B)+' 台':'')+') ≈ '+sci(Ls)+' 秒</span>最坏情况需要 <b class="r">'+human(Ls)+'</b>，平均约一半。'+(Ls<Math.log10(86400)?' 这个密码不安全。':Ls>Math.log10(31536000*100)?' 暴力破解基本不可行。':'')}
+  ['bn','bl','br','bb'].forEach(function(i){$(i).addEventListener('input',bf)});bf();
+  function dos(){var sp=+$('dsp').value,u=+$('du').value,sz=+$('dsz').value;if(!(sp>0&&sz>0)){$('dout').textContent='请输入正数';return}
+    var bps=sp*u,pps=bps/(sz*8);
+    $('dout').innerHTML='<span class="eq">pps = '+fmt(bps)+' bit/s ÷ ('+sz+' bytes × 8) = '+fmt(bps)+' ÷ '+fmt(sz*8)+'</span>= <b class="r">'+(+pps.toPrecision(6)).toLocaleString('en-US')+' 包/秒</b>'}
+  ['dsp','du','dsz'].forEach(function(i){$(i).addEventListener('input',dos)});dos();
+})();
+</script>
+</body>
+</html>
