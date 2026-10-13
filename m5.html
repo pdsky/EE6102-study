@@ -26,7 +26,7 @@
 <p class="eyebrow">Module 05 · 对应课件 sld5</p>
 <h1 class="title">Web 安全、防火墙与入侵检测：把密码学用到网络上</h1>
 <p class="sub-en">Web Security (SSL, TLS, SET) · Firewalls · Intrusion Detection</p>
-<div class="meta"><span>约 60 分钟</span><span>10 道小测</span><span>2 个动手实验</span><span>Quiz 样题 Part 5 · 18 题</span></div>
+<div class="meta"><span>约 60 分钟</span><span>11 道小测</span><span>2 个动手实验</span><span>Quiz 样题 Part 5 · 18 题</span></div>
 <p class="lede">模块 4 学了加密、签名、证书、混合系统这些“零件”，这一章看它们怎么组装成你每天都在用的 <b>HTTPS</b>。后半章讲网络的“门卫”<b>防火墙</b>和“监控摄像头”<b>入侵检测系统</b>。建议先学完模块 4 再来。</p>
 <div class="goals"><h3>学完这一章，你应该能：</h3><ul>
 <li>说出 HTTP 为什么不安全，HTTPS 加了什么（端口 80 vs 443）；</li>
@@ -126,6 +126,40 @@
 <div class="st"><p><b>⑦ Finished</b></p><p>客户端表示握手结束。从此进入正常通信阶段，<b>所有数据都用对称会话密钥加密</b>，由记录协议负责。</p></div>
 <div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
 <div class="key box"><span class="bt">把模块 4 串起来</span><p>证书（认证服务器）+ 公钥加密（安全地送出会话密钥）+ 对称加密（快速加密数据）+ MAC/哈希（完整性）。一次握手把整章密码学都用上了。</p></div>
+<h3>深入一步：密钥是怎么一步步算出来的</h3>
+<p>上面第 ⑤ 步说“客户端生成会话密钥”，严格来说过程是这样的：</p>
+<ol>
+<li>ClientHello 和 ServerHello 里，双方各自带了一个<b>随机数</b>（Client Random、Server Random），明文传输；</li>
+<li>客户端生成一个 <b>pre-master secret（预主密钥）</b>，用服务器公钥加密后发出，只有服务器能解开；</li>
+<li>双方用同一个公式算出 <b>master secret（主密钥）</b> = 函数(pre-master secret, Client Random, Server Random)；</li>
+<li>再从主密钥里切分出 4 把具体的钥匙：</li>
+</ol>
+<div class="tbl"><table>
+<tr><th>钥匙</th><th>用途</th></tr>
+<tr><td>客户端 → 服务器的加密密钥</td><td>Record 加密（机密性）</td></tr>
+<tr><td>服务器 → 客户端的加密密钥</td><td>Record 加密</td></tr>
+<tr><td>客户端 → 服务器的 <b>MAC 密钥</b></td><td>Record 加 MAC（完整性）</td></tr>
+<tr><td>服务器 → 客户端的 <b>MAC 密钥</b></td><td>Record 加 MAC</td></tr>
+</table></div>
+<h3>Finished 消息：检查握手有没有被动过手脚</h3>
+<p>第 ⑦ 步的 Finished 不只是说“我完了”。客户端把<b>到目前为止双方交换的所有握手消息</b>放在一起，用主密钥算出一个校验值（本质上是一个 MAC），加密后发出。服务器自己也算一遍：一致，说明每一步都没被中间人篡改（比如没人偷偷把 cipher suite 换成更弱的）；不一致，就发 Alert（handshake failure），中断连接。服务器随后也回一组 ChangeCipherSpec + Finished。</p>
+<h3>MAC 到底在哪个部分</h3>
+<p>MAC 不属于某一个单独的步骤，它贯穿整个过程：</p>
+<div class="tbl"><table>
+<tr><th>阶段</th><th>MAC 的角色</th></tr>
+<tr><td>Handshake ① ②</td><td><b>选定 MAC 算法</b>：cipher suite 里的最后一段，例如 <code>TLS_RSA_WITH_AES_128_CBC_<b>SHA256</b></code>（依次是密钥交换、加密算法、MAC/哈希算法）</td></tr>
+<tr><td>Handshake ⑤</td><td><b>生成 MAC 密钥</b>：从主密钥推导出来</td></tr>
+<tr><td>Handshake ⑦ Finished</td><td>用 MAC 式的校验值<b>保护握手过程本身</b></td></tr>
+<tr><td><b>Record 协议</b>（之后每一条数据）</td><td><b>真正使用 MAC</b>：分片 → 压缩 → <b>加 MAC</b> → 加密 → 加记录头</td></tr>
+</table></div>
+<div class="key box"><span class="bt">一句话</span><p><b>握手负责“定好用哪种 MAC、生成 MAC 密钥”，Record 负责“给每条数据加上 MAC”。</b>所以样题 Q5-3 说 Record 协议提供的是 integrity（靠 MAC）和 confidentiality（靠加密）；authentication 是握手负责的（验证证书）。</p></div>
+<h3>为什么用 MAC，而不是普通哈希</h3>
+<p>普通哈希谁都能算：Eve 改了数据，可以顺手重算一个新哈希附上，接收方发现不了。<b>MAC 是带密钥的哈希</b>：必须知道 MAC 密钥才能算出正确的值，而这把密钥是握手时双方私下推导的，Eve 不知道，所以她改了数据也伪造不出正确的 MAC。</p>
+<div class="analogy box"><span class="bt">类比</span><p>普通哈希像谁都能盖的普通印章；MAC 像只有你们两人才有的私章。</p></div>
+<div class="pitfall box"><span class="bt">TLS 1.3 的变化（只考概念）</span><p>TLS 1.3 不再用 RSA 加密 pre-master secret，改用 ephemeral DH（见下一节）；MAC 和加密合并成一体（AEAD，例如 AES-GCM），完整性仍然有，只是不再单独做“加 MAC”这一步。考试按课件的 TLS 1.2 流程回答即可。</p></div>
+<div class="check" data-a="2"><p class="cq">TLS 中，给每条应用数据加上 MAC 的是哪个协议？</p>
+<div class="opts"><button class="opt">Handshake</button><button class="opt">Alert</button><button class="opt">Record</button><button class="opt">Change Cipher Spec</button></div>
+<div class="cx"><p>握手只负责选定 MAC 算法、生成 MAC 密钥；真正给每条数据加 MAC 的是 Record 协议。</p></div></div>
 <div class="check" data-a="2"><p class="cq">客户端在 ClientHello 里列出的“自己支持的密码算法组合”叫什么？</p>
 <div class="opts"><button class="opt">Session ID</button><button class="opt">Compression method</button><button class="opt">Cipher suite</button></div>
 <div class="cx"><p>Cipher suite（样题 Q5-2）。服务器在 ServerHello 里从中选一个。</p></div></div>
