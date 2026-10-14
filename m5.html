@@ -199,6 +199,52 @@
 <div class="check" data-a="1"><p class="cq">TLS 1.3 为什么去掉了 RSA 密钥交换？</p>
 <div class="opts"><button class="opt">RSA 太快了</button><button class="opt">它没有前向保密：私钥日后泄露，录下的旧会话都能被解密</button><button class="opt">浏览器不支持 RSA</button></div>
 <div class="cx"><p>RSA 在 TLS 1.3 里仍可用于<b>签名</b>，被去掉的只是“用 RSA 加密会话密钥”这种交换方式。</p></div></div>
+<h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：TLS 1.3 密钥交换与握手 <span class="ref">P5-18～P5-29、P5-39</span></h3>
+
+<h4>RSA 密钥交换（P5-18）</h4>
+<p>TLS 是一个<b>混合密码系统</b>：先用公钥密码让双方安全地拿到同一把密钥，再用这把密钥加密数据。在 RSA 密钥交换里，<b>共享秘密由客户端决定</b>：客户端从服务器证书里取出公钥，用它加密共享秘密后发给服务器。</p>
+<h4>Diffie-Hellman 密钥协商（P5-19）</h4>
+<ol>
+<li>客户端和服务器<b>各自生成一对公私钥</b>（基于公开的素数和生成元）；</li>
+<li>把自己的<b>公开份额（key share）</b>发给对方；</li>
+<li>每一方用“对方的公开份额 + 自己的私钥”算出<b>同一个值</b>，这就是 pre-master secret（和模块 4 的 DH 计算完全一样）；</li>
+<li>服务器对这次交换做<b>数字签名</b>，证明交换没被篡改；</li>
+<li>如果每次连接都换一对新密钥，就叫 <b>ephemeral（临时）DH</b>。</li>
+</ol>
+<h4>TLS 1.3 的握手只要三步（P5-21）</h4>
+<div class="stepper"><div class="sh"><span>TLS 1.3 握手（1-RTT）</span><span class="ctr"></span></div>
+<div class="st"><p><b>① Client Hello</b>：TLS 1.3 把支持的密码套件从 <b>37 个减到 5 个</b>，客户端可以直接<b>猜</b>服务器会用哪种密钥协商方式，并在第一条消息里就附上自己的 <b>key share</b>，不用像 1.2 那样先等服务器回话。</p></div>
+<div class="st"><p><b>② Server Hello</b>：服务器回复 Server Hello，同时发来<b>证书</b>和<b>自己的 key share</b>。此时服务器已经能算出会话密钥，最后发出 <b>server Finished</b>。</p></div>
+<div class="st"><p><b>③ Client Finished</b>：客户端验证证书，用两份 key share 算出自己的那份会话密钥，然后发出 <b>Finished</b>。握手完成，只用了<b>一个往返</b>。</p><p>密钥用 <b>Ephemeral Diffie-Hellman（EDH / DHE）</b>生成；允许的签名算法有三种：<b>RSA（只用于签名）、ECDSA、EdDSA</b>。</p></div>
+<div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
+<div class="tbl"><table>
+<tr><th></th><th>TLS 1.2</th><th>TLS 1.3</th></tr>
+<tr><td>握手往返</td><td>2 次（2-RTT）</td><td><b>1 次（1-RTT）</b></td></tr>
+<tr><td>密码套件</td><td>37 个</td><td>5 个</td></tr>
+<tr><td>密钥交换</td><td>RSA 或 DH</td><td><b>只有 ephemeral DH</b></td></tr>
+<tr><td>前向保密</td><td>用 RSA 交换时没有</td><td><b>总是有</b></td></tr>
+<tr><td>主要风险</td><td>配置不当会留下漏洞</td><td>协议简化，管理员更难配错</td></tr>
+</table></div>
+<h4>为什么 TLS 1.3 更安全（P5-26）</h4>
+<p>TLS 1.2 只要<b>配置正确</b>就是安全的，问题是很多网站配置错了。1.3 直接<b>删掉了有已知漏洞的旧功能</b>：3DES、DES、MD5、RC4、SHA-1 等。协议简单了，管理员犯错的机会就少了。</p>
+<h4>各版本现状汇总（P5-27）</h4>
+<div class="tbl"><table>
+<tr><th>版本</th><th>状态</th><th>要点</th></tr>
+<tr><td>SSL 2.0</td><td>已淘汰</td><td>加密很弱</td></tr>
+<tr><td>SSL 3.0</td><td>已弃用</td><td>受 <b>POODLE</b> 攻击</td></tr>
+<tr><td>TLS 1.0</td><td>已弃用</td><td>易受<b>降级攻击</b></td></tr>
+<tr><td>TLS 1.1</td><td>已弃用</td><td>改进过，但已过时</td></tr>
+<tr><td><b>TLS 1.2</b></td><td>安全</td><td>支持 AES-GCM、SHA-256</td></tr>
+<tr><td><b>TLS 1.3</b></td><td><b>最安全</b></td><td>去掉弱算法、握手更快、加密更强</td></tr>
+</table></div>
+<p>TLS 1.3 的四项改进：① 去掉过时算法（RSA 密钥交换、SHA-1）；② 握手往返从 2 次减到 1 次；③ <b>完美前向保密（PFS）</b>：即使某把密钥泄露，过去的通信仍然安全；④ 更强的加密（ChaCha20、AES）。</p>
+<h4>SSL/TLS 最佳实践（P5-29、P5-39）</h4>
+<div class="tbl"><table>
+<tr><th>服务器端</th><th>客户端</th></tr>
+<tr><td>只用 TLS 1.2 或 1.3，禁用旧版本<br>使用强密码套件（AES、ChaCha20）<br>开启 PFS<br>开启 <b>HSTS</b>（HTTP Strict Transport Security，强制浏览器只用 HTTPS）<br>用 <b>OCSP Stapling</b> 检查证书是否有效<br>定期更新 OpenSSL 和 TLS 库</td><td>连接前验证证书<br>用<b>证书固定（certificate pinning）</b>防中间人<br>在浏览器里禁用弱协议和弱密码套件</td></tr>
+</table></div>
+<p>课件 P5-39 再补三条：<b>选可靠的 CA</b>（证书只和签发它的 CA 一样可信）；<b>保护好私钥</b>（公钥可以广泛分发，私钥要尽可能安全地保管）；<b>使用 TLS 1.3</b>（TLS 1.2 目前用得最多，但 1.3 通过 ephemeral DH 为所有会话提供前向保密，更快也更安全）。</p>
+<p>课件 P5-29 的结论：<b>应该用 TLS 而不是 SSL；TLS 1.3 最安全；证书保证认证和数据安全；定期安全更新必不可少。</b></p>
 </section>
 
 <section class="sec" id="set">
@@ -227,6 +273,42 @@
 <div class="check" data-a="1"><p class="cq">关于 SET 和 SSL，哪项正确？</p>
 <div class="opts"><button class="opt">SET 和 SSL 一样是两方协议</button><button class="opt">SET 用证书认证所有参与方，商家看不到客户的卡号</button><button class="opt">SET 是今天最流行的电商协议</button></div>
 <div class="cx"><p>SSL 才是两方协议；SET 几乎没人用。</p></div></div>
+<h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：SET 的组成与交易流程 <span class="ref">P5-31～P5-38</span></h3>
+
+<h4>SET 的几个关键点（P5-31、P5-33）</h4>
+<ul>
+<li>SET 为卡支付中的<b>所有参与者</b>建模：持卡人、商家、银行，以及它们之间的信任关系和数字签名的法律含义；</li>
+<li>为交易中的<b>每一方</b>提供密码学身份认证，也就是多方安全（multiparty security）；</li>
+<li>加密的是<b>消息</b>，而不是信道；</li>
+<li>每个持卡人都会被发一个数字签名，它加上会说 SET 协议的软件，就组成了 <b>SET 电子钱包</b>；</li>
+<li>SET 的消息和传统银行网络多年来使用的消息基本一样，SET 只是让它们能在不安全的开放互联网上传输；</li>
+<li>SSL 只在<b>两台电脑之间</b>建立安全连接，SET 则定义了银行、商家、持卡人之间<b>所有必要的通信</b>；</li>
+<li>对商家：持卡人事后不能说“不是我买的”，银行有证据；对持卡人：能确认商家是合法的。</li>
+</ul>
+<h4>一笔 SET 交易的 10 步（P5-34）</h4>
+<ol>
+<li>客户开户；</li>
+<li>客户收到一张证书；</li>
+<li>商家也有自己的证书；</li>
+<li>客户下单；</li>
+<li>验证商家身份；</li>
+<li>发送订单和支付信息；</li>
+<li>商家请求支付授权；</li>
+<li>商家确认订单；</li>
+<li>商家提供商品或服务；</li>
+<li>商家请求付款。</li>
+</ol>
+<h4>SET 用到的密码学（P5-33、P5-36）</h4>
+<div class="tbl"><table>
+<tr><th>目标</th><th>用什么</th></tr>
+<tr><td>机密性 Confidentiality</td><td>对称密钥加密</td></tr>
+<tr><td>授权 Authorization</td><td>公钥密码 RSA</td></tr>
+<tr><td>完整性 Integrity</td><td>哈希</td></tr>
+<tr><td>认证 Authentication</td><td>所有参与方都用数字证书认证</td></tr>
+</table></div>
+<p><b>SET 的优点</b>：商家看不到客户的账户信息（保护金融隐私）；它是完整的刷卡支付系统，包括支付传输、确认和查询。<b>SET 的缺点</b>：银行网络、商家和消费者电脑上都必须装相应的软件，这也是它几乎没人用的原因。</p>
+<h4>SET vs SSL 的根本区别（P5-37）</h4>
+<p>SSL <b>不能提供不可抵赖性</b>，而且只做服务器端认证；SET 用数字证书<b>同时认证持卡人和商家</b>，所以付款很难被否认，商家也能确定收到的订单没被改过。</p>
 </section>
 
 <section class="sec" id="fw">
@@ -255,6 +337,23 @@
 <div class="check" data-a="1"><p class="cq">“The firewall can protect against attacks that bypass the firewall.”</p>
 <div class="opts"><button class="opt">TRUE</button><button class="opt">FALSE</button></div>
 <div class="cx"><p>FALSE（样题 Q5-12）。流量不经过它，它就管不着：内鬼、U 盘、私接的热点都能绕过。</p></div></div>
+<h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：网络安全控制与防火墙工作方式 <span class="ref">P5-40～P5-54</span></h3>
+
+<h4>网络安全控制（P5-40）</h4>
+<p>网络是一组用有线或无线方式连起来的设备。<b>网络安全控制</b>指用来加强网络安全的各种措施：<b>访问控制、认证、授权、密码学、Web 安全、安全策略</b>等。防火墙是其中最常见的一种。</p>
+<h4>防火墙怎么挡住蠕虫和黑客（P5-45）</h4>
+<p>你向互联网请求东西时，防火墙会<b>假装是它自己发出的请求</b>，而不是你的电脑。互联网根本看不到你的电脑，蠕虫和黑客能探测、攻击的就只剩防火墙，而防火墙只是一个“笨盒子”（dumb box），没什么可以被利用的。</p>
+<h4>防火墙的基本运作（P5-47～P5-49）</h4>
+<ol>
+<li>合法主机发送正常的包，攻击者发送攻击包；</li>
+<li>进入站点的叫 <b>ingress</b>（入站），离开站点的叫 <b>egress</b>（出站）；</li>
+<li>防火墙<b>丢弃并记录</b>能够证明是攻击的包；</li>
+<li>防火墙<b>只在能证明是攻击时才丢包</b>，所以有些“无法证明”的攻击包会穿过防火墙。</li>
+</ol>
+<h4>软件防火墙怎么工作（P5-44）</h4>
+<p>它检查到达防火墙任何一侧的每一个“包”（进入你电脑的，或从你电脑出去的），决定让它通过还是拦下。</p>
+<h4>防火墙策略（P5-50）</h4>
+<p>防火墙按一组预先定义的规则，即<b>防火墙策略（firewall policies）</b>，过滤进出的流量，以保护私有网络和单台机器免受互联网威胁。一边是可信的内网（trusted internal network），一边是不可信的互联网（un-trusted Internet）。</p>
 </section>
 
 <section class="sec" id="fwtypes">
@@ -285,6 +384,56 @@
 <div class="check" data-a="0"><p class="cq">“A traditional packet filter makes filtering decisions on an individual packet basis and does not take into consideration any higher layer context.”</p>
 <div class="opts"><button class="opt">TRUE</button><button class="opt">FALSE</button></div>
 <div class="cx"><p>传统包过滤就是无状态、逐包判断（样题 Q5-7）。</p></div></div>
+<h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：每种防火墙的课件原文要点 <span class="ref">P5-55～P5-68</span></h3>
+
+<h4>包过滤防火墙（P5-57）</h4>
+<p>成本低，对网络性能影响小。它有三种子类型：</p>
+<ul>
+<li><b>Static filtering（静态过滤）</b>：包符合规则就放行或丢弃；</li>
+<li><b>Dynamic filtering（动态过滤）</b>：能理解协议怎么工作，根据包头信息对突发事件作出反应，更新或新建规则；</li>
+<li><b>Stateful inspection（状态检测）</b>：用状态表跟踪内部和外部系统之间的每一条连接。</li>
+</ul>
+<h4>静态包过滤（P5-58）</h4>
+<ul>
+<li>最早的防火墙过滤机制；</li>
+<li><b>一次只看一个包，孤立地看</b>；只看部分网络层和传输层头部；</li>
+<li>所以很多攻击它挡不住，但<b>能挡住伪造 IP 地址的包</b>；</li>
+<li>如今不再作为边界防火墙的主要过滤机制，但可以作为主边界防火墙上的<b>辅助过滤</b>。</li>
+</ul>
+<h4>状态包检测 SPI（P5-59）</h4>
+<ul>
+<li>检查和包过滤一样的包信息，此外还<b>记录 TCP 连接的信息</b>；</li>
+<li>用<b>状态表</b>跟踪内部和外部系统之间建立的每一条连接，记录哪台机器在什么时候发了什么包；</li>
+<li>能判断一个包是不是属于<b>内网发起的合法会话</b>；</li>
+<li>状态表记录每条活动连接的 IP 地址、端口和<b>序列号</b>；</li>
+<li>因此只放行“作为内网发起连接的回复”的入站 TCP 包；</li>
+<li><b>主要缺点</b>：管理和核对状态表需要额外处理，可能让系统被 <b>DoS 攻击</b>拖垮。</li>
+</ul>
+<h4>连接的状态（P5-60）</h4>
+<p>一条连接分为三个阶段：<b>建立（opening）→ 通信中（ongoing communication）→ 关闭（closing）</b>。不同阶段面临不同的攻击，所以 SPI 对不同状态使用不同的过滤规则。</p>
+<h4>为什么 SPI 成了主流（P5-64）</h4>
+<div class="tbl"><table>
+<tr><th>理由</th><th>课件原意</th></tr>
+<tr><td><b>Low cost 成本低</b></td><td>绝大多数包都不是“建立连接”的包，处理起来简单便宜；建立连接的包处理成本更高，但很少</td></tr>
+<tr><td><b>Safety 安全</b></td><td>除了应用层攻击，其他攻击通常过不了 SPI；需要时 SPI 还能叠加其他过滤方式</td></tr>
+<tr><td><b>Dominance 主导地位</b></td><td>安全性高加上成本低，使它极其流行，<b>如今几乎所有主边界防火墙都用 SPI</b></td></tr>
+</table></div>
+<h4>应用网关 / 代理服务器（P5-65）</h4>
+<ul>
+<li>通常装在一台<b>专用计算机</b>上，也叫代理服务器（proxy server）；</li>
+<li>它常被放在网络中不安全的区域（例如 <b>DMZ</b>），面对的风险更高；这样暴露在外的是代理服务器，而不是 Web 服务器；</li>
+<li>代理后面还可以再加过滤路由器；</li>
+<li>配置成 Web 代理的网关<b>不放行 FTP、Gopher、Telnet 等其他流量</b>；</li>
+<li>它能<b>完整理解协议</b>：用户向代理请求服务，代理验证请求合法后代为执行，再把结果返回给用户；</li>
+<li>比包过滤更安全：只需要审查少数几个允许的应用，而且<b>容易记录和审计</b>所有进入的流量。</li>
+</ul>
+<h4>综合性能对比（P5-68）</h4>
+<div class="tbl"><table>
+<tr><th>技术</th><th>速度</th><th>灵活性</th><th>智能程度</th></tr>
+<tr><td>Packet filtering</td><td>很好</td><td>很好</td><td>低</td></tr>
+<tr><td>Application proxy</td><td>低</td><td>低</td><td>很好</td></tr>
+<tr><td>Stateful inspection</td><td>好</td><td>好</td><td>好</td></tr>
+</table></div>
 </section>
 
 <section class="sec" id="arch">
@@ -320,6 +469,44 @@
 <div class="check" data-a="3"><p class="cq">用两台过滤路由器、中间放置面向公众服务器的架构是？</p>
 <div class="opts"><button class="opt">Packet filtering router</button><button class="opt">Screened host</button><button class="opt">Dual-homed host</button><button class="opt">Screened subnet</button></div>
 <div class="cx"><p>两台路由器 + DMZ = screened subnet。</p></div></div>
+<h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：架构选择、配置与管理 <span class="ref">P5-69～P5-84</span></h3>
+
+<h4>选架构看三件事（P5-69）</h4>
+<ol><li>网络的<b>目标</b>；</li><li>组织开发和实施这种架构的<b>能力</b>；</li><li>可用的<b>预算</b>。</li></ol>
+<h4>四种架构的课件要点</h4>
+<div class="tbl"><table>
+<tr><th>架构</th><th>课件要点</th></tr>
+<tr><td><b>Packet filtering router</b>（P5-69、P5-70）</td><td>大多数联网组织都有一台路由器作为通往互联网的接口，很多路由器可以配置成拒绝组织不允许的包。它是<b>第一代防火墙</b>。缺点：<b>缺少审计，也没有强认证</b></td></tr>
+<tr><td><b>Screened host</b>（P5-71、P5-72）</td><td>包过滤路由器<b>加上</b>一台独立的专用防火墙（例如应用代理）。路由器先预筛，减轻内部代理的负担。这台单独的主机叫 <b>bastion host（堡垒主机）</b>或 sacrificial host（牺牲主机），会成为外部攻击的目标，必须彻底加固。结构简单，但这台防火墙一旦被攻破就全线失守</td></tr>
+<tr><td><b>Dual-homed host</b>（P5-71、P5-73）</td><td>防火墙有<b>两块网卡</b>：一块连互联网，一块连内网。可以做 <b>NAT</b>：对外用公网 IP，内网用 NAT 分配的本地地址。比 screened host 更安全，但仍是<b>单点故障</b></td></tr>
+<tr><td><b>Screened subnet</b>（P5-74、P5-75）</td><td>用两台防火墙形成 DMZ，把面向公众的服务（如 Web 服务器）放在里面，在内部系统和互联网之间再加一层隔离。<b>三层防御</b>；外部路由器只向互联网宣告屏蔽子网，内网对互联网不可见；内部路由器只向内网宣告屏蔽子网，内网主机无法直接建立到互联网的路由</td></tr>
+</table></div>
+<p>课件 P5-74 的结论：防火墙对网络安全至关重要，但必须配合 IDS、终端防护等措施；组织应按安全需求、网络规模和预算选择防火墙类型和架构；<b>单靠防火墙不能防住所有威胁，需要分层的安全方法</b>。</p>
+<h4>“边界已死”的五个原因（P5-79、P5-80）</h4>
+<ol>
+<li><b>云计算</b>：数据存放在 AWS、Azure、Google Cloud 等云环境里，员工从任何地方访问，绕开了传统防火墙；</li>
+<li><b>远程办公与 BYOD</b>：员工用个人设备和家庭网络访问公司数据，传统防火墙无法对远程用户执行策略；</li>
+<li><b>零信任模型</b>：“永不信任，总是验证”取代了基于边界的信任；访问权限基于身份、上下文和最小权限，而不是网络位置；</li>
+<li><b>加密流量增加</b>：很多攻击本身就用加密，防火墙难以检查；攻击者用 SSL/TLS 隧道绕过传统防火墙；</li>
+<li><b>更复杂的威胁</b>：恶意软件和黑客通过钓鱼、内部人员、被盗凭证进入网络内部，基于边界的防火墙就失效了。</li>
+</ol>
+<h4>我们还需要防火墙吗（P5-81、P5-82）</h4>
+<p><b>需要，但单靠它不够。</b>现代做法包括：</p>
+<ul>
+<li><b>下一代防火墙（NGFW）</b>：深度包检测（DPI）、入侵防御（IPS）、应用层过滤、基于机器学习的威胁检测；还能检查加密流量、监控用户行为，从而执行零信任原则；</li>
+<li><b>云防火墙（FWaaS）</b>：不需要本地硬件就能保护云上工作负载和远程用户，例如 Zscaler、Palo Alto Prisma、Cloudflare Gateway；</li>
+<li><b>网络分段</b>：不再只靠一道边界防火墙，而是把网络分成多个隔离的小区域，攻击者攻破一段也不能在网内自由移动。</li>
+</ul>
+<p>结论：边界没有消失，而是变得<b>动态和分散</b>；防火墙在演进而不是消亡，要和零信任、终端安全、云安全结合起来。</p>
+<h4>选择防火墙时要问的问题（P5-83）</h4>
+<ul>
+<li>哪种防火墙技术在防护功能和成本之间最适合本组织？</li>
+<li>基础价格包含哪些功能？哪些要额外付费？所有成本都清楚了吗？</li>
+<li>安装和配置难不难？有没有熟练的技术人员能做好？</li>
+<li>它能否适应组织网络的增长？</li>
+</ul>
+<h4>配置和管理防火墙（P5-83）</h4>
+<p>每台防火墙都有自己的一套配置规则；<b>一个小错误就可能把它变成网络的瓶颈（choke point）</b>。当安全规则和业务表现冲突时，<b>安全往往会输</b>，因为组织宁可承受“可能的风险”，也不愿接受“肯定的业务中断”。</p>
 </section>
 
 <section class="sec" id="ids">
@@ -365,6 +552,60 @@
 <div class="check" data-a="1"><p class="cq">一种全新的攻击（零日），哪种检测方法更有可能发现它？</p>
 <div class="opts"><button class="opt">特征检测</button><button class="opt">异常检测</button><button class="opt">两者都发现不了</button></div>
 <div class="cx"><p>零日攻击不在特征库里；但它的行为偏离了正常基线，异常检测有机会发现，代价是误报多。</p></div></div>
+<h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：IDS 与 IPS 的课件细节 <span class="ref">P5-86～P5-97</span></h3>
+
+<h4>IDS 的优缺点（P5-86）</h4>
+<div class="tbl"><table>
+<tr><th>优点</th><th>缺点</th></tr>
+<tr><td><b>早期发现威胁</b>：在造成重大损失前发现可疑活动<br><b>实时监控</b>：持续分析系统和网络活动<br><b>取证分析</b>：留下攻击尝试的日志和记录<br><b>执行安全策略</b>：帮助满足合规要求</td><td><b>误报（false positive）</b>：异常检测可能把正常活动当成威胁<br><b>漏报（false negative）</b>：特征检测可能漏掉新出现的威胁<br><b>资源消耗大</b>：处理大量流量需要算力<br><b>不会主动防护</b>：只检测和告警，不拦截（IPS 才会）</td></tr>
+</table></div>
+<h4>IDS 的分类（P5-87）</h4>
+<p>按部署位置分为 <b>HIDS</b> 和 <b>NIDS</b>；按检测方法分为 <b>signature-based</b>（依赖预定义的攻击和流量模式，即“特征”）和 <b>anomaly-based（heuristic，启发式）</b>（监控活动，把它分类为“正常”或“异常”）。</p>
+<h4>NIDS 的工作方式（P5-87～P5-89）</h4>
+<ul>
+<li>NIDS 是<b>解析网络流量</b>的引擎；</li>
+<li>它抓取全部网络流量，与一组预先分类的<b>攻击特征</b>比对；</li>
+<li>一旦在包里发现特征，就启动保护动作，阻止并记录攻击；</li>
+<li><b>部署容易</b>，不需要大改网络；</li>
+<li>优点：覆盖整个网络需要的设备少；部署、维护和升级成本通常较低；能看到全部网络流量，可以<b>关联多台系统上的攻击</b>；</li>
+<li>缺点：<b>流量加密后就无效</b>；不知道主机自身发生了什么。</li>
+</ul>
+<h4>HIDS 的工作方式（P5-90～P5-92）</h4>
+<ul>
+<li>只检查<b>某一台主机</b>上的活动：日志、审计记录、进出该主机的流量；可以实时检查，也可以定期检查；</li>
+<li>会触发告警的迹象：<b>登录失败、非正常时段登录、权限提升、新增用户账户</b>；</li>
+<li>优点：可以针对具体操作系统和具体应用；能降低误报率；<b>能检查解密之后的数据</b>；能判断一次告警会对系统造成什么影响；</li>
+<li>缺点：要监视的每台机器都得处理信息；拥有和维护成本可能很高；占用本机资源；</li>
+<li><b>Passive HIDS（被动）</b>：观察、分析活动并发出告警；</li>
+<li><b>Active HIDS（主动）</b>：能力相同，还能作出反应，比如运行脚本、终止进程；</li>
+<li><b>现代 HIDS</b> 常被称为 <b>HIPS</b>（主机入侵防御系统），用三样东西来阻止攻击：集成的系统防火墙、基于行为和特征的 IDS、恶意软件检测与防护。</li>
+</ul>
+<p>课件 P5-91 的示意：<b>Host IDS</b> 检查主机上存储的文件，有变化就通知管理员；<b>Network IDS</b> 检查网络上的包，发现异常模式就通知管理员。</p>
+<h4>两种检测方法的课件原文（P5-93）</h4>
+<div class="tbl"><table>
+<tr><th>Signature-based IDS</th><th>Statistical anomaly-based IDS</th></tr>
+<tr><td>也叫 <b>knowledge-based IDS</b><br>检查流量里有没有和<b>特征</b>匹配的东西，特征是预先配置好的、已经确定的攻击模式<br><b>问题</b>：一旦发现新的攻击策略，特征就必须更新</td><td>也叫 <b>behavior-based IDS</b><br>从正常流量中收集数据，建立<b>基线（baseline）</b><br>之后用统计方法定期采样网络活动，与基线比较<br>活动超出基线参数（即 <b>clipping level</b>）就通知管理员<br>因为它寻找的是任何类型的异常，所以<b>能发现新型攻击</b><br>但可能察觉不到细微变化，而且会产生<b>大量误报</b></td></tr>
+</table></div>
+<h4>入侵防御系统 IPS（P5-94）</h4>
+<p>IPS 是一种<b>主动的</b>安全技术，<b>实时检测并拦截</b>恶意活动；IDS 只检测和告警。IPS 常集成在<b>下一代防火墙（NGFW）</b>里。</p>
+<h4>蜜罐（P5-95）</h4>
+<ul>
+<li>一台<b>牺牲性的</b>计算机系统，像诱饵一样吸引网络攻击；</li>
+<li>它模仿黑客的目标，利用入侵尝试来了解攻击者的手法，或者把攻击者从其他目标引开；</li>
+<li>看起来像真实系统，有应用和数据，比如模仿公司的客户账单系统（这是想偷信用卡号的罪犯常攻击的目标）；</li>
+<li>黑客进来后就可以被追踪，他们的行为能为加强真实网络提供线索；</li>
+<li>蜜罐会<b>故意留下安全漏洞</b>，让攻击者觉得有吸引力；</li>
+<li>局限：发现不了真实系统里的入侵，也不一定能查出攻击者是谁。</li>
+</ul>
+<h4>网络攻击带来的影响（P5-97）</h4>
+<p>每年有超过一半的企业成为网络攻击目标。影响包括四类：</p>
+<div class="tbl"><table>
+<tr><th>影响</th><th>具体表现</th></tr>
+<tr><td><b>Financial 财务</b></td><td>从几万到几百万美元不等，还不包括恢复成本</td></tr>
+<tr><td><b>Productivity 生产力</b></td><td>时间就是金钱：修复社会工程攻击和处理损失要花大量时间，影响 IT 团队、普通员工，最终影响盈利</td></tr>
+<tr><td><b>Operational disruption 运营中断</b></td><td>影响会传导到整个供应链和服务交付，造成物流延误</td></tr>
+<tr><td><b>Reputational damage 声誉损失</b></td><td>客户不再觉得安全，信任很难重新建立</td></tr>
+</table></div>
 </section>
 
 <section class="sec" id="sum">
