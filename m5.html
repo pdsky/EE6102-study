@@ -17,7 +17,7 @@
 <header class="top"><div class="top-in">
   <a class="logo" href="index.html"><span class="marks" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></span><b>EE6102 小白课</b></a>
   <span class="sp"></span>
-  <nav aria-label="模块导航"><a href="index.html">首页</a><a href="m1.html">1 入门与威胁</a><a href="m2.html">2 工业4.0与人</a><a href="m3.html">3 策略与生物识别</a><a href="m4.html">4 密码学</a><a class="on" href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="practice.html">刷题本</a></nav>
+  <nav aria-label="模块导航"><a href="index.html">首页</a><a href="m1.html">1 入门与威胁</a><a href="m2.html">2 工业4.0与人</a><a href="m3.html">3 策略与生物识别</a><a href="m4.html">4 密码学</a><a class="on" href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="teacher.html">老师重点</a><a href="practice.html">刷题本</a></nav>
   <button class="themeb" type="button">主题</button>
 </div></header>
 <div class="wrap">
@@ -37,6 +37,7 @@
 <li>认出四种防火墙架构，尤其是带 DMZ 的 screened subnet；</li>
 <li>区分 HIDS 和 NIDS、特征检测和异常检测、IDS 和 IPS。</li></ul></div>
 
+<div class="teacher box" data-t="m5top"><span class="bt">老师课上强调 · 录音 W8</span><ul><li>Quiz 范围到 Part 5 为止（P6 不考）。</li><li>老师重点讲了：HTTPS 端口、为什么不认证客户端、SSL/TLS 版本时间线、<b>TLS 1.3 为什么去掉 RSA 密钥交换</b>（前向保密，改用临时 DH）。</li></ul></div>
 <section class="sec" id="http">
 <h2><span class="n">1</span>HTTP 为什么不安全，HTTPS 加了什么</h2>
 <p>你在浏览器里打开一个网页，浏览器（客户端）用 <b>HTTP</b> 协议向服务器发请求，服务器返回网页。HTTP 是一问一答式的<b>请求-响应</b>模型，而且<b>无状态</b>：每个请求都是独立的，网站靠 <b>cookie</b> 记住你是谁（所以模块 1 说 cookie 记录太多信息时会变成“间谍”）。常见请求方法：GET 取数据，POST 提交数据，PUT 更新，DELETE 删除，HEAD 只取头部。</p>
@@ -62,6 +63,8 @@
 <div class="check" data-a="1"><p class="cq">HTTPS 默认使用哪个端口？</p>
 <div class="opts"><button class="opt">80</button><button class="opt">443</button><button class="opt">22</button></div>
 <div class="cx"><p>HTTP 用 80，HTTPS 用 443（22 是 SSH）。</p></div></div>
+<div class="teacher box" data-t="m5https"><span class="bt">老师课上强调 · W8</span><p>HTTP 用 80 端口、不加密；HTTPS 用 <b>443</b> 端口。按协议客户端也可以认证，但几乎从不这样做：每个用户都要买证书，速度慢、不好用。所以只有<b>服务器</b>必须有证书。</p></div>
+
 </section>
 
 <section class="sec" id="tls">
@@ -79,6 +82,8 @@
 <tr><td>2020</td><td>TLS 1.0 和 1.1 被弃用</td></tr>
 </table></div>
 <p>很多人还习惯说“SSL”，但现在实际用的都是 TLS。</p>
+<div class="teacher box" data-t="m5hist"><span class="bt">老师课上强调 · W8</span><ul><li>SSL 由 Netscape 在 1994 年推出（ElGamal 主导），SSL 3.0 在 1996 年；1999 年交给 IETF，改名 TLS 1.0；TLS 1.1 在 2006 年、1.2 在 2008 年、<b>1.3 在 2018 年 3 月</b>。</li><li>SSL 3.0 在 2015 年禁用，<b>TLS 1.0/1.1 在 2020 年禁用</b>。原计划 2020 年底全部改用 1.3，但因疫情没有强制执行。</li><li>老师用 SSL Labs 演示：微信、Facebook、Google 还开着 1.0/1.1，评分 B（为了用户量和广告收入）；Microsoft、NTU 关掉了，评分 A+。</li></ul></div>
+
 <h3>SSL 的目标</h3>
 <p>机密性和完整性（靠加密），以及认证（用数字证书认证服务器，认证客户端的情况很少见）。它内置在所有主流浏览器和服务器里，开箱即用（样题 Q5-5：True）。</p>
 <h3>两层协议（P5-12）</h3>
@@ -106,11 +111,15 @@
 <li><b>Change Cipher Spec</b>：非常简单，只做一件事：把“待定”（pending）的参数切换成“当前”（current），也就是正式启用协商好的加密套件；</li>
 <li><b>Alert</b>：向对方发送告警（样题 Q5-4），每条 2 字节：一个字节表示 fatal 或 warning，一个字节是告警代码，比如 bad record MAC、handshake failure、bad certificate、certificate expired、certificate revoked。</li>
 </ul>
+<div class="teacher box" data-t="m5alert"><span class="bt">老师课上强调 · W8</span><p>证书出问题（过期、被吊销、未知 CA、不支持的证书）时由 <b>Alert 协议</b>报警，还包括坏的 MAC、解压失败、握手失败等。四个子协议里最复杂的是 Handshake。</p></div>
+
 <h3>密钥长度（P5-11）</h3>
 <p>SSL/TLS 用两种密钥：<b>公私钥</b>建议 2048 位（512 位弱，1024 位也能被破解）；<b>会话密钥</b>每次连接时生成，一般 40–256 位，<b>低于 128 位就不安全</b>。如果浏览器支持 256 位而服务器只支持 128 位，连接按 128 位建立。会话密钥可以比公钥短，因为它被破解只影响一次会话，而且能减轻服务器负担。</p>
 <div class="check" data-a="0"><p class="cq">SSL 记录协议为连接提供的两项服务是消息完整性和什么？（样题 Q5-3）</p>
 <div class="opts"><button class="opt">Confidentiality</button><button class="opt">Availability</button><button class="opt">Authentication</button></div>
 <div class="cx"><p>记录协议负责“加 MAC（完整性）+ 加密（机密性）”。认证是握手协议做的事。</p></div></div>
+<div class="teacher box" data-t="m5key"><span class="bt">老师课上强调 · W8</span><p>公钥（RSA/DH）：512 位很弱，1024 位能被破，<b>至少 2048 位</b>。会话密钥：<b>128 位</b>就够了，低于 128 位不安全，浏览器最高支持 256 位。</p></div>
+
 </section>
 
 <section class="sec" id="hs">
@@ -176,6 +185,8 @@
 <div class="story box"><span class="bt">一个故事</span><p>Eve 没法破解你和银行的通信，于是她<b>先全部录下来存着</b>。三年后，银行服务器被黑，RSA 私钥泄露。Eve 拿出三年前的录音，用这把私钥解开当年加密的会话密钥，<b>你过去三年的所有通信全部被解密</b>。</p></div>
 <p>这就是课件说的 “RSA mode … is <b>not forward secret</b>”。<b>前向保密（Forward Secrecy / PFS）</b>的意思是：即使长期私钥日后泄露，<b>过去</b>的会话也依然安全。ephemeral DH 能做到这一点，因为每次会话的密钥都是临时生成、用完就扔的，私钥泄露也推不出当年的会话密钥。</p>
 <p>所以 <b>TLS 1.3 去掉了 RSA 密钥交换，只保留 ephemeral Diffie-Hellman</b>。RSA 仍可以在 TLS 1.3 里用于<b>签名</b>（另外两种签名算法是 ECDSA 和 EdDSA）。</p>
+<div class="teacher box" data-t="m5fs"><span class="bt">老师课上强调 · W8</span><p>老师的讲法：RSA 密钥交换下，服务器的私钥长期不变，几十亿用户共用同一把。攻击者先把密文录下来，有朝一日破了这把私钥，所有历史通信都能解开。固定参数的 DH 也有同样的问题，所以 TLS 1.3 用<b>临时（ephemeral）DH</b>：每次会话都重新选数字，最坏情况也只泄露一个客户的一次会话。RSA 仍可用于签名。</p></div>
+
 <h3>TLS 1.3 的其他改进（P5-21、P5-26、P5-27）</h3>
 <ul>
 <li>支持的密码套件从 37 个减到 5 个，客户端可以直接猜对方用哪种，并提前发出自己的密钥份额；</li>
@@ -185,6 +196,8 @@
 <li>协议更简单，管理员<b>更不容易配置出错</b>，而这正是 TLS 1.2 的主要问题；</li>
 <li>取消了对 SSL 的向后兼容。</li>
 </ul>
+<div class="teacher box" data-t="m5imp"><span class="bt">老师课上强调 · W8</span><p>算法套件从 37 个减到 <b>5 个</b>，去掉了 DES、3DES、SHA-1、MD5。研究显示服务器出问题多半是管理员配错算法，选项少了就不容易配错。握手更短更快，回访同一服务器还能复用参数。</p></div>
+
 <h3>常见攻击与最佳实践（P5-28、P5-29）</h3>
 <div class="tbl"><table>
 <tr><th>攻击</th><th>说明</th><th>对策</th></tr>
@@ -622,7 +635,7 @@
 <li>架构：包过滤路由器 → screened host（堡垒主机）→ dual-homed（双网卡 + NAT）→ <b>screened subnet（两台路由器 + DMZ）</b>。</li>
 <li>HIDS 看单机、能看解密后的数据；NIDS 看网段、怕加密。<b>Signature 认已知攻击</b>（漏报新攻击），<b>Anomaly 认正常基线</b>（能发现新攻击，误报多）。IDS 只告警，<b>IPS 会拦截</b>；蜜罐是诱饵。</li>
 </ul></div>
-<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 5（18 题）</b>和刷题本 P5 的 14 道自编题。去<a href="practice.html#practice">刷题本</a>，在章节里选 P5。</p></div>
+<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 5（18 题）</b>和刷题本 P5 的 18 道自编题。去<a href="practice.html#practice">刷题本</a>，在章节里选 P5。</p></div>
 <p><button class="btn" data-done></button> <button class="btn" data-reset-quiz>重做本页小测</button></p>
 <nav class="pager"><a href="m4.html"><span>← 上一模块</span><b>4 · 密码学</b></a><a class="next" href="m6.html"><span>下一模块 →</span><b>6 · 区块链</b></a></nav>
 </section>

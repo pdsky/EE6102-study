@@ -22,7 +22,7 @@
 <header class="top"><div class="top-in">
   <a class="logo" href="index.html"><span class="marks" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></span><b>EE6102 小白课</b></a>
   <span class="sp"></span>
-  <nav aria-label="模块导航"><a href="index.html">首页</a><a href="m1.html">1 入门与威胁</a><a href="m2.html">2 工业4.0与人</a><a href="m3.html">3 策略与生物识别</a><a class="on" href="m4.html">4 密码学</a><a href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="practice.html">刷题本</a></nav>
+  <nav aria-label="模块导航"><a href="index.html">首页</a><a href="m1.html">1 入门与威胁</a><a href="m2.html">2 工业4.0与人</a><a href="m3.html">3 策略与生物识别</a><a class="on" href="m4.html">4 密码学</a><a href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="teacher.html">老师重点</a><a href="practice.html">刷题本</a></nav>
   <button class="themeb" type="button">主题</button>
 </div></header>
 <div class="wrap">
@@ -42,6 +42,7 @@
 <li>画出数字签名的签名和验证流程；说出验证数字证书要检查的三件事。</li></ul></div>
 
 <!-- 1 -->
+<div class="teacher box" data-t="m4top"><span class="bt">老师课上强调 · 录音 W5–W8</span><ul><li><b>Quiz 里 P4 的题最多</b>。期末 <b>Diffie-Hellman</b> 和 <b>RSA</b> 各至少 15 分，老师说是“really easy 15 marks”。</li><li>考试数字都<b>小于 20，最大素数是 19</b>。计算器没有 mod 键，用除法法算余数：320 ÷ 9 = 35.55… → 320 − 35 × 9 = 5。</li><li><b>公式考试不给</b>，必须自己背；每一步都写“公式 → 代入 → 结果”，最后验算。</li></ul><p>按考试规格练题：<a href="practice.html#exam">刷题本 · 期末专项 DH/RSA</a>（附满分答题模板）。</p></div>
 <section class="sec" id="basic">
 <h2><span class="n">1</span>密码学要解决什么问题</h2>
 <p>密码学的故事里永远有三个人：<b>Alice</b> 要给 <b>Bob</b> 发消息，<b>Eve</b>（eavesdropper，窃听者）在中间偷听。互联网就是一个“人人都能偷听”的地方：你的消息要经过路由器、Wi-Fi、运营商……任何一环都可能有 Eve。</p>
@@ -64,6 +65,8 @@
 <li><b>Authentication 认证</b>：确认消息来自谁（靠数字签名）；</li>
 <li><b>Non-repudiation 不可否认</b>：发送者不能抵赖（靠数字签名）。</li>
 </ul>
+<div class="teacher box" data-t="m4prov"><span class="bt">老师课上强调 · W5</span><p>密码学能提供保密性、完整性、认证和不可否认，但<b>不能提供可用性和隐私</b>。机密性不等于隐私。对称加密适合加密你自己的硬盘，公钥加密适合和别人通信，TLS 是两者混合。</p></div>
+
 <h3>三大类密码（P4-11），本章的路线图</h3>
 <div class="tbl"><table>
 <tr><th>类别</th><th>钥匙数量</th><th>代表</th><th>主要用途</th><th>本章位置</th></tr>
@@ -158,11 +161,15 @@
 <p><b>争议</b>：IBM 原设计的分组和密钥都是 128 位，被改成了 64 和 56；S 盒是在保密条件下设计的，又不给理由，于是有人怀疑 NSA 留了“后门”（trapdoor）。很多专家在 DES 被采纳之前就认为 56 位太短。</p>
 <p><b>结局</b>：1998 年 EFF 用 56 小时破解了 DES。如今 DES 已经过时，只在老系统和教学里使用。</p>
 
+<div class="teacher box" data-t="m4des"><span class="bt">老师课上强调 · W6</span><p>“DES 是 Data Encryption Standard，quiz 里有题，有学生选错。”“<b>密钥是 56 位</b>。有的资料写 64 位，那是完全错的：虽然输入 64 位，但 8 位是冗余的，攻击者只需要找 56 位。”</p></div>
+
 <h3>DES 被破了怎么办：加密两次、三次？</h3>
 <ul>
 <li><b>2DES</b>：用两把钥匙加密两次（2 × 56 = 112 位）。听起来更强，但有<b>中间相遇攻击（meet-in-the-middle）</b>：从明文一端加密、从密文一端解密，在中间对上答案，工作量和破解一次 DES 差不多。所以 2DES 基本没用；</li>
 <li><b>3DES</b>：用 DES 做三次，慢三倍，但用得当时安全性高得多。它是过渡到 AES 之前的临时方案。</li>
 </ul>
+
+<div class="teacher box" data-t="m4tdes"><span class="bt">老师课上强调 · W6</span><ul><li>2DES 是两把 56 位密钥，不是一把 112 位，可以分开破，再加上中间相遇攻击，所以被放弃。</li><li>3DES 是 E-D-E 结构：用户给 168 位密钥，系统切成三把 56 位子密钥。<b>如果 K1 = K2</b>，第一步加密和第二步解密互相抵消，结果和单 DES 一样，还慢 3 倍。这种情况偶尔会发生，所以 3DES 只是临时方案。</li></ul></div>
 
 <h3>AES：现在的金标准（P4-32～P4-40）</h3>
 <p>美国政府公开征集 DES 的替代者，经过 5 年严格评选（候选包括 MARS、RC6、Serpent、Twofish 等），最终选中两位比利时密码学家 Daemen 和 Rijmen 设计的 <b>Rijndael</b>，2001 年成为 <b>AES</b>（Advanced Encryption Standard）。2003 年起美国政府认可它保护机密信息，NSA 也用它加密绝密信息。</p>
@@ -182,6 +189,8 @@
 <div class="check" data-a="2"><p class="cq">AES-256 有多少轮？</p>
 <div class="opts"><button class="opt">10</button><button class="opt">12</button><button class="opt">14</button><button class="opt">16</button></div>
 <div class="cx"><p>128 → 10，192 → 12，256 → 14。16 轮是 DES。</p></div></div>
+<div class="teacher box" data-t="m4aes"><span class="bt">老师课上强调 · W6</span><ul><li>“从 quiz 角度要知道”：AES 分组固定 <b>128 位</b>；密钥 128/192/256 位，分别对应 <b>10/12/14 轮</b>。<b>不考 AES 结构图</b>。</li><li>AES 和 Rijndael 唯一的区别：Rijndael 的分组和密钥长度可以是任意 32 的倍数，AES 把它们固定了。原因是国际标准要统一参数，通信双方不用协商，也没有兼容问题。</li></ul></div>
+
 <h3>选算法时该信什么（样题 Q4-8～Q4-11 连环题）</h3>
 <ul>
 <li>最该看重：<b>算法已经存在多久</b>，是否经过多年公开检验（Q&amp;A Q23：算法要被工业界、学术界、数学和密码专家测试很多年）；</li>
@@ -189,6 +198,8 @@
 <li>“认证过的加密”：课件的观点是<b>没有这种东西</b>（There is no such thing as certified encryption）；</li>
 <li>新算法：<b>可以用，但要谨慎</b>。</li>
 </ul>
+<div class="teacher box" data-t="m4pick"><span class="bt">老师课上强调 · W8</span><ul><li>算法复杂不等于安全；厂商的数据来自理想条件，不能信；<b>用得越久还没被破</b>越可靠（AES 从 2001 年用到现在，RSA 从 1978 年用到现在）。</li><li>没有 “unbreakable”，只要算力够总能破；也没有 “certified encryption”，那只是营销说法。</li><li>新算法：课上大多数人选“可以用，但要谨慎”，这就是答案；“永远不用”就永远无法证明它好不好。</li></ul></div>
+
 </section>
 
 <!-- 5 -->
@@ -281,6 +292,8 @@
 </table></div>
 <p>为什么两边相等？(a<sup>X<sub>B</sub></sup>)<sup>X<sub>A</sub></sup> = a<sup>X<sub>A</sub>X<sub>B</sub></sup> = (a<sup>X<sub>A</sub></sup>)<sup>X<sub>B</sub></sup>，指数相乘的顺序无所谓。</p>
 <p><b>原根</b>是什么？课件定义：素数 p 的原根，是它的各次幂能生成 1 到 p−1 所有整数的那个数。考试题会直接给出，你不用自己找。</p>
+<div class="teacher box" data-t="m4dh"><span class="bt">老师课上强调 · W6</span><ul><li>期末可能这样问：① 简述 DH 怎样工作；② 给素数、生成元和双方私密数，算双方公钥和共享密钥（15 分）；③ 追问：私密数泄露会怎样（完全不安全）、数字太小会怎样（会被试出来，实际至少 2048 位）。</li><li>六步：公开选 p、g → 各选私密数 → A 算 Y<sub>A</sub> = g<sup>a</sup> mod p → B 算 Y<sub>B</sub> → 交换公钥 → 各自算 K = Y<sub>对方</sub><sup>自己私密数</sup> mod p。</li><li>DH <b>只交换密钥，不能加密</b>；交换完用 AES 加密数据。</li></ul></div>
+
 <h3>手算一个完整例子（课件 P4-62）</h3>
 <p>p = 23，g = 5；Alice 选 a = 6，Bob 选 b = 15。</p>
 <div class="out"><span class="eq">Alice 公开值 A = 5<sup>6</sup> mod 23 = 15625 mod 23 = <b>8</b>（15625 − 679 × 23 = 15625 − 15617 = 8）</span><span class="eq">Bob 公开值 B = 5<sup>15</sup> mod 23 = <b>19</b></span><span class="eq">Alice：K = 19<sup>6</sup> mod 23 = <b>2</b></span><span class="eq">Bob：K = 8<sup>15</sup> mod 23 = <b>2</b>　✓ 相同</span></div>
@@ -310,6 +323,8 @@
 <div class="st"><p><b>④ 选公钥 e</b>：要求 1 &lt; e &lt; φ，且 e 和 φ <b>没有公因子</b>（互素）。课件的做法：e 取素数，检查它和 p−1 = 4、q−1 = 10 有没有公因子：</p><ul><li>e = 2：和 4、10 都有公因子 2，✗</li><li>e = <b>3</b>：没有公因子，✓</li><li>e = 5：和 10 有公因子 5，✗</li><li>e = 7：没有公因子，✓</li></ul><p>选 <b>e = 3</b>。</p></div>
 <div class="st"><p><b>⑤ 求私钥 d</b>：要满足 e × d ≡ 1 (mod φ)，也就是 e × d = k × φ + 1。课件的方法：<b>d = (k × φ + 1) ÷ e</b>，k 从 1 开始试，直到能整除：</p><div class="out"><span class="eq">k = 1：(40 + 1) ÷ 3 = 41 ÷ 3，不能整除 ✗</span><span class="eq">k = 2：(80 + 1) ÷ 3 = 81 ÷ 3 = <b>27</b> ✓</span></div><p>所以 <b>d = 27</b>。验证：3 × 27 = 81 = 2 × 40 + 1 ✓。</p><p><b>公钥 = (n, e) = (55, 3)</b>，公开给所有人；<b>私钥 = d = 27</b>，自己保管。</p></div>
 <div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
+<div class="teacher box" data-t="m4rsa"><span class="bt">老师课上强调 · W7</span><ul><li>选 e 的<b>三个条件</b>（期末要写）：① 1 &lt; e &lt; φ；② <b>e 是素数</b>；③ e 与 p−1、q−1 没有公因子。标准说法只要求 gcd(e, φ) = 1，考试按老师的三条写。</li><li><b>往年原题：为什么 2 永远不能当公钥？</b>除 2 以外的素数都是奇数，减 1 后是偶数，所以 2 一定是 p−1、q−1 的公因子，不满足第 ③ 条。</li><li>求 d 用 k 法：d = (kφ + 1)/e，k = 1, 2, 3… 直到整除。老师建议考试就用这个方法，省时间。</li><li>典型 15 分题：为什么 e ≠ 2 → 求 n、φ → 选 e、求 d → 给 M，加密再解密验证。课上的练习：p=5, q=11 自选密钥；p=17, q=19, e=5, M=25；p=13, q=23, e=7。</li></ul></div>
+
 <h3>加密和解密</h3>
 <div class="key box"><span class="bt">公式</span><p>加密（用接收方公钥）：<b>C = M<sup>e</sup> mod n</b>　　　解密（用自己的私钥）：<b>M = C<sup>d</sup> mod n</b></p><p>要求：明文 M 必须<b>小于 n</b>。</p></div>
 <p><b>例（P4-72）：</b>加密 “DC”。按 A = 0, B = 1, C = 2, D = 3… 编码，DC → 32。</p>
@@ -383,6 +398,8 @@
 <div class="check" data-a="1"><p class="cq">混合系统中，公钥密码用来做什么？会话数据用什么加密？（样题 Q4-34、Q4-35）</p>
 <div class="opts"><button class="opt">加密全部数据；用非对称加密</button><button class="opt">交换会话密钥；用对称加密</button><button class="opt">两者都做；两者都用</button></div>
 <div class="cx"><p>公钥送钥匙，对称加数据。会话数据量大，需要对称算法的速度。</p></div></div>
+<div class="teacher box" data-t="m4hyb"><span class="bt">老师课上强调 · W7–W8</span><ul><li>同等安全强度下速度：<b>AES &gt; ECC &gt; RSA</b>（AES-128 ≈ ECC-256；AES-256 ≈ ECC-512 ≈ RSA-15360）。老师个人认为 ECC 不会取代 RSA。ElGamal 的密文是明文的两倍，太慢，所以不用。</li><li>混合系统：客户端不需要任何密钥，<b>服务器必须有 SSL 证书</b>（证书里嵌着公钥）。会话密钥只用一次会话，下次登录换新的。</li></ul></div>
+
 </section>
 
 <!-- 10 -->
@@ -409,6 +426,8 @@
 <tr><td><b>SHA-2</b>（SHA-224/256/384/512）</td><td>名字里的数字就是长度</td><td>✓ 安全，最广泛使用（样题 Q4-27），比特币用 SHA-256</td></tr>
 <tr><td>SHA-3</td><td>—</td><td>✓ 安全</td></tr>
 </table></div>
+<div class="teacher box" data-t="m4halg"><span class="bt">老师课上强调 · W7</span><ul><li>MD5、SHA-1 不安全，不应再用；SHA-256 用于比特币。</li><li>网站存的是密码的<b>哈希</b>。如果网站说能把原密码“找回”给你，说明它没用哈希，不应该用；正常只能<b>重置</b>（NTU 也一样）。</li></ul></div>
+
 <h3>哈希 ≠ 加密（Q&amp;A Q31）</h3>
 <div class="tbl"><table>
 <tr><th></th><th>加密</th><th>哈希</th></tr>
@@ -420,6 +439,8 @@
 <div class="check" data-a="0"><p class="cq">哈希函数的主要目的是？（样题 Q4-26）</p>
 <div class="opts"><button class="opt">数据完整性</button><button class="opt">认证</button><button class="opt">两者都是</button></div>
 <div class="cx"><p>哈希本身没有密钥，单独使用证明不了是谁发的，所以主要用于<b>完整性</b>。和私钥签名结合后才能提供认证，那是下一节的内容。</p></div></div>
+<div class="teacher box" data-t="m4hash"><span class="bt">老师课上强调 · W8</span><p>样题 Q4-26：哈希的主要目的？<b>只有 data integrity</b>，不提供 authentication，认证要靠数字签名。Q4-27：SHA 是<b>算法</b>，hash value 和 digest 都是输出。</p></div>
+
 </section>
 
 <!-- 11 -->
@@ -460,6 +481,8 @@
 <div class="check" data-a="1"><p class="cq">发送方给哈希做数字签名，用的是哪把钥匙？</p>
 <div class="opts"><button class="opt">发送方的公钥</button><button class="opt">发送方的私钥</button><button class="opt">接收方的公钥</button></div>
 <div class="cx"><p>签名用自己的私钥，验签用对方的公钥。</p></div></div>
+<div class="teacher box" data-t="m4sig"><span class="bt">老师课上强调 · W7</span><p>期末手算签名<b>不用哈希</b>（哈希需要电脑）：签名 S = M<sup>d</sup> mod n（用私钥），验证 S<sup>e</sup> mod n = M（用公钥），和 RSA 加密正好相反。课上的例子：p=5, q=11, e=3, d=27, M=51 → S = 6，验证 6<sup>3</sup> mod 55 = 51 ✓。</p></div>
+
 </section>
 
 <!-- 12 -->
@@ -490,6 +513,8 @@
 <div class="check" data-a="3"><p class="cq">验证数字证书时，<b>不需要</b>检查哪一项？</p>
 <div class="opts"><button class="opt">CA 的签名</button><button class="opt">有效期</button><button class="opt">是否被吊销</button><button class="opt">主体的私钥</button></div>
 <div class="cx"><p>私钥从不出现在证书里，也无从检查。三件事：签名、期限、吊销。</p></div></div>
+<div class="teacher box" data-t="m4cert"><span class="bt">老师课上强调 · W8</span><p>“<b>这道题以前考过</b>”：怎样验证证书有效？① 用 CA 的公钥验证 CA 签名，确认是可信的 CA；② 是否在有效期内；③ 是否被吊销。三项都通过，浏览器才接受。证书已经在客户手里，CA 收不回来，只能把它的<b>序列号</b>作废，这就是吊销（revocation）。</p></div>
+
 </section>
 
 <!-- 13 -->
@@ -508,7 +533,7 @@
 <li>签名 = 私钥处理哈希 → 完整性 + 认证 + 不可否认，<b>没有机密性</b>；验签：比较两个摘要。</li>
 <li>证书把名字和公钥绑定，由 <b>CA 的私钥</b>签名；验证三件事：<b>签名、期限、吊销（OCSP）</b>。</li>
 </ul></div>
-<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 4（35 题）</b>、刷题本 P4 的 17 道自编题，以及 Q&amp;A Q21–Q33。<a href="practice.html#calc">刷题本的计算题页</a>可以随机生成 RSA 和 DH 题目并核对答案，期末前至少各做 5 道。</p></div>
+<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 4（35 题）</b>、刷题本 P4 的 26 道自编题，以及 Q&amp;A Q21–Q33。<a href="practice.html#exam">刷题本的期末专项</a>按考试规格（素数 ≤ 19）出 DH、RSA、签名大题，能核对答案，附满分答题模板；期末前每种至少做 5 道。</p></div>
 <p><button class="btn" data-done></button> <button class="btn" data-reset-quiz>重做本页小测</button></p>
 <nav class="pager"><a href="m3.html"><span>← 上一模块</span><b>3 · 策略与生物识别</b></a><a class="next" href="m5.html"><span>下一模块 →</span><b>5 · Web 安全与防火墙</b></a></nav>
 </section>

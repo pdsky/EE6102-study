@@ -13,7 +13,7 @@
 <header class="top"><div class="top-in">
   <a class="logo" href="index.html"><span class="marks" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></span><b>EE6102 小白课</b></a>
   <span class="sp"></span>
-  <nav aria-label="模块导航"><a href="index.html">首页</a><a class="on" href="m1.html">1 入门与威胁</a><a href="m2.html">2 工业4.0与人</a><a href="m3.html">3 策略与生物识别</a><a href="m4.html">4 密码学</a><a href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="practice.html">刷题本</a></nav>
+  <nav aria-label="模块导航"><a href="index.html">首页</a><a class="on" href="m1.html">1 入门与威胁</a><a href="m2.html">2 工业4.0与人</a><a href="m3.html">3 策略与生物识别</a><a href="m4.html">4 密码学</a><a href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="teacher.html">老师重点</a><a href="practice.html">刷题本</a></nav>
   <button class="themeb" type="button">主题</button>
 </div></header>
 
@@ -34,6 +34,7 @@
 <li>分清白帽、黑帽、灰帽和 script kiddie。</li></ul></div>
 
 <!-- ============ 1 ============ -->
+<div class="teacher box" data-t="m1top"><span class="bt">老师课上强调 · 录音 W2–W3</span><ul><li>Quiz 只考 <b>Part 1–5</b>（P6 区块链不考），只考 slides，不考视频和统计数字。</li><li>本章期末有两道计算题：<b>暴力破解时间</b>、<b>DoS 包数</b>，老师说加起来约 30 分，“最容易拿的分”。</li><li>Quiz 点名的陷阱：CIA 拼写、virus 和 worm、masquerading 和 spoofing。</li></ul><p>完整整理见 <a href="teacher.html">老师上课重点</a>。</p></div>
 <section class="sec" id="what">
 <h2><span class="n">1</span>网络安全到底在保护什么</h2>
 <p>先想象你家。你会锁门（别人不能随便进），会把贵重物品放保险箱（别人看不到），会装监控（东西被动过能发现），还希望水电随时能用。网络安全做的是同样的事，只不过保护对象换成了<b>连上网的电脑、手机、服务器，以及里面的数据</b>。</p>
@@ -66,6 +67,8 @@
 <tr><td><b>Availability</b><br>可用性</td><td>授权用户需要时能用上</td><td>银行营业时间你能去取钱</td><td>DDoS 把网站打瘫；勒索软件把文件锁住</td></tr>
 </table></div>
 <div class="analogy box"><span class="bt">类比</span><p>把你的微信聊天记录想成一封信：被别人偷看了，是 <b>C</b> 出事；被人偷偷改了几个字，是 <b>I</b> 出事；邮局罢工信寄不出去，是 <b>A</b> 出事。</p></div>
+
+<div class="teacher box" data-t="m1cia"><span class="bt">老师课上强调 · W3</span><p>“What are the three basic cyber security concepts?” 这题在真题里有<b>约 20 个版本，约 80% 的人做错</b>。错误选项会把 Availability 换成 <b>Access</b>，把 Confidentiality 换成 <b>Consideration</b>，看到 C-I-A 就点的人全中招。一个单词一个单词核对拼写再选。</p></div>
 
 <h3>几个必须认识的术语</h3>
 <p>课件 P1-13 列了一组基础术语。英文原词要认得，考试题干是英文的：</p>
@@ -153,6 +156,8 @@
 <tr><td>著名例子</td><td>藏在邮件附件里的宏病毒</td><td>Morris 蠕虫（1988 年，Q&amp;A 第 2 题）</td></tr>
 </table></div>
 <div class="pitfall box"><span class="bt">易错点</span><p>样题 Q1-15 的干扰项说“蠕虫不能被杀毒软件检测、病毒能”，这是错的。两者都能被检测，<b>区别只在于要不要宿主程序</b>。</p></div>
+
+<div class="teacher box" data-t="m1worm"><span class="bt">老师课上强调 · W2</span><p>“从 quiz 角度你至少要知道：<b>virus 需要宿主（host），worm 不需要</b>。真题会有这样的题。”</p></div>
 
 <h3>其他成员</h3>
 <dl class="gloss">
@@ -252,6 +257,8 @@
 <div class="fields"><div class="fld"><label for="bn">字符集</label><select id="bn"><option value="10">纯数字 (10)</option><option value="26">小写字母 (26)</option><option value="62">大小写+数字 (62)</option><option value="95" selected>全部可打印字符 (95)</option><option value="102">课件例 3 (102)</option></select></div><div class="fld"><label for="bl">密码长度</label><input id="bl" type="number" value="10" min="1" max="40"></div><div class="fld"><label for="br">每秒尝试次数</label><select id="br"><option value="500000">50 万（课件例 1）</option><option value="6400000" selected>640 万（课件例 2）</option><option value="400000000">4 亿（课件例 3）</option><option value="1e10">100 亿（GPU 集群）</option></select></div><div class="fld"><label for="bb">僵尸机数量</label><input id="bb" type="number" value="1" min="1"></div></div>
 <div class="out" id="bfout"></div></div>
 
+<div class="teacher box" data-t="m1brute"><span class="bt">老师课上强调 · W2</span><ul><li>这是期末 <b>15 分</b>计算题，老师说是“最容易拿的分”，但很多人算错。</li><li>时间 = 组合数 ÷ 每秒尝试次数；换算成年要 ÷ (60×60×24×365) = 31,536,000；有 bots 就再除以 bots 数量。</li><li>要写出每一步。15 分的题只写答案，大约只给 5 分。</li></ul></div>
+
 <h3>怎么防</h3>
 <ul>
 <li>用长且包含大小写、数字、符号的密码；不同网站不要用同一个密码（防止“撞库”）；</li>
@@ -349,6 +356,8 @@
 <div class="out" id="dout"></div></div>
 <p>规律：<b>链路越快，需要的包越多；包越大，需要的包越少。</b>课件用 500、1000、50000 字节三种包，在 1.5、2、10、100 Mbps 四种链路上各算了一遍，你可以用上面的计算器逐个核对。</p>
 
+<div class="teacher box" data-t="m1dos"><span class="bt">老师课上强调 · W2</span><p>DoS 包数也是期末计算题，可能问<b>包大小和网速的关系</b>：包越大，需要的包越少；网速越高，需要的包越多。课上例子：100 Mbps、包 1000 字节 → 12,500 包/秒；包 500 字节时 → 25,000 包/秒。</p></div>
+
 <h3>著名攻击与防御</h3>
 <ul>
 <li><b>GitHub 2018</b>：峰值 1.3 Tbps，利用 Memcached 服务器把流量<b>放大约 5 万倍</b>，<b>没有用 botnet</b>。GitHub 有 DDoS 防护服务，10 分钟内就被告警，整场攻击约 20 分钟结束；</li>
@@ -391,6 +400,8 @@
 <tr><td>Nation-sponsored</td><td>国家支持的黑客：网络战、间谍</td><td>资源最雄厚</td></tr>
 </table></div>
 <p>公司为什么要雇白帽？他们能抢在坏人之前发现漏洞，Google、Facebook、Tesla 每年都会通过 <b>bug bounty（漏洞赏金）</b>付给黑客数百万美元。</p>
+
+<div class="teacher box" data-t="m1hat"><span class="bt">老师课上强调 · W3</span><p>老师的口径：gray hat 发现漏洞后告诉所有者，<b>但会要钱</b>（“我发现了你的漏洞，现在付钱给我”），所以分不清是好人还是坏人。</p></div>
 
 <h3>熟练黑客 vs 不熟练黑客（Q&amp;A 第 15 题）</h3>
 <p><b>熟练黑客</b>自己写代码，攻击<b>还没人知道的漏洞</b>，也就是<b>零日攻击（zero-day）</b>，一开始几乎没法防。<b>不熟练的</b>（script kiddie）用的是公开工具，所以只要<b>及时打补丁</b>、关注已公开的攻击工具，就能防住大部分。</p>
@@ -439,9 +450,11 @@
 <dt>plan – protect – respond</dt><dd>安全管理循环：规划、保护（最耗时，日常运维）、响应（按计划恢复）</dd>
 </dl>
 
-<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 1（27 题）</b>，以及刷题本里 P1 的 14 道自编题和 Q&amp;A 第 1–17 题。学完马上去<a href="practice.html#practice">刷题本</a>做一遍，错题会自动收进错题本。</p></div>
+<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 1（27 题）</b>，以及刷题本里 P1 的 15 道自编题和 Q&amp;A 第 1–17 题。学完马上去<a href="practice.html#practice">刷题本</a>做一遍，错题会自动收进错题本。</p></div>
 <p><button class="btn" data-done></button> <button class="btn" data-reset-quiz>重做本页小测</button></p>
 <nav class="pager"><a href="index.html"><span>← 返回</span><b>课程首页</b></a><a class="next" href="m2.html"><span>下一模块 →</span><b>2 · 工业 4.0 与人的因素</b></a></nav>
+<div class="teacher box" data-t="m1masq"><span class="bt">老师课上强调 · W3</span><p><b>人</b>冒用别人的身份叫 <b>masquerading</b>；<b>服务器 / IP 地址</b>被伪造叫 <b>spoofing</b>。样题 Q1-13 说的是“人”，所以选 masquerading。</p></div>
+
 </section>
 </main>
 </div>

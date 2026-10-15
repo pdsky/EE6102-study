@@ -13,7 +13,7 @@
 <header class="top"><div class="top-in">
   <a class="logo" href="index.html"><span class="marks" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></span><b>EE6102 小白课</b></a>
   <span class="sp"></span>
-  <nav aria-label="模块导航"><a href="index.html">首页</a><a href="m1.html">1 入门与威胁</a><a class="on" href="m2.html">2 工业4.0与人</a><a href="m3.html">3 策略与生物识别</a><a href="m4.html">4 密码学</a><a href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="practice.html">刷题本</a></nav>
+  <nav aria-label="模块导航"><a href="index.html">首页</a><a href="m1.html">1 入门与威胁</a><a class="on" href="m2.html">2 工业4.0与人</a><a href="m3.html">3 策略与生物识别</a><a href="m4.html">4 密码学</a><a href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="teacher.html">老师重点</a><a href="practice.html">刷题本</a></nav>
   <button class="themeb" type="button">主题</button>
 </div></header>
 <div class="wrap">
@@ -32,6 +32,7 @@
 <li>说出合规的定义、好处和建立合规项目的 5 个步骤；</li>
 <li>会算风险分 <b>Threat × Vulnerability × Asset</b>，会检查密码是否合规。</li></ul></div>
 
+<div class="teacher box" data-t="m2top"><span class="bt">老师课上强调 · 录音 W3–W4</span><ul><li>“如果考 compliance，每题都会有计算”：<b>风险评分</b>和<b>密码合规检查</b>是本章可能的期末计算。</li><li>样题不会原样出现，真题比样题简单。样题里有些题是故意出得“看起来都对”，让你想清楚为什么。</li></ul></div>
 <section class="sec" id="rev">
 <h2><span class="n">1</span>五次工业革命：从蒸汽机到人机协作</h2>
 <p>“工业 4.0”这个词你一定听过。要理解它为什么和网络安全有关，先看前几次革命分别改变了什么。</p>
@@ -208,6 +209,8 @@
 <div class="lab"><p class="lt">风险评分计算器</p>
 <div class="fields"><div class="fld"><label for="rt">Threat 威胁 (1–5)</label><input id="rt" type="number" min="1" max="5" value="4"></div><div class="fld"><label for="rv">Vulnerability 脆弱性 (1–5)</label><input id="rv" type="number" min="1" max="5" value="3"></div><div class="fld"><label for="ra">Asset value 资产价值 (1–5)</label><input id="ra" type="number" min="1" max="5" value="5"></div></div>
 <div class="out" id="rout"></div></div>
+
+<div class="teacher box" data-t="m2risk"><span class="bt">老师课上强调 · W4</span><p>风险 = 威胁 × 脆弱性 × 资产价值，每项 1–5 分，分越高风险越大。注意：老师课上把医院例子 4 × 3 × 5 口误说成“16”，<b>正确是 60</b>（60 ÷ 125 = 48%）。</p></div>
 
 <h3>密码合规检查</h3>
 <p><b>课件例题（P2-58）：</b>公司密码策略：至少 12 个字符，必须包含至少 1 个大写字母、1 个小写字母、1 个数字和 1 个符号。用户密码是 <code>MyPassword123</code>，合规吗？</p>

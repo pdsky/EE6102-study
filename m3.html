@@ -13,7 +13,7 @@
 <header class="top"><div class="top-in">
   <a class="logo" href="index.html"><span class="marks" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></span><b>EE6102 小白课</b></a>
   <span class="sp"></span>
-  <nav aria-label="模块导航"><a href="index.html">首页</a><a href="m1.html">1 入门与威胁</a><a href="m2.html">2 工业4.0与人</a><a class="on" href="m3.html">3 策略与生物识别</a><a href="m4.html">4 密码学</a><a href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="practice.html">刷题本</a></nav>
+  <nav aria-label="模块导航"><a href="index.html">首页</a><a href="m1.html">1 入门与威胁</a><a href="m2.html">2 工业4.0与人</a><a class="on" href="m3.html">3 策略与生物识别</a><a href="m4.html">4 密码学</a><a href="m5.html">5 Web与防火墙</a><a href="m6.html">6 区块链</a><a href="teacher.html">老师重点</a><a href="practice.html">刷题本</a></nav>
   <button class="themeb" type="button">主题</button>
 </div></header>
 <div class="wrap">
@@ -33,6 +33,7 @@
 <li>比较指纹、虹膜、视网膜、人脸的优缺点；</li>
 <li>解释 FAR、FRR、CER，以及调高灵敏度会发生什么。</li></ul></div>
 
+<div class="teacher box" data-t="m3top"><span class="bt">老师课上强调 · 录音 W4–W5</span><ul><li>真题可能问：<b>没认证能不能授权？不能</b>。先 authentication，再 authorization。</li><li>老师口径：top-down 总是有效；zero trust 连总裁的设备也要认证；FRR 是 Type I，FAR 是 Type II。</li></ul></div>
 <section class="sec" id="plan">
 <h2><span class="n">1</span>安全计划：先想清楚，再动手</h2>
 <p><b>Cyber security plan</b> 是一份书面文件，写明组织在安全上采用的<b>策略、战略、流程和技术</b>（P3-2）。它的目标有四个：保护 CIA、管理网络风险、保证业务连续、满足法律和监管要求。</p>
@@ -129,6 +130,8 @@
 <div class="analogy box"><span class="bt">类比</span><p>一个普通员工想推动“全公司开会都要准时”，没人听；如果是 CEO 发通知、自己带头准时、迟到要扣绩效，事情就办成了。</p></div>
 <p>样题 Q3-2、Q3-3：高层支持在项目的<b>整个过程中</b>都重要（不只是开头）；高层要<b>确保足够的预算，并且自己也遵守安全流程</b>。Q&amp;A Q20：员工看不到上级尊重安全，就不会改变自己的行为。</p>
 
+<div class="teacher box" data-t="m3td"><span class="bt">老师课上强调 · W4</span><p>老师的说法很绝对：<b>top-down 总是有效，bottom-up 不行</b>。因为没有高层支持，就没有预算，也推不动政策。</p></div>
+
 <h3>DLM：数字责任管理的四层防御（P3-12、P3-13）</h3>
 <p>Digital Liability Management 也叫“政策与技术的交汇”，体现了自上而下的思想。四层从上到下：</p>
 <figure>
@@ -142,6 +145,8 @@
 </figure>
 <p>DLM 的目标：防止入侵和事件发生；一旦发生，能做好防御。</p>
 
+<div class="teacher box" data-t="m3dlm"><span class="bt">老师课上强调 · W4</span><p>DLM 第 1–3 层都是<b>非技术</b>的（约占 75%），只有第 4 层是技术措施。这正说明安全主要是管理问题和人的问题。</p></div>
+
 <h3>零信任与纵深防御（P3-14、P3-15）</h3>
 <ul>
 <li><b>Zero Trust 零信任</b>：<b>never trust, always verify</b>。不因为“在公司内网”就默认可信，每次访问都要验证身份和权限；</li>
@@ -154,6 +159,8 @@
 <div class="check" data-a="1"><p class="cq">自下而上做法的主要缺点是？</p>
 <div class="opts"><button class="opt">缺少技术能力</button><button class="opt">缺少参与者支持和组织持续力</button><button class="opt">太贵</button></div>
 <div class="cx"><p>技术能力恰恰是它的优点。它缺的是权力和持续性。</p></div></div>
+<div class="teacher box" data-t="m3zt"><span class="bt">老师课上强调 · W4</span><p>Zero trust：谁都不默认信任，<b>连总裁（CEO）的设备也要认证</b>。</p></div>
+
 </section>
 
 <section class="sec" id="auth">
@@ -175,6 +182,8 @@
 </table></div>
 <p>另外，<b>Authentication 认证</b>是确认你的身份（样题 Q3-9：“assessing the identity of each individual”），<b>Authorization 授权</b>是确认身份之后，决定你能做什么。先认证，后授权。</p>
 <div class="analogy box"><span class="bt">类比</span><p>机场 e-Gate：你先刷护照说“我是张三”，闸机再拍你的脸只和张三的照片比对，这是<b>一对一的验证</b>。警察拿监控里的一张脸去全国数据库里找人，是<b>一对多的识别</b>。闸机打开后，你只能去登机口，不能进驾驶舱，这是<b>授权</b>。</p></div>
+<div class="teacher box" data-t="m3pairs"><span class="bt">老师课上强调 · W5</span><ul><li>“真题可能会问：can a person be authorized without authentication？答案是 <b>No</b>。”</li><li>identification（你是谁？）是<b>一对多</b>比对，例子是犯罪现场的指纹去库里找人；verification（你是不是你说的那个人？）是<b>一对一</b>，例子是生物识别护照过关。</li></ul></div>
+
 <h3>为什么还需要生物识别</h3>
 <p>样题 Q3-10：短而简单、反复使用的密码总是容易被破解吗？<b>是的</b>。模块 1 算过，6 位数字 2 秒就能穷举。课件 P3-18 也说，处理器变快、密码分析进步，让密码成了较弱的保护。</p>
 <div class="check" data-a="1"><p class="cq">手机解锁时，系统把你的指纹只和机主的指纹模板比对，这是？</p>
@@ -242,6 +251,8 @@
 <div class="out" id="farout"></div></div>
 <p>你会看到：<b>阈值调高（更严格、更“灵敏”）</b>，冒充者更难通过，<b>FAR 下降</b>；但合法用户也更容易被拒，<b>FRR 上升</b>。这就是课件 P3-47 的原话：“As we increase the sensitivity of the biometrics sensors, the <b>FRR increases, and the FAR decreases</b>.” 两者此消彼长，在中间某处相等，那就是 CER。</p>
 <div class="key box"><span class="bt">选哪个阈值？</span><p>看应用场景：<b>金库、核电站</b>宁可让员工多刷几次，也不能放进一个坏人，阈值调高（低 FAR）；<b>手机解锁</b>更在乎体验，阈值稍低（低 FRR），再配合其他保护。课件：“choose the one that fits the specific application”。</p></div>
+<div class="teacher box" data-t="m3far"><span class="bt">老师课上强调 · W5</span><p>FRR（把真人拒掉）是 <b>Type I</b>；FAR（把冒充者放进来）是 <b>Type II</b>。样题 Q3-13 “false acceptance occurs when a person is improperly matched” 选 Yes。</p></div>
+
 <h3>错误 vs 欺骗（P3-49）</h3>
 <ul>
 <li><b>Errors</b>：被识别的人<b>没有</b>想骗系统，只是系统判错了；</li>
@@ -281,6 +292,8 @@
 <p>其他风险：太方便会让人<b>大意</b>；生物特征比门卡更容易被复制，因为我们到处留下指纹，社交媒体上的照片可以拿来做人脸模型。</p>
 <div class="key box"><span class="bt">课件结论（P3-53）</span><p>生物识别提供了便利和额外一层安全，但<b>不是万无一失</b>：不可更改、可能被滥用、可能被伪造。所以它最好<b>和密码一起用，而不是取代密码</b>：“Biometrics can enhance, but not replace, passwords.”</p></div>
 <p>未来趋势：无接触生物识别（人脸、虹膜、声音）、AI 提高准确率、基于行为的持续认证、用区块链去中心化存储生物数据。</p>
+<div class="teacher box" data-t="m3vs"><span class="bt">老师课上强调 · W5</span><p>老师的结论：生物识别要做到 <b>100% 匹配</b>才能取代密码，现在做不到，所以只能<b>增强</b>密码，不能取代。3D 人脸识别大约在 90° 范围内有效。</p></div>
+
 </section>
 
 <section class="sec" id="sum">
@@ -297,7 +310,7 @@
 <li>Error 无意，<b>Deception</b> 故意；厂商数据常被夸大；FTE 是注册失败。</li>
 <li>生物识别<b>增强而不取代</b>密码，因为它不可撤销。</li>
 </ul></div>
-<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 3（15 题）</b>、刷题本 P3 的 12 道自编题，以及 Q&amp;A Q18–Q20 三道论述题。去<a href="practice.html#qa">刷题本的问答题页</a>写一遍 Q18。</p></div>
+<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 3（15 题）</b>、刷题本 P3 的 13 道自编题，以及 Q&amp;A Q18–Q20 三道论述题。去<a href="practice.html#qa">刷题本的问答题页</a>写一遍 Q18。</p></div>
 <p><button class="btn" data-done></button> <button class="btn" data-reset-quiz>重做本页小测</button></p>
 <nav class="pager"><a href="m2.html"><span>← 上一模块</span><b>2 · 工业 4.0 与人</b></a><a class="next" href="m4.html"><span>下一模块 →</span><b>4 · 密码学</b></a></nav>
 </section>

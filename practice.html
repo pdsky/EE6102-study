@@ -89,7 +89,7 @@ sup{line-height:0}
 .main{padding:34px clamp(16px,4.5vw,56px) 96px;min-width:0}
 .view{max-width:880px}
 @media (max-width:860px){
-  .app{grid-template-columns:1fr}
+  .app{grid-template-columns:minmax(0,1fr)}
   .side{position:sticky;top:env(safe-area-inset-top,0px);height:auto;z-index:30;border-right:0;border-bottom:1px solid var(--line);padding:8px 16px;gap:6px;overflow:visible}
   .brand{padding:0}
   .brand .sub,.brand .marks{display:none}
@@ -126,6 +126,20 @@ sup{line-height:0}
 .tag.ok{background:var(--good-soft);color:var(--good)}
 .tag.no{background:var(--bad-soft);color:var(--bad)}
 .tag.meh{background:var(--warn-soft);color:var(--warn)}
+.tag.hot{background:var(--mark);color:#fff;font-weight:600}
+.hotbox{background:color-mix(in srgb,var(--mark) 10%,var(--surface));border-left:3px solid var(--mark);color:var(--ink);padding:9px 12px;border-radius:0 8px 8px 0;font-size:14px;line-height:1.6}
+.chip.hotc{border-color:color-mix(in srgb,var(--mark) 55%,var(--line))}
+.chip.hotc.on{background:var(--mark);border-color:var(--mark);color:#fff}
+.qk.hotk{border-left:3px solid var(--mark)}
+.exq{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--paper);display:flex;flex-direction:column;gap:8px}
+.exq .stem{font-family:var(--f-en);font-size:15.5px;line-height:1.55;margin:0}
+.exq .stem ol{margin:6px 0 0;padding-left:24px}
+.exq .stem li{margin:4px 0}
+.exq .zh{margin:0}
+.exname{font-family:var(--f-mono);font-size:12px;color:var(--muted);margin:0;letter-spacing:.02em}
+.en-ans{font-family:var(--f-en);font-size:15px;line-height:1.55;margin:4px 0;padding-left:20px}
+p.en-ans{padding-left:0}
+.en-ans li{margin:3px 0}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
 .ref{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);white-space:nowrap}
 table.mini{border-collapse:collapse;width:100%;font-size:13.5px;margin:8px 0}
@@ -327,13 +341,15 @@ details.more>summary{cursor:pointer;font-family:var(--f-ui);font-size:13px;color
     <nav class="nav" aria-label="主导航">
       <div class="grp"><span class="gl">学习</span>
         <a href="#home" data-v="home">总览</a>
-        <a href="#notes" data-v="notes">考点速记</a></div>
+        <a href="#notes" data-v="notes">考点速记</a>
+        <a href="#teacher" data-v="teacher">老师上课重点</a></div>
       <div class="grp"><span class="gl">Quiz · 选择题</span>
         <a href="#practice" data-v="practice">分章练习</a>
         <a href="#mock" data-v="mock">模拟测验</a>
         <a href="#wrong" data-v="wrong">错题本 <span class="cnt" id="wrongCnt"></span></a></div>
       <div class="grp"><span class="gl">Final · 大题</span>
         <a href="#qa" data-v="qa">问答题 Q&amp;A</a>
+        <a href="#exam" data-v="exam">期末专项 DH/RSA</a>
         <a href="#calc" data-v="calc">计算题</a></div>
     </nav>
     <p class="side-foot">题目与答案依据 Dr M Y Siyal 的 EE6102 课件和样题整理，讲解为学习辅助。进度只保存在本浏览器中。</p>
@@ -2178,6 +2194,264 @@ window.NOTES = {
 <p>按计划响应；重大事件召集 <b>CSIRT</b>（高管、安全人员、IT、业务部门、公关、法务）。阶段：<b>Detect → Stop → Repair → Punish</b>。灾难恢复（专用备份站点或两站互备）、业务连续性、<b>定期演练</b>（发现计划问题、提高响应速度）。安全是一个过程，而不是一劳永逸的方案，要在保护与可用性之间平衡。</p>`
 };
 
+/* 老师上课录音（W2–W8，7 份转写）整理：
+   HOT    题号 → 老师课上的原话要点（练习页显示「老师强调」标签和「老师课上说」）
+   NOTES.t 考点速记里的「老师上课重点」页
+   追加的 MCQ：录音里强调、但样题和原自编题没覆盖的点（s:'c'，带 hot） */
+window.HOT = {
+'1.03':`W3：这题在真题里有约 20 个版本，<b>约 80% 的人做错</b>。错误选项会把 Availability 换成 Access，把 Confidentiality 换成 Consideration，看到 “C、I、A” 就点的人全中招。一个单词一个单词核对拼写。`,
+'1.05':`W3：老师说这道原题当年“没人做对”，已经从真题里删掉。但 authenticity（确认对方就是他声称的那个人）这个概念还会换个说法考。`,
+'1.13':`W3：<b>人</b>冒用别人身份叫 masquerading；<b>服务器 / IP 地址</b>被伪造叫 spoofing。题干说的是“人”，就选 masquerading。`,
+'1.15':`W2：“从 quiz 角度你至少要知道：virus 需要宿主（host），worm 不需要。真题会有这样的题。”`,
+'1.c9':`W3 老师口径：gray hat 介于白帽和黑帽之间，发现漏洞后告诉所有者，<b>但会索要钱</b>（“我发现了你的漏洞，现在付钱”）。`,
+'1.c8':`W2：暴力破解时间是期末 <b>15 分</b>计算题，老师说是“最容易拿的分”，但很多人算错。时间 = 组合数 ÷ 每秒尝试次数；换算成年要 ÷ (60×60×24×365)；有 bots 就再除以数量。`,
+'1.c7':`W2：DoS 包数也是期末计算题（和暴力破解合计约 30 分）。包越大，需要的包越少；网速越高，需要的包越多。例：100 Mbps、1000 字节 → 12,500 包/秒（500 字节时是 25,000）。`,
+'2.c4':`W4：“如果考 compliance，每题都会有计算。”风险 = 威胁 × 脆弱性 × 资产价值，每项 1–5 分，分越高风险越大。（课上把 4×3×5 口误说成 16，正确是 60。）`,
+'2.c5':`W4：密码合规检查是 compliance 部分可能出的计算/判断题，逐条对照策略检查。`,
+'3.09':`W5：老师点名“真题可能会问：没认证能不能授权？答案是不能。”先 authentication（你是谁），再 authorization（你能做什么）。`,
+'3.c1':`W4：老师口径是 top-down 总是有效，bottom-up 不行。因为没有高层支持就没有预算和权限。`,
+'3.c2':`W4：DLM 四层防御中，第 1–3 层都是非技术层（约占 75%），只有第 4 层是技术措施。`,
+'3.c3':`W4：zero trust 就是谁都不默认信任，<b>连总裁的设备也要认证</b>。`,
+'3.c4':`W5：identification 是“你是谁？”，<b>一对多</b>比对，例如犯罪现场的指纹去库里找人；verification 是“你是不是你说的那个人”，<b>一对一</b>，例如生物识别护照过关。`,
+'3.c5':`W5：FRR（把真人拒掉）是 Type I；FAR（把冒充者放进来）是 Type II。`,
+'3.13':`W5：false acceptance 就是把不该匹配的人匹配上，即冒充者通过，对应 FAR / Type II。`,
+'3.c11':`W5：老师结论是生物识别要做到 100% 匹配才能取代密码，目前做不到，只能“增强”密码。3D 人脸大约在 90° 范围内有效。`,
+'3.11':`W5：为什么是 Yes？研究表明人们看到生物特征会更信任（餐馆里刷卡的例子）。老师补充：真题不会出答案模糊的题，样题里的“绕”是故意的。`,
+'4.04':`W6：DES 是分组密码，分组 64 位，16 轮。`,
+'4.05':`W6：“<b>密钥是 56 位</b>。有的资料写 64 位，这是完全错的：虽然输入 64 位，但其中 8 位是冗余（校验）位，攻击者只需要找 56 位。quiz 问 DES 密钥长度，答 56。”`,
+'4.06':`W6：“DES = Data Encryption Standard，quiz 里有题，有学生选错。”AES = Advanced Encryption Standard 也要认得。`,
+'4.07':`W8：对称加密快且安全，最大的问题是<b>密钥交换</b>。“更复杂 / 更耗时”与安全无关，比如 ECC 很复杂但很快。`,
+'4.08':`W8：算法复杂不等于安全；厂商的数据来自理想条件，不能信；速度重要但不是唯一。<b>用得越久还没被破</b>说明越可靠，例如 AES 从 2001 年用到现在，RSA 从 1978 年用到现在。`,
+'4.09':`W8：没有“unbreakable”的算法。只要算力够，暴力破解总能找到密钥，量子计算机来了 RSA/ECC 都会被破。说“一百万年内破不了”可以，说“永远破不了”是夸大。`,
+'4.10':`W8：没有所谓的 “certified encryption”。RSA、AES 都是公开免费的算法，不需要认证，“certified” 只是营销说法。`,
+'4.11':`W8：课上大多数人选 B（可以用，但要谨慎）。“永远不用”就永远无法证明它好不好。C、D 都错，因为没有 certified，也没有 unbreakable。`,
+'4.14':`W8：错。公钥本来就是公开的，攻击者只需要找私钥这一把；对称加密攻击者也只需要找一把。“两把钥匙所以更安全”不成立。`,
+'4.18':`W8：φ = (5−1)(11−1) = 40，选项里没有 40，所以选 none of the above。W7：quiz 可能给小数字问 n、φ、甚至给 e 问 d。`,
+'4.20':`W8：这就是 RSA 的安全基础：两个大素数相乘容易，从乘积分解回去不可能。如果能做到，就没人用 RSA 了。`,
+'4.21':`W8：为了保密，Carol 用 <b>Bob 的公钥</b>加密，Bob 用自己的私钥解密。但 Bob 不知道是谁发的，因为谁都有他的公钥。`,
+'4.23':`W8：题目没说清教授要不要知道是谁交的。只要保密：大家都用教授公钥，就是 1 公钥 1 私钥；要识别身份：30 对密钥。所以答 variable。“1 公钥 30 私钥”不可能。`,
+'4.26':`W8：哈希<b>只提供完整性</b>（比较摘要发现改动），<b>不提供认证</b>。认证要靠数字签名（哈希 + 私钥）。`,
+'4.27':`W8：SHA 是<b>算法</b>；hash value 是 SHA 的输出，digest 是 MD 的输出。题目问的是 family of hash functions，只能选算法。`,
+'4.29':`W8：选 both。验证签名说明来源是谁（认证），比较两个摘要说明没被改（完整性）。`,
+'4.31':`W8：只有发送方能生成签名，用<b>发送方私钥</b>；接收方用发送方公钥验证。`,
+'4.32':`W8：数字证书只认证<b>公钥</b>。私钥从不给别人，谈不上认证。登录 NTU 邮箱时，服务器发来的证书里就嵌着它的公钥。`,
+'4.34':`W8：混合系统中公钥用于<b>交换会话密钥</b>，对称会话密钥加密数据（登录 Facebook 的例子）。`,
+'4.35':`W7/W8：混合系统 = 公钥交换会话密钥 + 对称密钥加密会话数据。会话结束密钥作废，下次登录换新的。`,
+'4.c1':`W6：AES 分组固定 128 位；密钥 128/192/256 位，“从 quiz 角度要知道”。DES 是 64 位分组。`,
+'4.c2':`W6：轮数取决于密钥长度：128 位 10 轮、192 位 12 轮、256 位 14 轮。不考 AES 结构图（“往年也没考过”）。`,
+'4.c3':`W6：2DES 是两把 56 位密钥，不是一把 112 位，可以分开破，加上中间相遇攻击，所以被放弃。`,
+'4.c6':`W6：DH <b>只是密钥交换协议</b>，不能加解密，交换完用 AES 之类的对称算法加密。老师反复说“DH 必考”。`,
+'4.c7':`W7：等强度下 ECC 密钥更短、更快（AES-128 ≈ ECC-256；AES-256 ≈ ECC-512 ≈ RSA-15360）。老师个人认为 ECC 不会取代 RSA：RSA 简单、软硬件都围绕它建成。`,
+'4.c8':`W7/W8：MD5、SHA-1（以及 DES）都不安全，不应再用；SHA-256 用于比特币。`,
+'4.c10':`W8：“<b>这道题以前考过</b>”：如何验证证书？三件事：① 用 CA 公钥验证 CA 签名，确认 CA 可信；② 是否在有效期内；③ 是否被吊销（查序列号）。三项都通过浏览器才接受。`,
+'4.c13':`W7：用课件的 k 法：d = (kφ+1)/e，k 从 1 试到整除为止，老师建议考试就用这个方法省时间。考试数字都 &lt; 20。`,
+'4.c14':`W6：DH 计算是期末 <b>15 分</b>题，“really easy 15 marks”。公式不给：Y = g<sup>x</sup> mod p，K = Y<sub>对方</sub><sup>x</sup> mod p，必须背。`,
+'4.c15':`W7 老师口径（期末要写）：选 e 的<b>三个条件</b>：① 1 &lt; e &lt; φ；② e 是素数；③ e 与 p−1、q−1 没有公因子。标准说法只要 gcd(e, φ) = 1，考试按老师的三条写。`,
+'4.c17':`W7：先用发送方公钥解开签名得到摘要，再自己对消息做哈希得到摘要，两者相同才接受。期末手算时不用哈希：S = M<sup>d</sup> mod n，验证 S<sup>e</sup> mod n = M。`,
+'5.01':`W8：TLS 的子协议里最复杂、最重要的是 Handshake，因为密钥交换在这里完成。`,
+'5.03':`W8：Record 协议：分片 → 压缩 → 哈希（MAC）→ 加密 → 加头。它在握手完成、交换好密钥之后才工作。`,
+'5.04':`W8：证书出问题（过期、被吊销、未知 CA、不支持的证书）时由 Alert 协议报警，还包括坏的 MAC、解压失败、握手失败等。`,
+'5.c1':`W8：HTTP 用 80 端口、不加密；HTTPS = HTTP + TLS，用 443 端口。`,
+'5.c2':`W8：RSA 密钥交换下服务器私钥长期不变，几十亿用户共用。一旦被破，录下的所有历史通信都能解开（前向保密问题）。TLS 1.3 改用临时 DH（EDH），每次会话都换参数。`,
+'5.c12':`W8：TLS 里公钥（RSA/DH）至少 2048 位；会话密钥 128 位足够，低于 128 位不安全，浏览器最高支持 256 位。`,
+'5.c14':`W8：TLS 1.3 算法套件从 37 个减到 5 个，去掉了 DES、3DES、SHA-1、MD5。研究显示服务器出问题多半是管理员配错算法，选项少了就不容易配错。握手更短更快，回访同一服务器还能复用参数。`
+};
+
+window.MCQ = (window.MCQ || []).concat([
+{id:'1.c15',p:1,s:'c',q:`An attacker forges the source IP address of packets so that they appear to come from a trusted server. This is called:`,
+o:[`Masquerading`,`Spoofing`,`Repudiation`,`Phishing`],a:1,
+zh:`攻击者伪造数据包的源 IP 地址，让它看起来来自可信服务器。这叫什么？`,
+ex:`伪造的是<b>服务器 / IP 地址</b>，所以是 spoofing。如果是一个<b>人</b>冒用别人身份，才叫 masquerading（样题 P1-13 就是这种）。`,
+op:[`✗ 人冒充别人时才用这个词`,`✓ IP / 服务器伪造`,`✗ 抵赖：事后否认自己做过`,`✗ 钓鱼：骗人点链接或交出信息`],
+tip:`人 → masquerading；机器（IP、服务器）→ spoofing。`,ref:`P1 · 录音 W3`,
+hot:`W3：“说人的时候用 masquerading，说服务器的时候用 spoofing，IP 地址是被 spoof 的。”`},
+
+{id:'3.c13',p:3,s:'c',q:`Can a user be authorized to use a resource without first being authenticated?`,
+o:[`Yes`,`No`],a:1,
+zh:`一个用户没有先通过认证，能不能被授权使用资源？`,
+ex:`不能。顺序永远是先 <b>authentication</b>（确认你是谁），再 <b>authorization</b>（按你的角色决定你能用什么）。连身份都不知道，就无从授权。`,
+op:[`✗`,`✓ 先认证后授权`],
+tip:`AuthN（你是谁）→ AuthZ（你能做什么）。`,ref:`P3 · 录音 W5`,
+hot:`W5：“真题可能会问：can a person be authorized without authentication？答案是 No。”`},
+
+{id:'4.c18',p:4,s:'c',q:`In 3DES (Encrypt–Decrypt–Encrypt), if the sub-keys K1 and K2 happen to be the same, the result is:`,
+o:[`Three times stronger than DES`,`Equivalent to single DES, but three times slower`,`Equivalent to 2DES`,`Impossible to decrypt`],a:1,
+zh:`3DES 按“加密-解密-加密”运行。如果子密钥 K1 和 K2 恰好相同，结果会怎样？`,
+ex:`用户给 168 位密钥，系统切成三把 56 位子密钥。若 K1 = K2：先用 K1 加密，再用同一把钥匙解密，等于回到明文，最后只剩第三步一次加密。效果<b>和单 DES 一样，却慢 3 倍</b>。这种情况偶尔会发生，所以 3DES 只能算临时方案，最终被 AES 取代。`,
+op:[`✗`,`✓ E 与 D 互相抵消`,`✗`,`✗ 照样能解密`],
+tip:`E(K1) → D(K2=K1) 抵消 → 只剩一次 E。`,ref:`P4 DES/3DES · 录音 W6`,
+hot:`W6：老师专门讲了 3DES 的 EDE 结构和子密钥相同的问题，以及“为什么 3DES 只是临时方案”。`},
+
+{id:'4.c19',p:4,s:'c',q:`AES is based on the Rijndael algorithm. What is the only difference between them?`,
+o:[`AES uses a 64-bit block`,`AES fixes the block size (128 bits) and key sizes, while Rijndael allows any multiple of 32 bits`,`AES adds a hash function to Rijndael`,`AES is a public-key version of Rijndael`],a:1,
+zh:`AES 基于 Rijndael 算法。两者唯一的区别是什么？`,
+ex:`Rijndael 的分组和密钥长度可以是任何 32 的倍数；AES 把分组固定为 128 位，密钥只能是 128/192/256 位。<b>为什么要固定？</b>因为它是国际标准：参数统一后，通信双方不用协商，也没有兼容性问题。`,
+op:[`✗ 64 位是 DES 的分组`,`✓`,`✗`,`✗ 两者都是对称算法`],
+tip:`Rijndael 灵活 → AES 固定，为了统一标准、免协商、无兼容问题。`,ref:`P4 AES · 录音 W6`,
+hot:`W6：老师在课上提问“为什么 AES 要把参数固定？”，答案是国际标准要保证所有人参数一致。`},
+
+{id:'4.c20',p:4,s:'c',q:`In RSA, why can 2 never be chosen as the public key e?`,
+o:[`Because 2 is not a prime number`,`Because 2 is always larger than φ(n)`,`Because p−1 and q−1 are always even, so 2 is always a common factor`,`Because the private key would become too large`],a:2,
+zh:`RSA 中为什么 2 永远不能当公钥 e？`,
+ex:`除 2 以外的素数都是奇数，奇数减 1 一定是偶数，所以 p−1、q−1 都含因子 2。e = 2 违反第三个条件（不能与 p−1、q−1 有公因子）。不管 p、q 大小都一样。2 本身是素数，也满足 1 &lt; e &lt; φ，只是第三条不满足。`,
+op:[`✗ 2 是素数`,`✗ φ 通常远大于 2`,`✓`,`✗ 问题是 d 根本不存在`],
+tip:`奇素数 − 1 = 偶数 → 2 永远是公因子。`,ref:`P4 RSA · 录音 W7`,
+hot:`W7：这是往年期末 15 分 RSA 大题的第一问：“Why 2 cannot be chosen as a public key in RSA?”，要答出三个条件中哪一条不满足。`},
+
+{id:'4.c21',p:4,s:'c',q:`A website offers to e-mail you your original password when you forget it. What does this tell you?`,
+o:[`It stores passwords as hash values, so it is safe`,`It does not store passwords as hash values (they can be recovered), so it should not be trusted`,`It uses a digital certificate`,`It uses TLS 1.3`],a:1,
+zh:`某网站说忘记密码时可以把原密码发到你的邮箱。这说明什么？`,
+ex:`正确做法是只存密码的<b>哈希值</b>。登录时把你输入的密码再哈希一次，和库里的比对。哈希不可逆，网站自己也不知道你的原密码，所以只能让你<b>重置</b>，不能<b>找回</b>。能找回说明它存的是明文或可解密的密文，数据库一泄露密码就全暴露。`,
+op:[`✗ 哈希存储是找不回原密码的`,`✓`,`✗ 无关`,`✗ 无关`],
+tip:`能“找回”原密码 = 没用哈希 = 不安全；正常只能“重置”。`,ref:`P4 Hashing · 录音 W7`,
+hot:`W7：“如果网站说能帮你找回密码，说明它没用哈希，这个网站不应该用。NTU 也只能让你重置。”`},
+
+{id:'4.c22',p:4,s:'c',q:`For the same level of security, which ordering from fastest to slowest is correct?`,
+o:[`RSA > ECC > AES`,`ECC > AES > RSA`,`AES > ECC > RSA`,`AES > RSA > ECC`],a:2,
+zh:`在同等安全强度下，从快到慢排序哪个正确？`,
+ex:`对称的 AES 最快，ECC 次之，RSA 最慢。密钥长度对比：AES-128 ≈ ECC-256 ≈ RSA-3072；AES-256 ≈ ECC-512 ≈ RSA-15360。密钥越长越慢。所以实际中用公钥交换密钥，再用 AES 加密大量数据，也就是混合系统。`,
+op:[`✗ 反了`,`✗ AES 最快`,`✓`,`✗ RSA 最慢`],
+tip:`AES（对称）> ECC > RSA。`,ref:`P4 ECC · 录音 W7`,
+hot:`W7：老师用密钥长度表说明“最快的是 AES，然后 ECC，最慢的是 RSA”。`},
+
+{id:'4.c23',p:4,s:'c',q:`What is the main reason the ElGamal encryption algorithm is rarely used today?`,
+o:[`It can only exchange keys, not encrypt`,`Its ciphertext is about twice the size of the plaintext, making it slow`,`It was broken by the EFF in 1998`,`It is still protected by a patent`],a:1,
+zh:`ElGamal 加密算法今天很少使用，主要原因是什么？`,
+ex:`ElGamal 把 DH 扩展成能加解密、能签名的完整系统（是重要突破），但<b>密文大约是明文的两倍</b>，所以很慢。在计算机领域，“慢的就不会被用”。`,
+op:[`✗ 这是 DH 的局限，ElGamal 能加密`,`✓`,`✗ 1998 年被 EFF 破解的是 DES`,`✗`],
+tip:`ElGamal：DH 的扩展，密文 ×2，慢。`,ref:`P4 ElGamal · 录音 W7`,
+hot:`W7：“ElGamal 的问题是密文是明文的两倍，很慢，所以不用。”老师说只简单介绍 ElGamal 和 ECC，重点是 DH 和 RSA。`},
+
+{id:'4.c24',p:4,s:'c',q:`In the Diffie-Hellman key exchange, which values must be kept secret?`,
+o:[`The prime number p and the generator g`,`The public keys of both users`,`Each user's private (secret) number`,`All of the above`],a:2,
+zh:`在 Diffie-Hellman 密钥交换中，哪些值必须保密？`,
+ex:`p 和 g 是公开协商的，双方的公钥也会在网上交换，攻击者都能看到。<b>只有双方各自的私密数</b>必须保密。私密数一旦泄露，攻击者就能用 K = Y<sub>对方</sub><sup>x</sup> mod p 算出共享密钥，DH 就毫无安全性。另外，实际使用时这些数必须很大（至少 2048 位），太小可以直接试出来。`,
+op:[`✗ 公开的`,`✗ 公开交换的`,`✓`,`✗`],
+tip:`DH 中公开的有 p、g、Y<sub>A</sub>、Y<sub>B</sub>；保密的只有 x<sub>A</sub>、x<sub>B</sub>。`,ref:`P4 DH · 录音 W6`,
+hot:`W6：老师列出的期末 DH 可能问法：简述 DH；私密数泄露会怎样（不安全）；数字太小会怎样（会被破，至少 2048 位）。`},
+
+{id:'4.c25',p:4,s:'c',q:`Why is the message hashed before it is signed in a practical digital signature scheme?`,
+o:[`Hashing provides confidentiality of the message`,`Signing the short fixed-length digest is much faster than signing the whole message, and any change to the message can be detected`,`Hashing replaces the need for a private key`,`Hashing makes the signature reversible`],a:1,
+zh:`实际的数字签名为什么要先对消息做哈希再签名？`,
+ex:`如果直接用私钥“加密”整条消息（比如 1 GB），签名和验证都非常慢。先哈希得到固定长度的短摘要，只对摘要签名，就快得多。消息哪怕只改一位，摘要也会完全不同，所以改动能被发现。注意：这种签名<b>不保护消息内容</b>，消息仍是明文发送。要保密还得再用接收方公钥加密。`,
+op:[`✗ 哈希不提供保密性`,`✓ 快 + 能检测改动`,`✗ 签名仍需私钥`,`✗ 哈希不可逆`],
+tip:`哈希的两个作用：缩短（快）+ 检测改动（完整性）。`,ref:`P4 Digital Signature · 录音 W7`,
+hot:`W7：“为了让数字签名更快，我们用哈希。”老师还对比了两种版本：消息不加密（常用、快）和消息用接收方公钥加密（安全但慢）。`},
+
+{id:'4.c26',p:4,s:'c',q:`How does a Certification Authority (CA) cancel the certificate of a client who has misbehaved?`,
+o:[`By deleting the client's public key`,`By revoking the certificate's unique serial number`,`By changing the certificate's expiry date`,`By asking the client to return the certificate`],a:1,
+zh:`客户有违规行为时，CA 怎样作废他的证书？`,
+ex:`证书文件在客户手里，CA 收不回来。但每张证书都有<b>唯一的序列号</b>，CA 把这个序列号列为作废，就完成了<b>吊销（revocation）</b>。验证证书时要检查三件事：CA 签名（可信吗）、有效期、是否被吊销。第三项就是查这个序列号。证书格式标准是 X.509 v3。`,
+op:[`✗`,`✓`,`✗`,`✗ 收不回来`],
+tip:`吊销看序列号；验证证书 = 可信 CA + 有效期 + 未吊销。`,ref:`P4 Digital Certificate · 录音 W8`,
+hot:`W8：“证书已经在客户手里，CA 没法取消证书本身，只能取消它的序列号，这叫 revocation。”`},
+
+{id:'5.c15',p:5,s:'c',q:`Since 2020, which SSL/TLS versions are prohibited and should no longer be used by servers?`,
+o:[`TLS 1.2 and TLS 1.3`,`SSL 2.0/3.0, TLS 1.0 and TLS 1.1`,`Only TLS 1.3`,`None — all versions are still allowed`],a:1,
+zh:`从 2020 年起，哪些 SSL/TLS 版本被禁止、服务器不应再使用？`,
+ex:`时间线：Netscape 在 1994 年推出 SSL，SSL 3.0 于 1996 年发布。1999 年交给 IETF，改名 TLS 1.0。之后 TLS 1.1 于 2006 年、1.2 于 2008 年、<b>1.3 于 2018 年 3 月</b>发布。SSL 3.0 在 2015 年被禁，TLS 1.0/1.1 在 2020 年被禁。原计划 2020 年底全部改用 1.3，但因疫情没有强制执行，现在 1.2 还在用。`,
+op:[`✗ 这两个是现在该用的`,`✓`,`✗`,`✗`],
+tip:`能用：1.3（推荐）、1.2；禁用：SSL 全部、TLS 1.0、1.1。`,ref:`P5 TLS · 录音 W8`,
+hot:`W8：老师用 SSL Labs 演示：微信、Facebook、Google 还开着 TLS 1.0/1.1，被评为 B（为了用户量和广告收入）；Microsoft、NTU 关掉了，评为 A+。`},
+
+{id:'5.c16',p:5,s:'c',q:`In SSL/TLS, why is the client usually NOT authenticated?`,
+o:[`The protocol does not allow client authentication`,`It would require a digital certificate for every client, making the connection slower and less user-friendly`,`Clients do not have IP addresses`,`Because the server is not authenticated either`],a:1,
+zh:`在 SSL/TLS 中，为什么通常不认证客户端？`,
+ex:`协议本身<b>允许</b>双向认证，但如果认证客户端，每个用户都得买并维护数字证书，浏览器还要逐一验证，连接会变慢，也不好用，没人会用。所以实际中只认证<b>服务器</b>（服务器必须有 SSL 证书和公私钥），客户端不需要任何密钥，并且总是由客户端发起连接。`,
+op:[`✗ 协议允许`,`✓`,`✗`,`✗ 服务器总是要认证`],
+tip:`TLS：服务器必须认证（有证书），客户端几乎从不认证。`,ref:`P5 TLS · 录音 W8`,
+hot:`W8：“按协议客户端也可以认证，但几乎从不这样做，因为会很慢、不友好，没人会用。”`},
+
+{id:'5.c17',p:5,s:'c',q:`In TLS 1.3, "ephemeral" Diffie-Hellman (EDH/DHE) means:`,
+o:[`The server reuses the same DH values for every client`,`New DH secret values are generated for every session, so cracking one session key does not expose other sessions`,`RSA is used to encrypt the DH values`,`The session key never changes`],a:1,
+zh:`TLS 1.3 中的临时（ephemeral）Diffie-Hellman 是什么意思？`,
+ex:`如果 DH 参数固定，共享密钥也固定，和 RSA 密钥交换一样有长期密钥的问题。<b>Ephemeral</b> 是指每次会话都重新选素数、生成元和私密数，只在这一次会话有效。攻击者就算侥幸破了一个会话密钥，也只影响这一个客户的这一次会话。这就是<b>前向保密</b>，也是 TLS 1.3 不再允许 RSA 做密钥交换的原因（RSA 仍可用于签名）。`,
+op:[`✗ 这正是要避免的`,`✓`,`✗ 1.3 不用 RSA 做密钥交换`,`✗ 每次会话都换`],
+tip:`Ephemeral = 每会话一换 → 前向保密。`,ref:`P5 TLS 1.3 · 录音 W8`,
+hot:`W8：老师先问“这和 RSA 有什么区别？参数固定的话一样会被破”，然后引出 EDH：每次都换数字，攻击者没有足够时间。`},
+
+{id:'5.c18',p:5,s:'c',q:`In HTTPS, which party must have an SSL/TLS digital certificate with a public/private key pair?`,
+o:[`Only the client (browser)`,`Only the server`,`Both the client and server, always`,`Neither — HTTPS does not use certificates`],a:1,
+zh:`在 HTTPS 中，哪一方必须持有 SSL/TLS 数字证书和公私钥对？`,
+ex:`服务器必须有 SSL 证书（证书里嵌着服务器公钥，服务器保管私钥）。客户端（浏览器）不需要任何密钥：它向服务器请求连接，收到证书后检查 CA、有效期、是否吊销，然后随机生成会话密钥（TLS 1.2 用服务器公钥加密发回；TLS 1.3 用 EDH 协商）。`,
+op:[`✗`,`✓`,`✗ 客户端几乎不认证`,`✗`],
+tip:`服务器：证书 + 公私钥；客户端：什么都不用，只负责发起连接。`,ref:`P5 TLS · 录音 W7–W8`,
+hot:`W7：“作为客户端你不需要任何密钥，但服务器必须有 SSL 证书。”`}
+]);
+
+window.NOTES = window.NOTES || {};
+window.NOTES.t = `<h3 class="warn">考试安排（老师课上宣布）</h3>
+<ul>
+<li><b>Quiz（Group B）：10 月 26 日（周一）10:40，就在上课的 LT。</b>原定 11 月 1 日（周日）取消，因为 NTU 规定周末不能考。Group A 另外安排。<span class="ref">W2</span></li>
+<li>Quiz：30 分钟，每人从题库随机抽题（左右前后的人题目都不同）。单选，不倒扣，<b>点了就不能回退</b>。电脑装 LockDown Browser；可带一张空白纸，但要先给监考看。<span class="ref">W2、W3</span></li>
+<li>Quiz 范围是 <b>Part 1–5</b>，<b>Part 6 区块链不考</b>。只考 slides，不考视频和统计数字。<b>P4 题最多</b>，P2 也会有。<span class="ref">W8</span></li>
+<li>样题不会原样出现，会改写、换选项顺序。真题<b>比样题简单</b>，样题里的“绕”是故意的。老师说提前交卷的人错得最多，30 分钟足够，慢慢做。<span class="ref">W3、W5、W8</span></li>
+<li>期末：<b>约 80% 是计算题</b>，每题都有计算。只能带 NTU 批准的科学计算器（没有 mod 键），不能带纸和电子设备，要带实体证件（如护照）。<span class="ref">W2</span></li>
+<li>第 12 周复习课会告诉大家考哪些题、怎样答才能拿满分；考前 2–3 天会有 Zoom 答疑。<span class="ref">W2、W6</span></li>
+</ul>
+<h3 class="warn">期末计算题清单（每题约 15 分）</h3>
+<table class="mini"><tr><th>题型</th><th>老师怎么说</th><th>去哪练</th></tr>
+<tr><td>暴力破解时间</td><td>“最容易拿的 15 分”，但很多人算错单位；÷ 31,536,000 换算成年；有 bots 再除</td><td>计算题 → 暴力破解</td></tr>
+<tr><td>DoS 包数</td><td>和暴力破解合计约 30 分；包大小与网速的关系</td><td>计算题 → DoS</td></tr>
+<tr><td>风险分 / 密码合规</td><td>“如果考 compliance，每题都有计算”</td><td>计算题 → 风险分</td></tr>
+<tr><td><b>Diffie-Hellman</b></td><td>“really easy 15 marks”；简述原理 + 算公钥和共享密钥</td><td><b>期末专项</b></td></tr>
+<tr><td><b>RSA</b></td><td>“至少 15 分”；为什么 e ≠ 2 + 选 e + 求 d + 加密解密</td><td><b>期末专项</b></td></tr>
+<tr><td><b>RSA 数字签名</b></td><td>不用哈希：S = M<sup>d</sup> mod n，验证 S<sup>e</sup> mod n</td><td><b>期末专项</b></td></tr>
+</table>
+<h3>考试数字和手算规则</h3>
+<ul>
+<li><b>数字都小于 20，最大素数是 19</b>（老师在 W6、W7 重复了很多遍，说“到复习时你们还会发邮件问计算器为什么算不了大数”）。</li>
+<li>计算器没有 mod 键，用除法法：320 mod 9 → 320 ÷ 9 = 35.55…；35 × 9 = 315；320 − 315 = <b>5</b>。</li>
+<li><b>公式考试不给，必须背：</b>
+  <ul>
+  <li>DH：Y = g<sup>x</sup> mod p；K = (对方的 Y)<sup>自己的 x</sup> mod p</li>
+  <li>RSA：n = pq；φ = (p−1)(q−1)；e·d mod φ = 1；C = M<sup>e</sup> mod n；M = C<sup>d</sup> mod n</li>
+  <li>签名：S = M<sup>d</sup> mod n；验证：S<sup>e</sup> mod n = M（与加密相反：私钥签，公钥验）</li>
+  </ul></li>
+<li>老师说过的扣分点：答案对但没按题目要求写步骤，15 分题只给约 5 分（“我和朋友答案一样，为什么他 A 我 C？”）。每一步都写：公式 → 代入 → 结果，最后验算（解密回原文 / 双方密钥相等）。</li>
+</ul>
+<h3>DH 必背（W6）</h3>
+<ol><li>公开选定素数 p 和生成元 g（题目会给）</li><li>双方各自选私密数（题目会给）</li><li>A 算公钥 Y<sub>A</sub> = g<sup>a</sup> mod p</li><li>B 算公钥 Y<sub>B</sub> = g<sup>b</sup> mod p</li><li>交换公钥</li><li>各自算共享密钥：K<sub>A</sub> = Y<sub>B</sub><sup>a</sup> mod p，K<sub>B</sub> = Y<sub>A</sub><sup>b</sup> mod p，两者相等</li></ol>
+<p>可能的追问：私密数泄露会怎样？（攻击者能算出 K，毫无安全性）数字太小会怎样？（会被试出来，实际至少 2048 位）DH 能加密吗？（不能，只交换密钥，之后用 AES 加密）安全基础是什么？（离散对数难题）</p>
+<h3>RSA 必背（W7）</h3>
+<ul><li>安全基础：大数分解难题。</li>
+<li>选 e 的<b>三个条件</b>：① 1 &lt; e &lt; φ；② e 是素数；③ e 与 p−1、q−1 没有公因子。</li>
+<li><b>为什么 e 不能是 2</b>（往年考题）：除 2 外的素数都是奇数，减 1 后是偶数，2 一定是公因子，不满足第 ③ 条。</li>
+<li>求 d 的 k 法：d = (kφ + 1)/e，k = 1, 2, 3… 直到整除。老师建议考试就用这个方法。</li>
+<li>老师课上的练习题：p=5, q=11 自选密钥；p=17, q=19, e=5, M=25；p=13, q=23, e=7。</li></ul>
+<h3>Quiz 高频陷阱（老师点名）</h3>
+<ul>
+<li>CIA 题有约 20 个版本、约 80% 人做错：注意 Access / Consideration 这类拼写陷阱。<span class="ref">W3</span></li>
+<li>virus 要宿主，worm 不要；人冒充叫 masquerading，服务器/IP 伪造叫 spoofing。<span class="ref">W2、W3</span></li>
+<li>没认证不能授权。<span class="ref">W5</span></li>
+<li>DES = Data Encryption Standard；<b>DES 密钥 56 位</b>（不是 64 位）；AES 分组 128 位，128/192/256 位密钥分别对应 10/12/14 轮。<span class="ref">W6</span></li>
+<li>“公钥更安全因为有两把钥匙”是错的；没有 unbreakable，也没有 certified encryption；新算法可以用但要谨慎。<span class="ref">W8</span></li>
+<li>哈希只提供完整性，不提供认证；证书只认证公钥；SHA 是算法，digest 和 hash value 是输出。<span class="ref">W8</span></li>
+<li>验证证书看三件事（“这题以前考过”）：可信 CA（验 CA 签名）、有效期内、未被吊销（查序列号）。<span class="ref">W8</span></li>
+</ul>
+<h3>Part 1–3 老师口径</h3>
+<ul>
+<li>gray hat：发现漏洞告诉所有者，但会索要钱。<span class="ref">W3</span></li>
+<li>top-down 总是有效，bottom-up 不行；DLM 第 1–3 层是非技术层（约 75%）；zero trust 下连总裁的设备也要认证。<span class="ref">W4</span></li>
+<li>identification 是一对多，verification 是一对一；FRR 是 Type I，FAR 是 Type II；3D 人脸约在 90° 内有效。生物识别要 100% 匹配才能取代密码，所以现在只能增强。<span class="ref">W5</span></li>
+<li>密码学能提供保密性、完整性、认证和不可否认；<b>不能提供可用性和隐私</b>（机密性 ≠ 隐私）。对称加密适合加密自己的硬盘，公钥加密适合通信，TLS 是两者混合。<span class="ref">W5</span></li>
+</ul>
+<h3>TLS / Web 安全（W8）</h3>
+<ul>
+<li>HTTP 用 80 端口；HTTPS = HTTP + TLS，用 443 端口。只认证服务器，客户端几乎不认证（太慢、不友好）。</li>
+<li>SSL 由 Netscape 在 1994 年推出（ElGamal 主导），SSL 3.0 在 1996 年；1999 年 IETF 改名 TLS 1.0；1.1 在 2006 年、1.2 在 2008 年、<b>1.3 在 2018 年 3 月</b>。SSL 3.0 在 2015 年禁用，TLS 1.0/1.1 在 2020 年禁用（因疫情没强制执行）。</li>
+<li>公钥至少 2048 位；会话密钥 128 位足够，低于 128 位不安全。</li>
+<li><b>TLS 1.3 去掉 RSA 密钥交换</b>：服务器私钥长期不变，被破后历史通信都能解开（前向保密问题），所以改用临时 DH（EDH），每次会话都换参数。RSA 仍可用于签名。</li>
+<li>TLS 1.3 算法套件从 37 个减到 5 个（不安全的去掉了，管理员也不容易配错），握手更快。</li>
+<li>Record：分片 → 压缩 → MAC → 加密 → 加头。证书问题由 Alert 报出。Handshake 最复杂。</li>
+</ul>
+<h3 class="warn">老师课上的口误 / 课件错误</h3>
+<ul>
+<li>DH 例 p=29、g=2、a=5、b=13：课件写 K = 26，<b>正确是 Y<sub>B</sub> = 14、K = 19</b>。</li>
+<li>W8 把 TLS 1.3 说成“TLS 3.1”；W7 说 SHA-1 是“168 位”，实际是 160 位；W4 风险例子把 4×3×5 说成“16”，实际是 60。</li>
+<li>老师要求 RSA 的 e“必须是素数”，比标准说法（gcd(e, φ) = 1）更严格，考试按老师的写。</li>
+</ul>`;
+
 </script>
 <script>
 (function(){
@@ -2185,7 +2459,8 @@ window.NOTES = {
 var $=function(s,el){return (el||document).querySelector(s)};
 var $$=function(s,el){return Array.prototype.slice.call((el||document).querySelectorAll(s))};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-var MCQ=window.MCQ||[],QA=window.QA||[],NOTES=window.NOTES||{};
+var MCQ=window.MCQ||[],QA=window.QA||[],NOTES=window.NOTES||{},HOT=window.HOT||{};
+function hotOf(q){return q.hot||HOT[q.id]||''}
 var BY={};MCQ.forEach(function(q){BY[q.id]=q});
 var LET='ABCDE';
 var PARTS={
@@ -2200,7 +2475,7 @@ function qno(q){var n=q.id.split('.')[1];return 'P'+q.p+(n.charAt(0)==='c'?' · 
 
 /* ---------------- storage ---------------- */
 var KEY='ee6102-drill-v1';
-function blank(){return {ans:{},star:{},wrong:{},qa:{},mocks:[],prefs:{zh:false,recite:false,autoRm:true},last:{}}}
+function blank(){return {ans:{},star:{},wrong:{},qa:{},mocks:[],prefs:{zh:false,recite:false,autoRm:true},last:{},exam:{n:0,ok:0}}}
 function load(){
   try{var r=JSON.parse(localStorage.getItem(KEY)||'null');
     if(r&&typeof r==='object'){var b=blank();for(var k in b){if(r[k]===undefined)r[k]=b[k]}for(var p in b.prefs){if(r.prefs[p]===undefined)r.prefs[p]=b.prefs[p]}return r}
@@ -2220,7 +2495,7 @@ function record(q,c){
 function updateWrongCnt(){var n=Object.keys(S.wrong).length;var el=$('#wrongCnt');if(el)el.textContent=n?String(n):''}
 
 /* ---------------- router ---------------- */
-var VIEWS=['home','notes','practice','mock','wrong','qa','calc'];
+var VIEWS=['home','notes','teacher','practice','mock','wrong','qa','calc','exam'];
 var cur='home';
 var view=$('#view');
 function go(v,noHash){
@@ -2232,9 +2507,9 @@ function go(v,noHash){
   try{view.scrollTop=0;window.scrollTo(0,0)}catch(e){}
 }
 function render(){
-  var f={home:rHome,notes:rNotes,practice:rPractice,mock:rMock,wrong:rWrong,qa:rQA,calc:rCalc}[cur];
+  var f={home:rHome,notes:rNotes,teacher:rTeacher,practice:rPractice,mock:rMock,wrong:rWrong,qa:rQA,calc:rCalc,exam:rExam}[cur];
   view.innerHTML='<div class="view vfade">'+f()+'</div>';
-  var b={practice:bPractice,mock:bMock,qa:bQA,calc:bCalc,notes:bNotes,wrong:bWrong,home:bHome}[cur];
+  var b={practice:bPractice,mock:bMock,qa:bQA,calc:bCalc,notes:bNotes,wrong:bWrong,home:bHome,exam:bExam}[cur];
   if(b)b();
 }
 window.addEventListener('hashchange',function(){var h=(location.hash||'').slice(1);if(VIEWS.indexOf(h)>=0&&h!==cur)go(h,true)});
@@ -2258,17 +2533,20 @@ function daysTo(d){return Math.ceil((d-new Date())/86400000)}
 
 /* ================= HOME ================= */
 function rHome(){
-  var quiz=new Date(2026,10,1,9,30),fin=new Date(2026,10,26,17,0),asg=new Date(2026,9,23,23,59);
+  var quiz=new Date(2026,9,26,10,40),fin=new Date(2026,10,26,17,0),asg=new Date(2026,9,23,23,59);
   function dcell(k,d,s,hot){var n=daysTo(d);var txt=n>0?n+'<small>天</small>':(n===0?'今天':'已结束');return '<div class="date'+(hot?' hot':'')+'"><div class="k">'+k+'</div><div class="d">'+txt+'</div><div class="s">'+s+'</div></div>'}
   var all=partStat('all'),off=partStat('all','o');
   var h='<p class="eyebrow">EE6102 · Cyber Security &amp; Blockchain Technology</p><h1 class="vh">今天练哪一章？</h1>'+
-  '<p class="lede">官方样题 + 课件自编题逐项讲解，模拟 30 题小测，Q&amp;A 大题写作练习，RSA / DH 等计算题分步演算。进度只保存在这个浏览器里。</p>'+
-  '<div class="dates">'+dcell('Individual Quiz · 30 MCQ · 30%',quiz,'11 月 1 日（周日）9:30 · LKC-LT',true)+dcell('Individual Assignment · 20%',asg,'10 月 23 日截止')+dcell('Final Exam · 4 题 · 50%',fin,'11 月 26 日（周四）17:00')+'</div>';
+  '<p class="lede">官方样题 + 课件自编题逐项讲解，模拟 30 题小测，Q&amp;A 大题写作练习，RSA / DH 等计算题分步演算。标着「老师强调」的题，是老师在上课录音里点过名的。进度只保存在这个浏览器里。</p>'+
+  '<div class="dates">'+dcell('Individual Quiz · 30 MCQ · 30%',quiz,'10 月 26 日（周一）10:40 · LT（Group B，原 11/1 已取消）',true)+dcell('Individual Assignment · 20%',asg,'10 月 23 日截止')+dcell('Final Exam · 4 题 · 50%',fin,'11 月 26 日（周四）17:00')+'</div>';
   h+='<div class="quick">'+
    '<button class="qk" data-act="continue"><b>继续练习</b><span>'+(S.last.id&&BY[S.last.id]?'上次停在 '+esc(qno(BY[S.last.id])):'从 Part 1 开始')+'</span></button>'+
    '<button class="qk" data-go="mock"><b>模拟测验</b><span>30 题限时，交卷后看解析</span></button>'+
    '<button class="qk" data-go="wrong"><b>错题本</b><span>'+Object.keys(S.wrong).length+' 道待巩固</span></button>'+
-   '<button class="qk" data-go="qa"><b>问答大题</b><span>'+Object.keys(S.qa).filter(function(k){return S.qa[k].r==='ok'}).length+' / '+QA.length+' 已掌握</span></button></div>';
+   '<button class="qk" data-go="qa"><b>问答大题</b><span>'+Object.keys(S.qa).filter(function(k){return S.qa[k].r==='ok'}).length+' / '+QA.length+' 已掌握</span></button>'+
+   '<button class="qk hotk" data-go="teacher"><b>老师上课重点</b><span>7 份录音整理：考试安排、必考计算、陷阱</span></button>'+
+   '<button class="qk hotk" data-go="practice" data-st="hot"><b>老师强调的题</b><span>'+MCQ.filter(function(q){return hotOf(q)}).length+' 道，课上点过名</span></button>'+
+   '<button class="qk hotk" data-go="exam"><b>期末专项 DH / RSA</b><span>按考试规格出题（素数 ≤ 19）'+(S.exam.n?' · 已练 '+S.exam.n+' 题':'')+'</span></button></div>';
   h+='<div class="sec-h"><h2>分章进度</h2><span class="pstat">总计 '+all.done+' / '+all.total+' 已做 · 正确率 '+(all.done?Math.round(all.ok/all.done*100):0)+'%</span></div><div class="parts">';
   for(var p=1;p<=6;p++){
     var st=partStat(p),so=partStat(p,'o');
@@ -2278,7 +2556,7 @@ function rHome(){
     '<button class="btn sm" data-go="practice" data-part="'+p+'">练习</button></div>';
   }
   h+='</div>';
-  h+='<p class="srcnote">题源：官方样题 '+off.total+' 道（Sample Quiz Part 1–5，答案取自 PDF 上的红色下划线）；自编题 '+(all.total-off.total)+' 道（依据 2026 S1 课件，覆盖样题没考到的新内容，Part 6 区块链全部为自编）；Q&amp;A '+QA.length+' 组。Part 5 第 17 题官方答案疑似标错，题内有说明。</p>'+
+  h+='<p class="srcnote">题源：官方样题 '+off.total+' 道（Sample Quiz Part 1–5，答案取自 PDF 上的红色下划线）；自编题 '+(all.total-off.total)+' 道（依据 2026 S1 课件，覆盖样题没考到的新内容，Part 6 区块链全部为自编）；Q&amp;A '+QA.length+' 组。Part 5 第 17 题官方答案疑似标错，题内有说明。「老师强调」标签和录音新增的 15 道自编题依据 W2–W8 上课录音整理。</p>'+
   '<div class="sec-h"><h2>设置</h2></div><div class="panel row" style="justify-content:space-between">'+
   '<label class="row" style="gap:8px;font-size:14px"><input type="checkbox" id="pf-autorm"'+(S.prefs.autoRm?' checked':'')+'> 错题答对后自动移出错题本</label>'+
   '<span class="row"><span id="rstwrap"><button class="btn sm danger" id="rst">清空全部进度</button></span></span></div>';
@@ -2314,6 +2592,7 @@ function buildList(keepId){
     if(P.st==='todo'&&S.ans[q.id])return false;
     if(P.st==='wrong'&&!S.wrong[q.id])return false;
     if(P.st==='star'&&!S.star[q.id])return false;
+    if(P.st==='hot'&&!hotOf(q))return false;
     return true;
   }).map(function(q){return q.id});
   P.idx=0;
@@ -2337,6 +2616,7 @@ function optsHTML(q,state){
 function explainHTML(q){
   var h='<div class="explain">';
   h+='<div class="ex-sec"><p class="ex-k">题意</p><p>'+q.zh+'</p></div>';
+  if(hotOf(q))h+='<div class="ex-sec"><p class="ex-k">老师课上说</p><div class="hotbox">'+hotOf(q)+'</div></div>';
   h+='<div class="ex-sec"><p class="ex-k">解析</p><p>'+q.ex+'</p></div>';
   if(q.op&&q.op.length){
     h+='<div class="ex-sec"><p class="ex-k">逐项分析</p><ul class="oplist">';
@@ -2364,10 +2644,10 @@ function rPractice(){
   h+='<div class="filters"><div class="frow"><span class="fl">章节</span><button class="chip'+(P.part==='all'?' on':'')+'" data-fp="all">全部</button>';
   for(var p=1;p<=6;p++)h+='<button class="chip'+(String(P.part)===String(p)?' on':'')+'" data-fp="'+p+'">P'+p+'</button>';
   h+='</div><div class="frow"><span class="fl">来源</span>'+[['all','全部'],['o','官方样题'],['c','自编']].map(function(x){return '<button class="chip'+(P.src===x[0]?' on':'')+'" data-fs="'+x[0]+'">'+x[1]+'</button>'}).join('')+
-  '<span class="fl" style="margin-left:10px">筛选</span>'+[['all','全部'],['todo','未做'],['wrong','错题'],['star','收藏']].map(function(x){return '<button class="chip'+(P.st===x[0]?' on':'')+'" data-ft="'+x[0]+'">'+x[1]+'</button>'}).join('')+
+  '<span class="fl" style="margin-left:10px">筛选</span>'+[['all','全部'],['todo','未做'],['wrong','错题'],['star','收藏'],['hot','老师强调']].map(function(x){return '<button class="chip'+(P.st===x[0]?' on':'')+(x[0]==='hot'?' hotc':'')+'" data-ft="'+x[0]+'">'+x[1]+'</button>'}).join('')+
   '</div><div class="frow"><label class="row" style="gap:6px;font-size:13.5px"><input type="checkbox" id="recite"'+(S.prefs.recite?' checked':'')+'> 背题模式（直接显示答案和解析）</label></div></div>';
   if(!P.list.length){
-    return h+'<div class="empty">这个筛选条件下没有题目。'+(P.st==='wrong'?'错题本是空的，先去做几题吧。':P.st==='star'?'还没有收藏，做题时点题目右上角的 ☆。':P.st==='todo'?'这一组都做完了。':'')+'</div>';
+    return h+'<div class="empty">这个筛选条件下没有题目。'+(P.st==='wrong'?'错题本是空的，先去做几题吧。':P.st==='star'?'还没有收藏，做题时点题目右上角的 ☆。':P.st==='todo'?'这一组都做完了。':P.st==='hot'?'这一章老师没有点名的题。':'')+'</div>';
   }
   if(P.idx>=P.list.length)P.idx=P.list.length-1;
   var id=P.list[P.idx],q=BY[id],a=S.ans[id];
@@ -2376,7 +2656,7 @@ function rPractice(){
   h+='<details class="sheet"'+(P.list.length<=60?' open':'')+'><summary><span>答题卡 · 第 '+(P.idx+1)+' / '+P.list.length+' 题</span><span class="pstat" style="margin:0">已做 '+done+'</span></summary>'+gridHTML(P.list,P.idx,'practice')+
   '<div class="legend"><span><i></i>未做</span><span><i class="lg-ok"></i>答对</span><span><i class="lg-no"></i>答错</span></div></details>';
   var reveal=!!a||S.prefs.recite;
-  h+='<article class="qcard"><div class="qtop"><span class="qid">'+esc(qno(q))+'</span><span class="tag '+q.s+'">'+(q.s==='o'?'官方样题':'自编 · 依据课件')+'</span>'+(q.alt!==undefined?'<span class="tag meh">答案存疑</span>':'')+
+  h+='<article class="qcard"><div class="qtop"><span class="qid">'+esc(qno(q))+'</span><span class="tag '+q.s+'">'+(q.s==='o'?'官方样题':'自编 · 依据课件')+'</span>'+(q.alt!==undefined?'<span class="tag meh">答案存疑</span>':'')+(hotOf(q)?'<span class="tag hot">老师强调</span>':'')+
   (a?'<span class="tag '+(a.ok?'ok':'no')+'">'+(a.ok?'上次答对':'上次答错')+(a.n>1?' · 做过 '+a.n+' 次':'')+'</span>':'')+
   '<span class="sp"></span><button class="star'+(S.star[id]?' on':'')+'" id="star" aria-label="收藏" title="收藏 (S)">'+(S.star[id]?'★':'☆')+'</button></div>';
   h+='<div class="qbody"><p class="stem" lang="en">'+esc(q.q)+'</p>';
@@ -2410,10 +2690,10 @@ function bPractice(){
 function toggleStar(id){if(S.star[id])delete S.star[id];else S.star[id]=1;save();render()}
 
 /* ================= MOCK ================= */
-var M={phase:'setup',n:30,min:45,scope:'o',ids:[],picks:{},idx:0,end:0,start:0,timer:null,confirm:false,used:0};
+var M={phase:'setup',n:30,min:30,scope:'o',noback:false,ids:[],picks:{},idx:0,end:0,start:0,timer:null,confirm:false,used:0};
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 function drawMock(){
-  var pool=MCQ.filter(function(q){return M.scope==='all'||q.s==='o'});
+  var pool=MCQ.filter(function(q){if(q.p>5)return false;if(M.scope==='hot')return !!hotOf(q);return M.scope==='all'||q.s==='o'});
   var parts={};pool.forEach(function(q){(parts[q.p]=parts[q.p]||[]).push(q.id)});
   var keys=Object.keys(parts);keys.forEach(function(k){shuffle(parts[k])});
   var out=[],per=Math.floor(M.n/keys.length);
@@ -2427,14 +2707,15 @@ function fmtClock(s){s=Math.max(0,Math.round(s));var m=Math.floor(s/60),r=s%60;r
 function rMock(){
   var h='<p class="eyebrow">Quiz · 模拟测验</p><h1 class="vh">模拟测验</h1>';
   if(M.phase==='setup'){
-    h+='<p class="lede">正式 Quiz 是 30 道选择题，在 NTULearn 上作答（占 30%）。这里按章节均衡抽题，答题过程中不显示对错，交卷后统一看解析，错题自动进入错题本。</p><div class="panel setup">'+
+    h+='<p class="lede">正式 Quiz：30 道单选、30 分钟、LockDown Browser、不倒扣、<b>点了不能回退</b>，范围 Part 1–5（P6 不考）。这里按章节均衡抽题，答题过程中不显示对错，交卷后统一看解析，错题自动进入错题本。</p><div class="panel setup">'+
     '<div class="frow"><span class="fl">题量</span>'+[10,20,30,40].map(function(n){return '<button class="chip'+(M.n===n?' on':'')+'" data-mn="'+n+'">'+n+' 题</button>'}).join('')+'</div>'+
     '<div class="frow"><span class="fl">限时</span>'+[0,20,30,45,60].map(function(n){return '<button class="chip'+(M.min===n?' on':'')+'" data-mm="'+n+'">'+(n?n+' 分钟':'不限时')+'</button>'}).join('')+'</div>'+
-    '<div class="frow"><span class="fl">题源</span><button class="chip'+(M.scope==='o'?' on':'')+'" data-ms="o">只用官方样题（P1–P5）</button><button class="chip'+(M.scope==='all'?' on':'')+'" data-ms="all">官方 + 自编（P1–P6）</button></div>'+
+    '<div class="frow"><span class="fl">题源</span><button class="chip'+(M.scope==='o'?' on':'')+'" data-ms="o">只用官方样题</button><button class="chip'+(M.scope==='all'?' on':'')+'" data-ms="all">官方 + 自编</button><button class="chip hotc'+(M.scope==='hot'?' on':'')+'" data-ms="hot">只考老师强调的题</button><span class="muted" style="font-size:12.5px">都只抽 P1–P5</span></div>'+
+    '<div class="frow"><label class="row" style="gap:6px;font-size:13.5px"><input type="checkbox" id="mnb"'+(M.noback?' checked':'')+'> 仿真模式：和真题一样，不能回到上一题</label></div>'+
     '<div><button class="btn pri" id="mstart">开始测验</button></div></div>';
     if(S.mocks.length){
       h+='<div class="sec-h"><h2>历史成绩</h2></div><div class="tbl"><table class="mini"><tr><th>时间</th><th>题源</th><th>得分</th><th>用时</th></tr>';
-      S.mocks.slice(-10).reverse().forEach(function(m){var d=new Date(m.t);h+='<tr><td class="mono">'+(d.getMonth()+1)+'/'+d.getDate()+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+'</td><td>'+(m.scope==='o'?'官方':'官方+自编')+'</td><td class="mono">'+m.ok+' / '+m.n+'（'+Math.round(m.ok/m.n*100)+'%）</td><td class="mono">'+fmtClock(m.sec)+'</td></tr>'});
+      S.mocks.slice(-10).reverse().forEach(function(m){var d=new Date(m.t);h+='<tr><td class="mono">'+(d.getMonth()+1)+'/'+d.getDate()+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+'</td><td>'+(m.scope==='o'?'官方':m.scope==='hot'?'老师强调':'官方+自编')+'</td><td class="mono">'+m.ok+' / '+m.n+'（'+Math.round(m.ok/m.n*100)+'%）</td><td class="mono">'+fmtClock(m.sec)+'</td></tr>'});
       h+='</table></div>';
     }
     return h;
@@ -2443,9 +2724,10 @@ function rMock(){
     var id=M.ids[M.idx],q=BY[id],answered=Object.keys(M.picks).length;
     h+='<div class="mbar"><span class="timer" id="timer">'+(M.min?fmtClock((M.end-Date.now())/1000):fmtClock((Date.now()-M.start)/1000))+'</span><span class="pstat" style="margin:0">已答 '+answered+' / '+M.ids.length+'</span><button class="btn pri sm" id="msub">交卷</button></div>';
     if(M.confirm)h+='<div class="confirm"><span>还有 <b>'+(M.ids.length-answered)+'</b> 题没答，确定交卷吗？</span><button class="btn sm danger" id="msub2">确定交卷</button><button class="btn sm ghost" id="msub0">继续作答</button></div>';
-    h+='<details class="sheet" open><summary><span>答题卡 · 第 '+(M.idx+1)+' / '+M.ids.length+' 题</span></summary>'+gridHTML(M.ids,M.idx,'mock')+'<div class="legend"><span><i></i>未答</span><span><i class="lg-pk"></i>已答</span></div></details>';
+    if(!M.noback)h+='<details class="sheet" open><summary><span>答题卡 · 第 '+(M.idx+1)+' / '+M.ids.length+' 题</span></summary>'+gridHTML(M.ids,M.idx,'mock')+'<div class="legend"><span><i></i>未答</span><span><i class="lg-pk"></i>已答</span></div></details>';
+    else h+='<p class="muted" style="font-size:13px;margin:0 0 10px">仿真模式 · 第 '+(M.idx+1)+' / '+M.ids.length+' 题 · 不能回退，确认后再点下一题</p>';
     h+='<article class="qcard"><div class="qtop"><span class="qid">第 '+(M.idx+1)+' 题 · '+esc(qno(q))+'</span></div><div class="qbody"><p class="stem" lang="en">'+esc(q.q)+'</p>'+optsHTML(q,{picked:M.picks[id],reveal:false,lock:false})+'</div>'+
-    '<div class="qnav"><button class="btn" id="prev"'+(M.idx===0?' disabled':'')+'>← 上一题</button><span class="kbd">A–E 选择 · ←/→ 翻题</span><button class="btn pri" id="next"'+(M.idx>=M.ids.length-1?' disabled':'')+'>下一题 →</button></div></article>';
+    '<div class="qnav"><button class="btn" id="prev"'+(M.idx===0||M.noback?' disabled':'')+'>← 上一题</button><span class="kbd">A–E 选择 · '+(M.noback?'→ 下一题':'←/→ 翻题')+'</span><button class="btn pri" id="next"'+(M.idx>=M.ids.length-1?' disabled':'')+'>下一题 →</button></div></article>';
     return h;
   }
   /* done */
@@ -2482,6 +2764,7 @@ function bMock(){
     $$('[data-mn]').forEach(function(b){b.onclick=function(){M.n=+b.getAttribute('data-mn');render()}});
     $$('[data-mm]').forEach(function(b){b.onclick=function(){M.min=+b.getAttribute('data-mm');render()}});
     $$('[data-ms]').forEach(function(b){b.onclick=function(){M.scope=b.getAttribute('data-ms');render()}});
+    var nb=$('#mnb');if(nb)nb.onchange=function(){M.noback=nb.checked};
     $('#mstart').onclick=function(){M.ids=drawMock();M.picks={};M.idx=0;M.start=Date.now();M.end=M.start+M.min*60000;M.phase='run';M.confirm=false;clearInterval(M.timer);M.timer=setInterval(mockTick,500);render()};
     return;
   }
@@ -2490,7 +2773,7 @@ function bMock(){
     var id=M.ids[M.idx];
     $$('.opt').forEach(function(b){b.onclick=function(){M.picks[id]=+b.getAttribute('data-o');render()}});
     $$('.grid .gb').forEach(function(b){b.onclick=function(){M.idx=+b.getAttribute('data-j');render()}});
-    var pv=$('#prev');if(pv)pv.onclick=function(){if(M.idx>0){M.idx--;render()}};
+    var pv=$('#prev');if(pv)pv.onclick=function(){if(M.idx>0&&!M.noback){M.idx--;render()}};
     var nx=$('#next');if(nx)nx.onclick=function(){if(M.idx<M.ids.length-1){M.idx++;render()}};
     $('#msub').onclick=function(){if(Object.keys(M.picks).length<M.ids.length){M.confirm=true;render()}else submitMock()};
     var s2=$('#msub2');if(s2)s2.onclick=submitMock;
@@ -2964,6 +3247,159 @@ function pwCheck(pw,mn,up,lo,di,sy){
   row('数字',di,!!D,D?D.join(''):'无');
   row('符号',sy,!!Sy,Sy?esc(Sy.join(' ')):'无（No special character）');
   return {rows:rows,miss:miss,ok:!miss.length};
+}
+
+/* ================= TEACHER ================= */
+function rTeacher(){
+  return '<p class="eyebrow">学习 · 老师上课重点</p><h1 class="vh">老师上课重点</h1><p class="lede">根据 W2–W8 七份上课录音整理：考试安排、期末必考计算、quiz 陷阱，以及老师自己的口径。右侧小字 W 后面的数字表示第几周的录音。</p>'+
+  '<div class="row" style="margin:0 0 14px"><button class="btn pri" data-go="exam">去做 DH / RSA 期末专项 →</button><button class="btn" data-go="practice" data-st="hot">练老师强调的选择题（'+MCQ.filter(function(q){return hotOf(q)}).length+' 道）</button></div>'+
+  '<article class="notes">'+(NOTES.t||'')+'</article>';
+}
+
+/* ================= EXAM DRILL (DH / RSA / signature, exam-sized numbers) ================= */
+var EP=[3,5,7,11,13,17,19];
+var EX={type:'rsa',it:null,u:{},res:null,key:false,zh:false,ans:false};
+var EXT=[['rsa','RSA 加密解密'],['dh','Diffie-Hellman'],['sig','RSA 数字签名']];
+var EXPRE={
+ rsa:[{n:'W7 例 · p=5 q=11 e=3 M=32',p:5,q:11,e:3,M:32},{n:'W7 例 · p=5 q=11 e=7 M=32',p:5,q:11,e:7,M:32},{n:'W7 例 · p=3 q=11 e=3',p:3,q:11,e:3,M:5},{n:'W7 例 · p=17 q=11 e=7',p:17,q:11,e:7,M:8},{n:'W7 例 · p=11 q=13 e=7 M=9',p:11,q:13,e:7,M:9},{n:'W7 例 · p=7 q=17 e=5 M=19',p:7,q:17,e:5,M:19},{n:'W7 练习 · p=17 q=19 e=5 M=25',p:17,q:19,e:5,M:25},{n:'W7 练习 · p=5 q=11 自选 e',p:5,q:11,e:0,M:9}],
+ dh:[{n:'W6 例 · p=13 g=6',p:13,g:6,a:5,b:4},{n:'W6 例 · p=11 g=7',p:11,g:7,a:3,b:6},{n:'W6 例 · p=11 g=2',p:11,g:2,a:4,b:3},{n:'W6 例 · p=17 g=3',p:17,g:3,a:7,b:12},{n:'W6 例 · p=23 g=5',p:23,g:5,a:6,b:15},{n:'课件 P4-63 · p=29 g=2（课件答案有误）',p:29,g:2,a:5,b:13}],
+ sig:[{n:'W7 例 · p=5 q=11 e=3 M=51',p:5,q:11,e:3,M:51},{n:'p=11 q=13 e=7 M=20',p:11,q:13,e:7,M:20}]
+};
+function primRoots(p){var r=[];for(var g=2;g<p;g++)if(orderOf(g,p)===p-1)r.push(g);return r}
+function smallestE(p,q){var phi=(p-1)*(q-1),c=[3,5,7,11,13,17,19,23,29,31];for(var i=0;i<c.length;i++){if(c[i]>=phi)return 0;if(bgcd(BigInt(c[i]),BigInt(phi))===1n)return c[i]}return 0}
+function dOf(e,phi){return Number(inverseSteps(BigInt(e),BigInt(phi)).d)}
+function rsaItem(o,type){
+  var p=o.p,q=o.q,n=p*q,phi=(p-1)*(q-1),sel=!o.e,e=o.e||smallestE(p,q),d=dOf(e,phi),M=o.M;
+  var C=Number(mpow(BigInt(M),BigInt(e),BigInt(n)));
+  var it={type:type,p:p,q:q,n:n,phi:phi,e:e,d:d,M:M,sel:sel,name:o.n||''};
+  if(type==='rsa'){
+    it.C=C;
+    it.en='<b>Question (15 marks)</b><ol type="a"><li>Explain why the number 2 can never be chosen as the public key in the RSA algorithm.</li><li>Two prime numbers <b>p = '+p+'</b> and <b>q = '+q+'</b> are chosen. Calculate the modulus <i>n</i> and the totient function φ(<i>n</i>).</li><li>'+(sel?'Select the smallest valid public key <i>e</i> and calculate':'The public key <b>e = '+e+'</b> is chosen. Calculate')+' the matching private key <i>d</i>.</li><li>Encrypt the message <b>M = '+M+'</b>, then decrypt the ciphertext to verify your answer. Show all steps.</li></ol>';
+    it.zh='(a) 解释为什么 RSA 中 2 永远不能当公钥。(b) 取素数 p = '+p+'、q = '+q+'，求模数 n 和 φ(n)。(c) '+(sel?'选出最小的可用公钥 e，并':'已选公钥 e = '+e+'，')+'求对应私钥 d。(d) 加密消息 M = '+M+'，再解密验证。写出全部步骤。';
+    it.f=[{k:'n',l:'n',v:n},{k:'phi',l:'φ(n)',v:phi}].concat(sel?[{k:'e',l:'最小可用 e',v:e}]:[]).concat([{k:'d',l:'私钥 d',v:d},{k:'c',l:'密文 C',v:C},{k:'m',l:'解密得到 M',v:M}]);
+  }else{
+    var S=Number(mpow(BigInt(M),BigInt(d),BigInt(n)));
+    it.S=S;
+    it.en='<b>Question (15 marks)</b><ol type="a"><li>Explain the difference between RSA encryption and an RSA digital signature in terms of the keys used.</li><li>Two prime numbers <b>p = '+p+'</b> and <b>q = '+q+'</b> are chosen'+(sel?'. Select the smallest valid public key <i>e</i>':' and the public key is <b>e = '+e+'</b>')+'. Calculate <i>n</i>, φ(<i>n</i>) and the private key <i>d</i>.</li><li>Without using a hash function, generate the digital signature <i>S</i> for the message <b>M = '+M+'</b> and verify it. Show all steps.</li></ol>';
+    it.zh='(a) 从使用的密钥上说明 RSA 加密和 RSA 数字签名的区别。(b) 取素数 p = '+p+'、q = '+q+(sel?'，选出最小的可用公钥 e，':'，公钥 e = '+e+'，')+'求 n、φ(n) 和私钥 d。(c) 不用哈希，为消息 M = '+M+' 生成数字签名 S 并验证。';
+    it.f=[{k:'n',l:'n',v:n},{k:'phi',l:'φ(n)',v:phi}].concat(sel?[{k:'e',l:'最小可用 e',v:e}]:[]).concat([{k:'d',l:'私钥 d',v:d},{k:'s',l:'签名 S',v:S},{k:'m',l:'验证得到 M',v:M}]);
+  }
+  return it;
+}
+var DHFOLLOW=[
+ {q:'If the private numbers of Alice and Bob are compromised, is there any security issue?',a:'Yes. The prime p, generator g and both public keys are public anyway; the <b>only</b> secrets in Diffie-Hellman are the two private numbers. With either private number the attacker computes K = Y<sup>x</sup> mod p directly, so the shared key (and all data later encrypted with it) is exposed.'},
+ {q:'Why must the numbers used in Diffie-Hellman be very large in practice?',a:'The security relies on the discrete logarithm problem: given Y = g<sup>x</sup> mod p it should be infeasible to find x. With small numbers the attacker simply tries every x. In practice p (and the private numbers) must be at least <b>2048 bits</b>; the small numbers here only illustrate the method.'},
+ {q:'Can the Diffie-Hellman algorithm be used to encrypt and decrypt data?',a:'No. Diffie-Hellman is only a <b>key-exchange protocol</b>: it lets two parties who have never met agree on a shared secret key over an insecure network. The data is then encrypted/decrypted with a symmetric algorithm such as AES using that key (hybrid system, e.g. TLS 1.3 uses ephemeral DH).'}
+];
+function dhItem(o){
+  var p=o.p,g=o.g,a=o.a,b=o.b,P_=BigInt(p),G=BigInt(g);
+  var YA=Number(mpow(G,BigInt(a),P_)),YB=Number(mpow(G,BigInt(b),P_)),K=Number(mpow(BigInt(YB),BigInt(a),P_));
+  var fu=o.fu!==undefined?o.fu:rint(0,DHFOLLOW.length-1);
+  return {type:'dh',p:p,g:g,a:a,b:b,YA:YA,YB:YB,K:K,fu:fu,name:o.n||'',
+   en:'<b>Question (15 marks)</b><ol type="a"><li>Briefly explain how the Diffie-Hellman key exchange algorithm works.</li><li>Alice and Bob agree on the prime number <b>p = '+p+'</b> and the generator <b>g = '+g+'</b>. Alice chooses the private number <b>'+a+'</b> and Bob chooses the private number <b>'+b+'</b>. Calculate the public keys of Alice and Bob and the shared secret key computed by each of them. Show all steps.</li><li>'+DHFOLLOW[fu].q+'</li></ol>',
+   zh:'(a) 简述 Diffie-Hellman 密钥交换的工作原理。(b) 双方约定素数 p = '+p+'、生成元 g = '+g+'；Alice 的私密数为 '+a+'，Bob 的为 '+b+'。求双方公钥和各自算出的共享密钥，写出全部步骤。(c) 追问（见英文）。',
+   f:[{k:'ya',l:'Alice 公钥 Y<sub>A</sub>',v:YA},{k:'yb',l:'Bob 公钥 Y<sub>B</sub>',v:YB},{k:'ka',l:'Alice 算出的 K',v:K},{k:'kb',l:'Bob 算出的 K',v:K}]};
+}
+function randExam(type){
+  var tries=0;
+  if(type==='dh'){var ps=[11,13,17,19],p=pick(ps),g=pick(primRoots(p)),a,b,K;
+    do{a=rint(2,p-2);b=rint(2,p-2);K=Number(mpow(mpow(BigInt(g),BigInt(a),BigInt(p)),BigInt(b),BigInt(p)))}while((a===b||K===1)&&++tries<50);
+    return dhItem({p:p,g:g,a:a,b:b})}
+  while(tries++<200){
+    var p2=pick(EP),q2=pick(EP);if(p2===q2||p2*q2<15)continue;
+    var phi=(p2-1)*(q2-1),sel=Math.random()<.5,e;
+    if(sel)e=smallestE(p2,q2);else{var es=[3,5,7,11,13].filter(function(x){return x<phi&&bgcd(BigInt(x),BigInt(phi))===1n});if(!es.length)continue;e=pick(es)}
+    if(!e)continue;var d=dOf(e,phi);if(d===e)continue;
+    var n=p2*q2,M=rint(2,Math.min(n-1,60)),out=type==='rsa'?mpow(BigInt(M),BigInt(e),BigInt(n)):mpow(BigInt(M),BigInt(d),BigInt(n));
+    if(Number(out)===M)continue;
+    return rsaItem({p:p2,q:q2,e:sel?0:e,M:M},type);
+  }
+  return rsaItem({p:5,q:11,e:3,M:32},type);
+}
+function divMod(V,n){
+  if(V<n)return V+' &lt; '+n+'，所以 mod 结果就是 <b>'+V+'</b>';
+  var q=V/n,r=V-q*n,frac=(Number(r)/Number(n)).toFixed(4).slice(1);
+  return V+' ÷ '+n+' = '+q+frac+'… → 取整数部分 '+q+'，'+q+' × '+n+' = '+(q*n)+' → '+V+' − '+(q*n)+' = <b>'+r+'</b>';
+}
+function powLine(x,e,n){
+  x=BigInt(x);e=BigInt(e);n=BigInt(n);
+  var V=x**e;
+  if(V<=9999999999n)return {res:V%n,html:'<p class="mono" style="font-size:13px">'+x+'<sup>'+e+'</sup> = '+V+'；'+divMod(V,n)+'</p>'};
+  var t=mpowTable(x,e,n,String(x));
+  return {res:t.res,html:'<p class="muted" style="font-size:13px">'+x+'<sup>'+e+'</sup> 有 '+String(V).length+' 位，计算器放不下，用平方-乘法，每一步都先取 mod：</p>'+t.html};
+}
+function eSelHTML(it){
+  var p=it.p,q=it.q,fp=primeFactors(p-1),fq=primeFactors(q-1),rows='',c=[2,3,5,7,11,13,17,19],chosen=it.e;
+  for(var i=0;i<c.length;i++){var x=c[i];if(x>=it.phi)break;var bad=fp.indexOf(x)>=0||fq.indexOf(x)>=0;
+    rows+='<tr class="'+(x===chosen?'hit':'')+'"><td>'+x+'</td><td style="text-align:left">'+(bad?'✗ 是 '+(fp.indexOf(x)>=0?'p−1':'q−1')+' 的因子':'✓ 不是 p−1、q−1 的因子')+'</td></tr>';
+    if(x>chosen&&i>=3)break}
+  return '<p>Conditions: (1) 1 &lt; e &lt; φ(n) = '+it.phi+'; (2) e is a prime number; (3) e has no common factor with p−1 and q−1.</p><p class="mono" style="font-size:13px">p−1 = '+(p-1)+' = '+fp.join(' × ')+'（素因子）；q−1 = '+(q-1)+' = '+fq.join(' × ')+'</p><div class="tbl"><table class="calc"><tr><th>候选 e</th><th style="text-align:left">条件 (3)</th></tr>'+rows+'</table></div><p>'+(it.sel?'最小的可用值：':'题目给定 ')+'<b>e = '+chosen+'</b>'+(it.sel?'':'，三个条件都满足 ✓')+'</p>';
+}
+function examKeyHTML(it){
+  var h='',sn=1;
+  if(it.type==='dh'){
+    h+=step('(a)','Briefly explain DH（简答，照这个结构写）','<ul class="en-ans"><li>Diffie-Hellman is a <b>key-exchange protocol</b> (it does not encrypt data); its security is based on the <b>discrete logarithm problem</b> (one-way function).</li><li><b>Step 1:</b> both users publicly agree on a large prime p and a generator g.</li><li><b>Step 2:</b> each user selects a secret (private) number, a and b, and keeps it secret.</li><li><b>Step 3/4:</b> user A computes the public key Y<sub>A</sub> = g<sup>a</sup> mod p; user B computes Y<sub>B</sub> = g<sup>b</sup> mod p.</li><li><b>Step 5:</b> they swap public keys over the Internet.</li><li><b>Step 6:</b> A computes K = Y<sub>B</sub><sup>a</sup> mod p and B computes K = Y<sub>A</sub><sup>b</sup> mod p. Both get the same shared key, which is then used by a symmetric algorithm such as AES.</li><li>An attacker knows p, g, Y<sub>A</sub>, Y<sub>B</sub> but cannot find a or b; in practice the numbers must be at least 2048 bits.</li></ul>');
+    var A=powLine(it.g,it.a,it.p),Bv=powLine(it.g,it.b,it.p),KA=powLine(it.YB,it.a,it.p),KB=powLine(it.YA,it.b,it.p);
+    h+=step('(b)','Calculation','<p>Step 1 · Public values: p = '+it.p+', g = '+it.g+'. Private numbers: Alice a = '+it.a+', Bob b = '+it.b+'.</p>'+
+      '<span class="eq">Step 2 · Alice public key: Y<sub>A</sub> = g<sup>a</sup> mod p = '+it.g+'<sup>'+it.a+'</sup> mod '+it.p+' = <b>'+A.res+'</b></span>'+A.html+
+      '<span class="eq">Step 3 · Bob public key: Y<sub>B</sub> = g<sup>b</sup> mod p = '+it.g+'<sup>'+it.b+'</sup> mod '+it.p+' = <b>'+Bv.res+'</b></span>'+Bv.html+
+      '<p>Step 4 · Swap: Alice sends '+A.res+' to Bob; Bob sends '+Bv.res+' to Alice.</p>'+
+      '<span class="eq">Step 5 · Alice shared key: K<sub>A</sub> = Y<sub>B</sub><sup>a</sup> mod p = '+it.YB+'<sup>'+it.a+'</sup> mod '+it.p+' = <b>'+KA.res+'</b></span>'+KA.html+
+      '<span class="eq">Step 6 · Bob shared key: K<sub>B</sub> = Y<sub>A</sub><sup>b</sup> mod p = '+it.YA+'<sup>'+it.b+'</sup> mod '+it.p+' = <b>'+KB.res+'</b></span>'+KB.html+
+      '<p><b>K<sub>A</sub> = K<sub>B</sub> = '+KA.res+'</b> ✓ Both users obtain the same shared secret key.</p>'+
+      (it.p===29&&it.g===2&&it.b===13?'<div class="tipbox">⚠ 课件 P4-63 把 2<sup>13</sup> mod 29 写成 27，K 写成 26；正确是 Y<sub>B</sub> = 14、K = 19。</div>':''));
+    h+=step('(c)','Follow-up','<p class="en-ans">'+DHFOLLOW[it.fu].a+'</p>');
+  }else{
+    if(it.type==='rsa')h+=step('(a)','Why 2 cannot be the public key（往年原题）','<ul class="en-ans"><li>The public key e must satisfy three conditions: (1) 1 &lt; e &lt; φ(n); (2) e must be a prime number; (3) e must have <b>no common factor</b> with (p−1) and (q−1).</li><li>All prime numbers except 2 are odd, so p−1 and q−1 are always <b>even</b> and always contain the factor 2.</li><li>Therefore e = 2 always shares the common factor 2 with p−1 and q−1 and fails condition (3), whether the primes are small or large. (2 does satisfy conditions 1 and 2.)</li></ul>');
+    else h+=step('(a)','Encryption vs signature（简答）','<ul class="en-ans"><li><b>RSA encryption</b> (confidentiality): the sender encrypts with the <b>receiver\'s public key</b>, C = M<sup>e</sup> mod n; only the receiver can decrypt with his <b>private key</b>, M = C<sup>d</sup> mod n.</li><li><b>RSA digital signature</b> (authentication, non-repudiation, integrity): the signer signs with his <b>own private key</b>, S = M<sup>d</sup> mod n; anyone verifies with the <b>signer\'s public key</b>, M = S<sup>e</sup> mod n.</li><li>The same algorithm is used with the keys reversed. In practice the hash (digest) of the message is signed instead of the whole message, for speed.</li></ul>');
+    var b=it.type==='rsa'?'(b)':'(b)';
+    h+=step(b,'n and φ(n)','<span class="eq">n = p × q = '+it.p+' × '+it.q+' = <b>'+it.n+'</b></span><span class="eq">φ(n) = (p−1)(q−1) = '+(it.p-1)+' × '+(it.q-1)+' = <b>'+it.phi+'</b></span>');
+    var inv=inverseSteps(BigInt(it.e),BigInt(it.phi));
+    h+=step(it.type==='rsa'?'(c)':'(b)',(it.sel?'Select e, then ':'')+'private key d',eSelHTML(it)+'<p>Private key: e × d mod φ(n) = 1 → d = (k·φ(n) + 1) / e</p>'+inv.k+'<span class="eq">d = <b>'+it.d+'</b>　check: '+it.e+' × '+it.d+' = '+(it.e*it.d)+' = '+Math.floor(it.e*it.d/it.phi)+' × '+it.phi+' + 1 ✓</span><p>Public key (e, n) = ('+it.e+', '+it.n+')；Private key (d, n) = ('+it.d+', '+it.n+')</p>');
+    if(it.type==='rsa'){
+      var en=powLine(it.M,it.e,it.n),de=powLine(it.C,it.d,it.n);
+      h+=step('(d)','Encrypt and decrypt','<span class="eq">Encryption: C = M<sup>e</sup> mod n = '+it.M+'<sup>'+it.e+'</sup> mod '+it.n+' = <b>'+en.res+'</b></span>'+en.html+
+        '<span class="eq">Decryption: M = C<sup>d</sup> mod n = '+it.C+'<sup>'+it.d+'</sup> mod '+it.n+' = <b>'+de.res+'</b></span>'+de.html+'<p>The decrypted value equals the original message M = '+it.M+' ✓, so the keys and the calculation are correct.</p>');
+    }else{
+      var sg=powLine(it.M,it.d,it.n),vf=powLine(it.S,it.e,it.n);
+      h+=step('(c)','Sign and verify','<span class="eq">Signature (private key): S = M<sup>d</sup> mod n = '+it.M+'<sup>'+it.d+'</sup> mod '+it.n+' = <b>'+sg.res+'</b></span>'+sg.html+
+        '<span class="eq">Verification (public key): S<sup>e</sup> mod n = '+it.S+'<sup>'+it.e+'</sup> mod '+it.n+' = <b>'+vf.res+'</b></span>'+vf.html+'<p>The result equals M = '+it.M+' ✓, so the signature is verified (signed with the private key d, verified with the public key e).</p>');
+    }
+  }
+  h+='<div class="hotbox"><b>老师的扣分提醒</b>：每一步写“公式 → 代入数字 → 结果”，公式不会给你；最后一定要验算（解密回原文、双方 K 相等、验签得回 M）。只写最终答案，15 分只剩约 5 分。</div>';
+  return h;
+}
+function rExam(){
+  if(!EX.it)EX.it=randExam(EX.type);
+  var it=EX.it,h='<p class="eyebrow">Final · 期末专项</p><h1 class="vh">DH / RSA 15 分大题专项</h1><p class="lede">按老师说的考试规格出题：素数不超过 19，公式不给，计算器没有 mod 键。先在纸上把整题写一遍，再把关键数字填进来核对，最后对照「满分答题模板」看步骤写全没有。</p>';
+  h+='<div class="hotbox" style="margin:0 0 16px"><b>老师划的规则（W2、W6、W7）</b>：期末约 80% 是计算；DH、RSA 各至少 15 分；数字都小于 20、最大素数 19；mod 用除法算（320 ÷ 9 = 35.55… → 320 − 35×9 = 5）；公式要自己背。</div>';
+  h+='<div class="tools">';EXT.forEach(function(t){h+='<button class="chip'+(EX.type===t[0]?' on':'')+'" data-xt="'+t[0]+'">'+t[1]+'</button>'});h+='</div>';
+  h+='<section class="tool"><div class="presets"><span class="fl">老师例题</span>';
+  EXPRE[EX.type].forEach(function(p,i){h+='<button class="chip" data-xp="'+i+'">'+p.n+'</button>'});
+  h+='<button class="btn sm pri" id="xrand" style="margin-left:6px">随机出一题</button><span class="pstat" style="margin:0 0 0 auto">已练 '+S.exam.n+' 题 · 全对 '+S.exam.ok+' 题</span></div>';
+  h+='<div class="exq">'+'<p class="exname">'+(it.name?esc(it.name):'随机题 · 考试规格')+'</p>'+'<div class="stem" lang="en">'+it.en+'</div>'+
+    (EX.zh?'<p class="zh">'+it.zh+'</p>':'<button class="zhbtn" id="xzh">显示中文题意</button>')+'</div>';
+  h+='<p class="ex-k" style="margin:4px 0 0">填关键数字（简答部分写在纸上，看模板对照）</p><div class="ansin">';
+  it.f.forEach(function(f){var r=EX.res?EX.res[f.k]:undefined;h+='<div class="fld"><label for="xa-'+f.k+'">'+f.l+(r!==undefined?' <span class="chk '+(r?'ok':'no')+'">'+(r?'✓':'✗ 应为 '+f.v)+'</span>':'')+'</label><input id="xa-'+f.k+'" value="'+esc(EX.u[f.k]||'')+'" inputmode="numeric" autocomplete="off"></div>'});
+  h+='</div>';
+  if(EX.res){var all=it.f.every(function(f){return EX.res[f.k]});h+='<div class="verdict '+(all?'ok':'no')+'" style="margin:0">'+(all?'✓ 全对！再对照模板，确认步骤和简答都写全了。':'有 '+it.f.filter(function(f){return !EX.res[f.k]}).length+' 处不对。打开模板看是哪一步出错。')+'</div>'}
+  h+='<div class="row"><button class="btn pri" id="xck">核对答案</button><button class="btn" id="xkey">'+(EX.key?'收起满分答题模板':'满分答题模板')+'</button><button class="btn ghost" id="xnext">换一题</button></div>';
+  if(EX.key)h+='<div class="steps">'+examKeyHTML(it)+'</div>';
+  h+='</section>';
+  return h;
+}
+function bExam(){
+  function keep(){EX.it.f.forEach(function(f){var el=$('#xa-'+f.k);if(el)EX.u[f.k]=el.value})}
+  function fresh(it){EX.it=it;EX.u={};EX.res=null;EX.key=false;EX.counted=false;render()}
+  $$('[data-xt]').forEach(function(b){b.onclick=function(){EX.type=b.getAttribute('data-xt');fresh(randExam(EX.type))}});
+  $$('[data-xp]').forEach(function(b){b.onclick=function(){var p=EXPRE[EX.type][+b.getAttribute('data-xp')];fresh(EX.type==='dh'?dhItem(p):rsaItem(p,EX.type))}});
+  $('#xrand').onclick=function(){fresh(randExam(EX.type))};
+  $('#xnext').onclick=function(){fresh(randExam(EX.type))};
+  var z=$('#xzh');if(z)z.onclick=function(){keep();EX.zh=true;render()};
+  $('#xkey').onclick=function(){keep();EX.key=!EX.key;render()};
+  $('#xck').onclick=function(){keep();var res={},all=true,filled=true;
+    EX.it.f.forEach(function(f){var v=String(EX.u[f.k]||'').trim();if(!v)filled=false;res[f.k]=checkAns(v,{v:f.v});if(!res[f.k])all=false});
+    EX.res=res;if(filled&&!EX.counted){EX.counted=true;S.exam.n++;if(all)S.exam.ok++;save()}render()};
 }
 
 /* ---------------- keyboard ---------------- */
