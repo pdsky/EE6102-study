@@ -2382,7 +2382,7 @@ hot:`W7：“作为客户端你不需要任何密钥，但服务器必须有 SSL
 window.NOTES = window.NOTES || {};
 window.NOTES.t = `<h3 class="warn">考试安排（老师课上宣布）</h3>
 <ul>
-<li><b>Quiz（Group B）：10 月 26 日（周一）10:40，就在上课的 LT。</b>原定 11 月 1 日（周日）取消，因为 NTU 规定周末不能考。Group A 另外安排。<span class="ref">W2</span></li>
+<li><b>你是 Group A：Quiz 在 10 月 30 日（周五），具体时间和教室待确认。</b>老师 W2 课上宣布的是 Group B 的安排：10 月 26 日（周一）10:40，在上课的 LT；原定 11 月 1 日（周日）取消，因为 NTU 规定周末不能考；Group A 另外安排。<span class="ref">W2</span></li>
 <li>Quiz：30 分钟，每人从题库随机抽题（左右前后的人题目都不同）。单选，不倒扣，<b>点了就不能回退</b>。电脑装 LockDown Browser；可带一张空白纸，但要先给监考看。<span class="ref">W2、W3</span></li>
 <li>Quiz 范围是 <b>Part 1–5</b>，<b>Part 6 区块链不考</b>。只考 slides，不考视频和统计数字。<b>P4 题最多</b>，P2 也会有。<span class="ref">W8</span></li>
 <li>样题不会原样出现，会改写、换选项顺序。真题<b>比样题简单</b>，样题里的“绕”是故意的。老师说提前交卷的人错得最多，30 分钟足够，慢慢做。<span class="ref">W3、W5、W8</span></li>
@@ -2533,12 +2533,12 @@ function daysTo(d){return Math.ceil((d-new Date())/86400000)}
 
 /* ================= HOME ================= */
 function rHome(){
-  var quiz=new Date(2026,9,26,10,40),fin=new Date(2026,10,26,17,0),asg=new Date(2026,9,23,23,59);
+  var quiz=new Date(2026,9,30),fin=new Date(2026,10,26,17,0),asg=new Date(2026,9,23,23,59);
   function dcell(k,d,s,hot){var n=daysTo(d);var txt=n>0?n+'<small>天</small>':(n===0?'今天':'已结束');return '<div class="date'+(hot?' hot':'')+'"><div class="k">'+k+'</div><div class="d">'+txt+'</div><div class="s">'+s+'</div></div>'}
   var all=partStat('all'),off=partStat('all','o');
   var h='<p class="eyebrow">EE6102 · Cyber Security &amp; Blockchain Technology</p><h1 class="vh">今天练哪一章？</h1>'+
   '<p class="lede">官方样题 + 课件自编题逐项讲解，模拟 30 题小测，Q&amp;A 大题写作练习，RSA / DH 等计算题分步演算。标着「老师强调」的题，是老师在上课录音里点过名的。进度只保存在这个浏览器里。</p>'+
-  '<div class="dates">'+dcell('Individual Quiz · 30 MCQ · 30%',quiz,'10 月 26 日（周一）10:40 · LT（Group B，原 11/1 已取消）',true)+dcell('Individual Assignment · 20%',asg,'10 月 23 日截止')+dcell('Final Exam · 4 题 · 50%',fin,'11 月 26 日（周四）17:00')+'</div>';
+  '<div class="dates">'+dcell('Individual Quiz · 30 MCQ · 30%',quiz,'10 月 30 日（周五）· Group A · 时间/教室待确认',true)+dcell('Individual Assignment · 20%',asg,'10 月 23 日截止')+dcell('Final Exam · 4 题 · 50%',fin,'11 月 26 日（周四）17:00')+'</div>';
   h+='<div class="quick">'+
    '<button class="qk" data-act="continue"><b>继续练习</b><span>'+(S.last.id&&BY[S.last.id]?'上次停在 '+esc(qno(BY[S.last.id])):'从 Part 1 开始')+'</span></button>'+
    '<button class="qk" data-go="mock"><b>模拟测验</b><span>30 题限时，交卷后看解析</span></button>'+
