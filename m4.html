@@ -29,81 +29,83 @@
 <aside class="toc" aria-label="本页目录"><p class="tt">本模块目录</p><ol></ol><div class="prog"><span class="pct"></span><div class="bar"><i></i></div></div></aside>
 <main class="lesson">
 <p class="eyebrow">Module 04 · 对应课件 sld4</p>
-<h1 class="title">密码学、数字签名与证书：全课最重要的一章</h1>
+<h1 class="title">密码学<span class="zhen">（cryptography）</span>、数字签名<span class="zhen">（digital signature）</span>与证书<span class="zhen">（certificate）</span>：全课最重要的一章</h1>
 <p class="sub-en">Cryptography, Digital Signature and Digital Certificates</p>
-<div class="meta"><span>约 90 分钟，建议分两次学</span><span>12 道小测</span><span>6 个动手实验</span><span>Quiz 样题 Part 4 · 35 题；Q&amp;A Q21–Q33</span></div>
-<p class="lede">样题里这一章有 35 题，是所有章节里最多的；期末的计算题（RSA、Diffie-Hellman）也全在这里。别被“密码学”吓到：你只需要会小学的乘法和除法余数，就能手算 RSA。我们从两千年前的凯撒密码开始，一步一步走到你每天上网都在用的 HTTPS 背后的数学。</p>
+<div class="meta"><span>约 90 分钟，建议分两次学</span><span>17 道小测</span><span>6 个动手实验</span><span>Quiz 样题 Part 4 · 35 题；Q&amp;A Q21–Q33</span></div>
+<p class="lede">样题里这一章有 35 题，是所有章节里最多的；期末的计算题（RSA、Diffie-Hellman）也全在这里。别被“密码学<span class="zhen">（cryptography）</span>”吓到：你只需要会小学的乘法和除法余数<span class="zhen">（remainder）</span>，就能手算 RSA。我们从两千年前的凯撒密码<span class="zhen">（Caesar cipher）</span>开始，一步一步走到你每天上网都在用的 HTTPS 背后的数学。</p>
 <div class="goals"><h3>学完这一章，你应该能：</h3><ul>
-<li>说清明文、密文、密钥、加密、解密；对称、非对称、哈希三类密码的区别；</li>
-<li>记住 DES 和 AES 的分组长度、密钥长度、轮数，知道 DES 为什么被淘汰；</li>
-<li>判断“谁用谁的哪把钥匙”：保密用接收方公钥，签名用发送方私钥；</li>
-<li><b>手算 Diffie-Hellman 和 RSA</b>，包括选 e、求 d、按 4 位一块加密字母；</li>
-<li>解释哈希的性质，以及它和加密的区别；</li>
-<li>画出数字签名的签名和验证流程；说出验证数字证书要检查的三件事。</li></ul></div>
+<li>说清明文<span class="zhen">（plaintext）</span>、密文<span class="zhen">（ciphertext）</span>、密钥<span class="zhen">（key）</span>、加密<span class="zhen">（encryption）</span>、解密<span class="zhen">（decryption）</span>；对称<span class="zhen">（symmetric）</span>、非对称<span class="zhen">（asymmetric）</span>、哈希<span class="zhen">（hash）</span>三类密码<span class="zhen">（password）</span>的区别；</li>
+<li>记住 DES 和 AES 的分组长度<span class="zhen">（block size）</span>、密钥长度<span class="zhen">（key length）</span>、轮数<span class="zhen">（number of rounds）</span>，知道 DES 为什么被淘汰；</li>
+<li>判断“谁用谁的哪把钥匙”：保密用接收方公钥<span class="zhen">（public key）</span>，签名<span class="zhen">（signature）</span>用发送方私钥<span class="zhen">（private key）</span>；</li>
+<li><b>手算 Diffie-Hellman 和 RSA</b>，包括选 e、求 d、按 4 位一块加密<span class="zhen">（encryption）</span>字母；</li>
+<li>解释哈希<span class="zhen">（hash）</span>的性质，以及它和加密<span class="zhen">（encryption）</span>的区别；</li>
+<li>画出数字签名<span class="zhen">（digital signature）</span>的签名<span class="zhen">（signature）</span>和验证流程；说出验证数字证书<span class="zhen">（digital certificate）</span>要检查的三件事。</li></ul></div>
 
 <!-- 1 -->
-<div class="teacher box" data-t="m4top"><span class="bt">老师课上强调 · 录音 W5–W8</span><ul><li><b>Quiz 里 P4 的题最多</b>。期末 <b>Diffie-Hellman</b> 和 <b>RSA</b> 各至少 15 分，老师说是“really easy 15 marks”。</li><li>考试数字都<b>小于 20，最大素数是 19</b>。计算器没有 mod 键，用除法法算余数：320 ÷ 9 = 35.55… → 320 − 35 × 9 = 5。</li><li><b>公式考试不给</b>，必须自己背；每一步都写“公式 → 代入 → 结果”，最后验算。</li></ul><p>按考试规格练题：<a href="practice.html#exam">刷题本 · 期末专项 DH/RSA</a>（附满分答题模板）。</p></div>
+<div class="teacher box" data-t="m4top"><span class="bt">老师课上强调 · 录音 W5–W8</span><ul><li><b>Quiz 里 P4 的题最多</b>。期末 <b>Diffie-Hellman</b> 和 <b>RSA</b> 各至少 15 分，老师说是“really easy 15 marks”。</li><li>考试数字都<b>小于 20，最大素数<span class="zhen">（large prime）</span>是 19</b>。计算器没有 mod 键，用除法法算余数<span class="zhen">（remainder）</span>：320 ÷ 9 = 35.55… → 320 − 35 × 9 = 5。</li><li><b>公式考试不给</b>，必须自己背；每一步都写“公式 → 代入 → 结果”，最后验算。</li></ul><p>按考试规格练题：<a href="practice.html#exam">刷题本 · 期末专项 DH/RSA</a>（附满分答题模板<span class="zhen">（template）</span>）。</p></div>
 <section class="sec" id="basic">
-<h2><span class="n">1</span>密码学要解决什么问题</h2>
-<p>密码学的故事里永远有三个人：<b>Alice</b> 要给 <b>Bob</b> 发消息，<b>Eve</b>（eavesdropper，窃听者）在中间偷听。互联网就是一个“人人都能偷听”的地方：你的消息要经过路由器、Wi-Fi、运营商……任何一环都可能有 Eve。</p>
+<h2><span class="n">1</span>密码学<span class="zhen">（cryptography）</span>要解决什么问题</h2>
+<p>密码学<span class="zhen">（cryptography）</span>的故事里永远有三个人：<b>Alice</b> 要给 <b>Bob</b> 发消息，<b>Eve</b>（eavesdropper，窃听者）在中间偷听。互联网<span class="zhen">（Internet）</span>就是一个“人人都能偷听”的地方：你的消息要经过路由器<span class="zhen">（router）</span>、Wi-Fi、运营商……任何一环都可能有 Eve。</p>
 <p>密码学（cryptography，来自希腊语 kryptós“隐藏的” + gráphein“书写”）就是<b>用数学把消息变成别人看不懂的样子</b>，只有拥有正确钥匙的人才能还原。</p>
 <h3>基本术语（P4-5）</h3>
 <dl class="gloss">
 <dt>Plaintext 明文</dt><dd>原始的、能读懂的消息，例如 HELLO</dd>
-<dt>Ciphertext 密文</dt><dd>加密后的输出，看起来像乱码，例如 XJ#94@K</dd>
-<dt>Cipher 密码算法</dt><dd>加密和解密用的数学步骤（算法）</dd>
+<dt>Ciphertext 密文</dt><dd>加密<span class="zhen">（encryption）</span>后的输出，看起来像乱码，例如 XJ#94@K</dd>
+<dt>Cipher 密码算法</dt><dd>加密<span class="zhen">（encryption）</span>和解密<span class="zhen">（decryption）</span>用的数学步骤（算法）</dd>
 <dt>Key 密钥</dt><dd>一串字符或比特，和算法配合使用。<b>算法可以公开，密钥必须保密</b></dd>
-<dt>Encryption 加密</dt><dd>明文 → 密文，记作 E(M) = C</dd>
-<dt>Decryption 解密</dt><dd>密文 → 明文，记作 D(C) = M</dd>
-<dt>Cryptanalysis 密码分析</dt><dd>试图破解密码系统，例如暴力破解、字典攻击、彩虹表攻击</dd>
+<dt>Encryption 加密</dt><dd>明文<span class="zhen">（plaintext）</span> → 密文<span class="zhen">（ciphertext）</span>，记作 E(M) = C</dd>
+<dt>Decryption 解密</dt><dd>密文<span class="zhen">（ciphertext）</span> → 明文<span class="zhen">（plaintext）</span>，记作 D(C) = M</dd>
+<dt>Cryptanalysis 密码分析</dt><dd>试图破解密码<span class="zhen">（password cracking）</span>系统，例如暴力破解<span class="zhen">（brute force）</span>、字典攻击<span class="zhen">（dictionary attack）</span>、彩虹表攻击<span class="zhen">（rainbow table attack）</span></dd>
 </dl>
-<div class="pitfall box"><span class="bt">易错点</span><p>样题 Q4-1：“The process of converting from plaintext to cipher text is known as deciphering or decryption.” 答案是 <b>No</b>。明文 → 密文是<b>加密</b>，说反了。</p></div>
-<h3>密码学能提供什么（P4-16）</h3>
+<div class="pitfall box"><span class="bt">易错点</span><p>样题 Q4-1：“The process of converting from plaintext to cipher text is known as deciphering or decryption.” 答案是 <b>No</b>。明文<span class="zhen">（plaintext）</span> → 密文<span class="zhen">（ciphertext）</span>是<b>加密<span class="zhen">（encryption）</span></b>，说反了。</p></div>
+<h3>密码学<span class="zhen">（cryptography）</span>能提供什么（P4-16）</h3>
 <ul>
-<li><b>Confidentiality 机密性</b>：只有授权的人能读（靠加密）；</li>
-<li><b>Integrity 完整性</b>：收到的就是发出的（靠哈希）；</li>
-<li><b>Authentication 认证</b>：确认消息来自谁（靠数字签名）；</li>
-<li><b>Non-repudiation 不可否认</b>：发送者不能抵赖（靠数字签名）。</li>
+<li><b>Confidentiality 机密性</b>：只有授权<span class="zhen">（authorization）</span>的人能读（靠加密<span class="zhen">（encryption）</span>）；</li>
+<li><b>Integrity 完整性</b>：收到的就是发出的（靠哈希<span class="zhen">（hash）</span>）；</li>
+<li><b>Authentication 认证</b>：确认消息来自谁（靠数字签名<span class="zhen">（digital signature）</span>）；</li>
+<li><b>Non-repudiation 不可否认</b>：发送者不能抵赖（靠数字签名<span class="zhen">（digital signature）</span>）。</li>
 </ul>
-<div class="teacher box" data-t="m4prov"><span class="bt">老师课上强调 · W5</span><p>密码学能提供保密性、完整性、认证和不可否认，但<b>不能提供可用性和隐私</b>。机密性不等于隐私。对称加密适合加密你自己的硬盘，公钥加密适合和别人通信，TLS 是两者混合。</p></div>
+<div class="teacher box" data-t="m4prov"><span class="bt">老师课上强调 · W5</span><p>密码学<span class="zhen">（cryptography）</span>能提供保密性<span class="zhen">（confidentiality）</span>、完整性<span class="zhen">（integrity）</span>、认证<span class="zhen">（authentication）</span>和不可否认<span class="zhen">（non-repudiation）</span>，但<b>不能提供可用性<span class="zhen">（availability）</span>和隐私<span class="zhen">（privacy）</span></b>。机密性<span class="zhen">（confidentiality）</span>不等于隐私<span class="zhen">（privacy）</span>。对称加密<span class="zhen">（symmetric encryption）</span>适合加密<span class="zhen">（encryption）</span>你自己的硬盘，公钥加密<span class="zhen">（public-key encryption）</span>适合和别人通信，TLS 是两者混合。</p></div>
 
 <h3>三大类密码（P4-11），本章的路线图</h3>
 <div class="tbl"><table>
 <tr><th>类别</th><th>钥匙数量</th><th>代表</th><th>主要用途</th><th>本章位置</th></tr>
-<tr><td><b>Symmetric</b> 对称</td><td>1 把（双方共享）</td><td>DES、3DES、AES、RC4</td><td>大量数据加密</td><td>第 4 节</td></tr>
-<tr><td><b>Asymmetric</b> 非对称（公钥）</td><td>2 把（公钥 + 私钥）</td><td>RSA、Diffie-Hellman、ElGamal、ECC</td><td>密钥交换、数字签名</td><td>第 5–9 节</td></tr>
-<tr><td><b>Hashing</b> 哈希</td><td>不用钥匙</td><td>SHA-2、SHA-3、MD5（已淘汰）</td><td>完整性、存储密码</td><td>第 10 节</td></tr>
+<tr><td><b>Symmetric</b> 对称</td><td>1 把（双方共享）</td><td>DES、3DES、AES、RC4</td><td>大量数据加密<span class="zhen">（encryption）</span></td><td>第 4 节</td></tr>
+<tr><td><b>Asymmetric</b> 非对称（公钥<span class="zhen">（public key）</span>）</td><td>2 把（公钥<span class="zhen">（public key）</span> + 私钥<span class="zhen">（private key）</span>）</td><td>RSA、Diffie-Hellman、ElGamal、ECC</td><td>密钥交换<span class="zhen">（key exchange）</span>、数字签名<span class="zhen">（digital signature）</span></td><td>第 5–9 节</td></tr>
+<tr><td><b>Hashing</b> 哈希</td><td>不用钥匙</td><td>SHA-2、SHA-3、MD5（已淘汰）</td><td>完整性<span class="zhen">（integrity）</span>、存储密码<span class="zhen">（password）</span></td><td>第 10 节</td></tr>
 </table></div>
 </section>
 
 <!-- 2 -->
 <section class="sec" id="classic">
-<h2><span class="n">2</span>从凯撒密码开始：替换、置换与“钥匙”的意义</h2>
-<p>最古老的密码学用在军事和政治上（Q&amp;A Q21：最早用于在传递途中隐藏军事和政治机密）。凯撒大帝用过一个简单的办法：<b>每个字母往后移 3 位</b>，A→D、B→E……这就是<b>替换密码（substitution）</b>：把每个字母换成另一个。</p>
-<div class="lab"><p class="lt">凯撒密码机</p><p class="ld">“算法”是“字母往后移 k 位”，“密钥”就是 k。改改密钥看看效果，再想想：如果 Eve 知道算法，她最多要试几次就能破解？</p>
-<div class="fields"><div class="fld" style="grid-column:1/-1"><label for="cin">明文</label><input id="cin" type="text" value="ATTACK AT DAWN" autocomplete="off"></div><div class="fld"><label for="ck">密钥 k（移位数）</label><input id="ck" type="number" value="3" min="0" max="25"></div></div>
+<h2><span class="n">2</span>从凯撒密码<span class="zhen">（Caesar cipher）</span>开始：替换、置换与“钥匙”的意义</h2>
+<p>最古老的密码学<span class="zhen">（cryptography）</span>用在军事和政治上（Q&amp;A Q21：最早用于在传递途中隐藏军事和政治机密）。凯撒大帝用过一个简单的办法：<b>每个字母往后移 3 位</b>，A→D、B→E……这就是<b>替换密码（substitution）</b>：把每个字母换成另一个。</p>
+<div class="lab"><p class="lt">凯撒密码<span class="zhen">（Caesar cipher）</span>机</p><p class="ld">“算法”是“字母往后移 k 位”，“密钥<span class="zhen">（key）</span>”就是 k。改改密钥<span class="zhen">（key）</span>看看效果，再想想：如果 Eve 知道算法，她最多要试几次就能破解？</p>
+<div class="fields"><div class="fld" style="grid-column:1/-1"><label for="cin">明文<span class="zhen">（plaintext）</span></label><input id="cin" type="text" value="ATTACK AT DAWN" autocomplete="off"></div><div class="fld"><label for="ck">密钥<span class="zhen">（key）</span> k（移位数）</label><input id="ck" type="number" value="3" min="0" max="25"></div></div>
 <div class="out" id="cout"></div></div>
-<p>答案是只需试 <b>25 次</b>，因为只有 25 种有意义的移位。这说明了密码学的第一条原理：</p>
-<div class="key box"><span class="bt">核心思想</span><p><b>安全不能靠“算法保密”，要靠“密钥空间足够大”。</b>DES 的设计要求里就写着：“The security of the algorithm must depend on the key”，并且算法细节必须公开（P4-21）。算法不变，换一把钥匙，结果就完全不同（P4-13）。</p></div>
-<p>另外两类古典思路：<b>置换密码（transposition）</b>，字母不变、打乱顺序（比如把 HELLO 写成 OLLEH）；<b>乘积密码（product）</b>，把替换、置换、模运算组合起来反复做。现代的 DES 和 AES 本质上就是“多轮替换 + 置换”的乘积密码。</p>
+<p>答案是只需试 <b>25 次</b>，因为只有 25 种有意义的移位。这说明了密码学<span class="zhen">（cryptography）</span>的第一条原理：</p>
+<div class="key box"><span class="bt">核心思想</span><p><b>安全不能靠“算法保密”，要靠“密钥空间<span class="zhen">（key space）</span>足够大”。</b>DES 的设计要求里就写着：“The security of the algorithm must depend on the key”，并且算法细节必须公开（P4-21）。算法不变，换一把钥匙，结果就完全不同（P4-13）。</p></div>
+<p>另外两类古典思路：<b>置换密码（transposition）</b>，字母不变、打乱顺序（比如把 HELLO 写成 OLLEH）；<b>乘积密码（product）</b>，把替换、置换、模运算<span class="zhen">（modular arithmetic）</span>组合起来反复做。现代的 DES 和 AES 本质上就是“多轮替换 + 置换”的乘积密码<span class="zhen">（product cipher）</span>。</p>
 
-<h3>密钥长度：每多 1 位，难度翻倍</h3>
+<h3>密钥长度<span class="zhen">（key length）</span>：每多 1 位，难度翻倍</h3>
 <p>钥匙是一串比特（0 和 1），n 位的钥匙就有 2<sup>n</sup> 种可能（P4-14）：</p>
 <ul>
 <li>8 位：2<sup>8</sup> = 256 种，平均试 128 次就能猜中，不用电脑都能破；</li>
 <li><b>56 位</b>（DES）：2<sup>56</sup> 种。每秒试 100 万个，需要约 <b>2285 年</b>；</li>
 <li>64 位：约 58.5 万年；128 位：约 10<sup>25</sup> 年。</li>
 </ul>
-<p>但现实比理论危险：电脑远比每秒 100 万次快，黑客还能用几百万台僵尸机并行计算。1998 年 EFF 造了一台专用机器，<b>56 小时</b>就破解了 DES。所以：<b>安全 = 算法强度 + 密钥长度</b>。</p>
-<div class="check" data-a="1"><p class="cq">密钥从 56 位增加到 58 位，暴力破解的时间大约变成原来的多少倍？</p>
+<p>但现实比理论危险：电脑远比每秒 100 万次快，黑客<span class="zhen">（hacker）</span>还能用几百万台僵尸机<span class="zhen">（zombie computers）</span>并行计算。1998 年 EFF 造了一台专用机器，<b>56 小时</b>就破解了 DES。所以：<b>安全 = 算法强度<span class="zhen">（algorithm strength）</span> + 密钥长度<span class="zhen">（key length）</span></b>。</p>
+<div class="check" data-a="1"><p class="cq">密钥<span class="zhen">（key）</span>从 56 位增加到 58 位，暴力破解<span class="zhen">（brute force）</span>的时间大约变成原来的多少倍？</p>
 <div class="opts"><button class="opt">2 倍</button><button class="opt">4 倍</button><button class="opt">58/56 倍</button></div>
-<div class="cx"><p>每多 1 位翻一倍，多 2 位就是 2 × 2 = <b>4 倍</b>。这就是“指数”。</p></div></div>
+<div class="cx"><p>每多 1 位翻一倍，多 2 位就是 2 × 2 = <b>4 倍</b>。这就是“指数<span class="zhen">（exponent）</span>”。</p></div></div>
 </section>
 
 <!-- 3 -->
 <section class="sec" id="sym">
-<h2><span class="n">3</span>对称加密：一把钥匙锁门也开门</h2>
-<p><b>Symmetric（secret-key）cryptography</b>：加密和解密用<b>同一把钥匙</b>（样题 Q4-2）。记作 E<sub>K</sub>(M) = C，D<sub>K</sub>(C) = M。</p>
+<h2><span class="n">3</span>对称加密<span class="zhen">（symmetric encryption）</span>：一把钥匙锁门也开门</h2>
+<p><b>Symmetric（secret-key）cryptography</b>：加密<span class="zhen">（encryption）</span>和解密<span class="zhen">（decryption）</span>用<b>同一把钥匙</b>（样题 Q4-2）。发送方用密钥<span class="zhen">（key）</span> K 把明文<span class="zhen">（plaintext）</span> M 变成密文<span class="zhen">（ciphertext）</span> C，接收方用<b>同一个 K</b> 把 C 还原成 M：</p>
+<div class="out"><span class="eq">加密<span class="zhen">（encryption）</span>：C = E<sub>K</sub>(M)　　解密<span class="zhen">（decryption）</span>：M = D<sub>K</sub>(C) = D<sub>K</sub>(E<sub>K</sub>(M))</span></div>
+<p>算法（E 和 D）是<b>公开</b>的，所有人都知道 AES 怎么运算；安全性<b>只靠密钥<span class="zhen">（key）</span>保密</b>。这就是第 2 节说的“钥匙才是关键”：只要 Eve 拿不到 K，她在信道<span class="zhen">（channel）</span>上截到再多密文<span class="zhen">（ciphertext）</span>也没用。</p>
 <figure>
 <svg viewBox="0 0 680 170" role="img" aria-label="对称加密：Alice 和 Bob 用同一把密钥">
   <defs><marker id="m4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-a"/></marker></defs>
@@ -117,21 +119,75 @@
   <line x1="205" y1="130" x2="205" y2="112" class="lg"/><line x1="485" y1="130" x2="485" y2="112" class="lg"/>
   <text x="345" y="36" text-anchor="middle" font-size="12" class="tb">Eve 在信道上只能看到密文</text>
 </svg>
-<figcaption>对称加密：一把钥匙，双方共享。</figcaption>
+<figcaption>对称加密<span class="zhen">（symmetric encryption）</span>：一把钥匙，双方共享。</figcaption>
 </figure>
-<div class="analogy box"><span class="bt">类比</span><p>一个带密码锁的箱子：你锁上寄出去，对方用<b>同一个密码</b>打开。问题是，<b>你怎么把密码安全地告诉对方？</b>打电话可能被窃听，写信可能被拆开。这就是对称加密最大的难题。</p></div>
+<h3>一个能手算的例子：一个字节<span class="zhen">（byte）</span>的 XOR 加密<span class="zhen">（encryption）</span></h3>
+<p>真实的 AES 太复杂，没法手算，但它的核心思想可以用最简单的对称<span class="zhen">（symmetric）</span>运算 <b>XOR（异或）</b>体会：两位相同得 0，不同得 1。XOR 有个神奇性质：<b>同一个 K 异或两次，就回到原样</b>，所以同一把钥匙既能加密<span class="zhen">（encryption）</span>也能解密<span class="zhen">（decryption）</span>。</p>
+<div class="stepper"><div class="sh"><span>例：Alice 用密钥<span class="zhen">（key）</span> K = 10110011 加密<span class="zhen">（encryption）</span>字母 “H”</span><span class="ctr"></span></div>
+<div class="st"><p><b>第一步：把明文<span class="zhen">（plaintext）</span>变成二进制。</b>字母 H 的 ASCII 码是 72，写成 8 位二进制：</p><div class="out"><span class="eq">M = H = 01001000</span></div><p>Alice 和 Bob 事先约好（安全地共享了）密钥<span class="zhen">（key）</span> K = 10110011。</p></div>
+<div class="st"><p><b>第二步：加密<span class="zhen">（encryption）</span>，C = M ⊕ K（逐位异或）。</b></p><div class="out"><span class="eq">  M = 0 1 0 0 1 0 0 0</span><span class="eq">⊕ K = 1 0 1 1 0 0 1 1</span><span class="eq">  C = <b>1 1 1 1 1 0 1 1</b>（十六进制 FB，已经看不出是 H 了）</span></div><p>Alice 把 C 发给 Bob。Eve 在网上截到的只有 11111011。</p></div>
+<div class="st"><p><b>第三步：解密<span class="zhen">（decryption）</span>，M = C ⊕ K（用同一把钥匙再异或一次）。</b></p><div class="out"><span class="eq">  C = 1 1 1 1 1 0 1 1</span><span class="eq">⊕ K = 1 0 1 1 0 0 1 1</span><span class="eq">  M = <b>0 1 0 0 1 0 0 0</b> = H ✓</span></div><p>Bob 拿回了 H。如果 Eve 不知道 K，11111011 可能对应任何一个字母；但只要 K 泄露<span class="zhen">（leak）</span>，她也能一步解开。这正说明对称加密<span class="zhen">（symmetric encryption）</span>的全部安全都押在“钥匙别丢”上。</p></div>
+<div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
+<div class="analogy box"><span class="bt">类比</span><p>一个带密码<span class="zhen">（password）</span>锁的箱子：你锁上寄出去，对方用<b>同一个密码<span class="zhen">（password）</span></b>打开。锁很结实（算法很强），但问题是：<b>你怎么把密码<span class="zhen">（password）</span>安全地告诉对方？</b>打电话可能被窃听<span class="zhen">（eavesdropping）</span>，写信可能被拆开，当面告诉又太麻烦。这就是对称加密<span class="zhen">（symmetric encryption）</span>最大的难题：<b>密钥分发<span class="zhen">（key distribution）</span></b>。</p></div>
+
+<h3>最大难题：密钥分发<span class="zhen">（key distribution）</span>和扩展性<span class="zhen">（scalability）</span></h3>
+<p>对称加密<span class="zhen">（symmetric encryption）</span>要求双方<b>事先</b>拥有同一把密钥<span class="zhen">（key）</span>，而且这把钥匙不能通过要保护的那条不安全信道<span class="zhen">（channel）</span>直接发过去（否则 Eve 也会拿到）。人一多，问题更严重：<b>每两个人之间都需要一把独立的钥匙</b>，否则 A 和 B 的悄悄话 C 也能解开。n 个人两两通信需要</p>
+<div class="out"><span class="eq">密钥<span class="zhen">（key）</span>数 = n(n − 1) / 2</span></div>
+<div class="tbl"><table>
+<tr><th>人数 n</th><th>需要的密钥<span class="zhen">（key）</span>数</th><th>算式</th></tr>
+<tr><td>4</td><td>6</td><td>4 × 3 ÷ 2</td></tr>
+<tr><td>10</td><td>45</td><td>10 × 9 ÷ 2</td></tr>
+<tr><td>100</td><td>4,950</td><td>100 × 99 ÷ 2</td></tr>
+<tr><td>1,000</td><td>499,500</td><td>1000 × 999 ÷ 2</td></tr>
+</table></div>
+<p>人数翻 10 倍，钥匙数大约翻 100 倍，每把钥匙还要生成、安全送达、保存、定期更换。现实中的三种解决办法：</p>
+<ul>
+<li><b>线下交付</b>：当面给、专人押送。安全，但慢、贵，人多了根本不可行。</li>
+<li><b>可信第三方 / 密钥分发<span class="zhen">（key distribution）</span>中心（KDC）</b>：每人只和中心共享一把钥匙，由中心临时发会话密钥<span class="zhen">（session key）</span>（如 Kerberos）。但中心一旦被攻破，全部失守。</li>
+<li><b>公钥<span class="zhen">（public key）</span>技术</b>：用 Diffie-Hellman 或 RSA 在公开网络上安全地约定或传送对称密钥<span class="zhen">（symmetric key）</span>（第 5、7 节），再用对称加密<span class="zhen">（symmetric encryption）</span>传大量数据，这就是第 9 节的<b>混合系统<span class="zhen">（hybrid system）</span></b>。HTTPS 就是这么做的。</li>
+</ul>
+
 <h3>优点与缺点（P4-19）</h3>
 <div class="tbl"><table>
 <tr><th>优点</th><th>缺点</th></tr>
-<tr><td><b>快</b>：计算效率高，适合加密大量数据；实现简单；应用广泛（SSL/TLS、磁盘加密、文件加密）</td><td><b>密钥分发难</b>（最大缺点，样题 Q4-7）；<b>扩展性差</b>：n 个人两两通信需要 n(n−1)/2 把钥匙，100 人就要 4950 把</td></tr>
+<tr><td><b>快</b>：运算简单，通常比公钥加密<span class="zhen">（public-key encryption）</span>快几百到上千倍，适合加密<span class="zhen">（encryption）</span>大量数据</td><td><b>密钥分发<span class="zhen">（key distribution）</span>难</b>：双方必须事先安全地共享密钥<span class="zhen">（shared key）</span>（最大缺点，样题 Q4-7）</td></tr>
+<tr><td><b>密钥<span class="zhen">（key）</span>短</b>：128 位 AES 密钥<span class="zhen">（key）</span>就已经很安全</td><td><b>扩展性<span class="zhen">（scalability）</span>差</b>：n 个人需要 n(n−1)/2 把钥匙</td></tr>
+<tr><td><b>实现简单、应用广泛</b>：硬件（CPU 的 AES 指令）普遍支持</td><td><b>不能提供不可否认性<span class="zhen">（non-repudiation）</span></b>：双方钥匙一样，B 收到消息后无法向第三方证明是 A 发的（A 可以说“是 B 自己写的”）</td></tr>
 </table></div>
+<p><b>生活中哪里在用：</b>HTTPS 握手<span class="zhen">（handshake）</span>完成后，网页内容其实是用 AES 加密<span class="zhen">（encryption）</span>传输的；家里 Wi-Fi 的 WPA2/WPA3 密码<span class="zhen">（password）</span>就是一把共享的对称密钥<span class="zhen">（symmetric key）</span>；Windows BitLocker、苹果 FileVault 用 AES 加密<span class="zhen">（encryption）</span>整个硬盘；带密码<span class="zhen">（password）</span>的压缩包也是对称加密<span class="zhen">（symmetric encryption）</span>。</p>
+<div class="pitfall box"><span class="bt">易错点</span><ul>
+<li>对称加密<span class="zhen">（symmetric encryption）</span> = <b>secret-key</b>（共享秘密<span class="zhen">（shared secret）</span>钥匙），只有<b>一把</b>钥匙。不要和公钥<span class="zhen">（public key）</span>体系里的 <b>private key（私钥）</b>混淆：private key 是非对称加密<span class="zhen">（asymmetric encryption）</span>里只有自己知道的那一把。</li>
+<li>“公钥加密<span class="zhen">（public-key encryption）</span>有两把钥匙所以更安全”是<b>错的</b>（老师 W8 点名）。两者安全性取决于密钥长度<span class="zhen">（key length）</span>和算法，不取决于钥匙数量；实际中两者一起用。</li>
+<li>对称加密<span class="zhen">（symmetric encryption）</span>只解决<b>机密性<span class="zhen">（confidentiality）</span></b>（配合 GCM 等模式还能保证完整性<span class="zhen">（integrity）</span>），解决不了“证明是谁发的”。</li>
+</ul></div>
+<div class="check" data-a="1"><p class="cq">一个 25 人的团队，每两个人之间都要用对称加密<span class="zhen">（symmetric encryption）</span>单独通信，一共需要多少把密钥<span class="zhen">（key）</span>？</p>
+<div class="opts"><button class="opt">50</button><button class="opt">300</button><button class="opt">625</button><button class="opt">25</button></div>
+<div class="cx"><p>n(n−1)/2 = 25 × 24 ÷ 2 = <b>300</b>。50 是把每人算两把（公钥<span class="zhen">（public key）</span>体系才是 2n），625 是 n² 忘了去重和除 2。</p></div></div>
 
-<h3>分组密码 vs 流密码（P4-15）</h3>
+<h3>分组密码<span class="zhen">（block cipher）</span> vs 流密码（P4-15）</h3>
+<p>对称加密<span class="zhen">（symmetric encryption）</span>按“一次处理多少数据”分成两大类：</p>
+<p><b>Block cipher 分组密码</b>：把消息切成<b>固定大小的块</b>，每块用算法和密钥<span class="zhen">（key）</span>整体加密<span class="zhen">（encryption）</span>（样题 Q4-3）。例子：<b>DES</b>（每块 64 位 = 8 字节<span class="zhen">（byte）</span>）、<b>AES</b>（每块 128 位 = 16 字节<span class="zhen">（byte）</span>）。</p>
+<div class="key box"><span class="bt">例：用 AES 加密<span class="zhen">（encryption）</span>一条 40 字节<span class="zhen">（byte）</span>的消息</span><p>AES 每块 16 字节<span class="zhen">（byte）</span>。40 ÷ 16 = 2.5，所以要切成 <b>3 块</b>：第 1 块 16 字节<span class="zhen">（byte）</span>、第 2 块 16 字节<span class="zhen">（byte）</span>、第 3 块只有 8 字节<span class="zhen">（byte）</span>，不够一整块，要<b>填充（padding）</b> 8 个字节<span class="zhen">（byte）</span>补满 16 字节<span class="zhen">（byte）</span>再加密<span class="zhen">（encryption）</span>。如果换成 DES（每块 8 字节<span class="zhen">（byte）</span>），40 ÷ 8 = 5，正好 5 块，不用填充。每一块都用同一把密钥<span class="zhen">（key）</span>、经过多轮替换和置换（第 4 节细讲），输出同样大小的密文<span class="zhen">（ciphertext）</span>块。</p></div>
+<p><b>Stream cipher 流密码</b>：不分块，而是用密钥生成<span class="zhen">（key generation）</span>一串和消息一样长的<b>伪随机密钥流（keystream）</b>，<b>一次加密<span class="zhen">（encryption）</span>一位（或一个字节<span class="zhen">（byte）</span>）</b>：每个明文<span class="zhen">（plaintext）</span>字节<span class="zhen">（byte）</span>和对应的密钥<span class="zhen">（key）</span>流字节<span class="zhen">（byte）</span>做 XOR。例子：<b>RC4</b>（老算法，已不安全）、<b>ChaCha20</b>（TLS 1.3 在用）。</p>
+<div class="key box"><span class="bt">例：用流密码<span class="zhen">（stream cipher）</span>加密<span class="zhen">（encryption）</span> “HI”</span><p>密钥生成<span class="zhen">（key generation）</span>的密钥<span class="zhen">（key）</span>流前两个字节<span class="zhen">（byte）</span>是 10110011、01011100，逐字节<span class="zhen">（byte）</span>异或：</p><div class="out"><span class="eq">H = 01001000 ⊕ 10110011 = 11111011</span><span class="eq">I = 01001001 ⊕ 01011100 = 00010101</span></div><p>来一个字节<span class="zhen">（byte）</span>就加密<span class="zhen">（encryption）</span>一个字节<span class="zhen">（byte）</span>，不用等凑够 16 字节<span class="zhen">（byte）</span>，也不需要填充。解密<span class="zhen">（decryption）</span>时 Bob 用同一把密钥生成<span class="zhen">（key generation）</span>同样的密钥<span class="zhen">（key）</span>流，再异或一次即可。</p></div>
+<div class="tbl"><table>
+<tr><th></th><th>分组密码（block cipher）</th><th>流密码（stream cipher）</th></tr>
+<tr><td>每次处理</td><td>一整块（DES 64 位，AES 128 位）</td><td>一位或一个字节<span class="zhen">（byte）</span></td></tr>
+<tr><td>不够长怎么办</td><td>最后一块要填充</td><td>不需要填充</td></tr>
+<tr><td>适合场景</td><td>文件、磁盘、数据库<span class="zhen">（database）</span>等成块的数据</td><td>实时通信、语音视频等连续数据流</td></tr>
+<tr><td>例子</td><td>DES、3DES、AES</td><td>RC4、ChaCha20</td></tr>
+<tr><td>关键注意</td><td>要选好工作模式<span class="zhen">（modes of operation）</span>（下面讲）</td><td>同一密钥<span class="zhen">（key）</span>流绝不能重复使用</td></tr>
+</table></div>
+<div class="check" data-a="1"><p class="cq">RC4 属于哪一类？</p>
+<div class="opts"><button class="opt">分组密码<span class="zhen">（block cipher）</span></button><button class="opt">流密码<span class="zhen">（stream cipher）</span></button><button class="opt">哈希函数<span class="zhen">（hash function）</span></button></div>
+<div class="cx"><p>RC4 一次加密<span class="zhen">（encryption）</span>一个字节<span class="zhen">（byte）</span>，是<b>流密码<span class="zhen">（stream cipher）</span></b>。DES、AES 才是分组密码<span class="zhen">（block cipher）</span>。</p></div></div>
+
+<h3>分组密码<span class="zhen">（block cipher）</span>的工作模式<span class="zhen">（modes of operation）</span>：ECB 和 CBC</h3>
+<p>分组密码<span class="zhen">（block cipher）</span>只规定了“一块怎么加密<span class="zhen">（encryption）</span>”，多块之间怎么串起来，由<b>工作模式（modes of operation）</b>决定：</p>
 <ul>
-<li><b>Block cipher 分组密码</b>：把消息切成固定大小的块，每块用算法和密钥加密（样题 Q4-3）。例子：<b>DES、AES</b>；</li>
-<li><b>Stream cipher 流密码</b>：一次加密一位（或一个字节），例子：<b>RC4</b>。</li>
+<li><b>ECB（Electronic Codebook，电子密码<span class="zhen">（password）</span>本）</b>：每块<b>各自独立</b>加密<span class="zhen">（encryption）</span>。缺点：<b>相同的明文<span class="zhen">（plaintext）</span>块一定得到相同的密文<span class="zhen">（ciphertext）</span>块</b>。比如一份工资表里有 100 行都是 “SALARY: 5000.00 ”（正好 16 字节<span class="zhen">（byte）</span>），加密<span class="zhen">（encryption）</span>后会出现 100 个一模一样的密文<span class="zhen">（ciphertext）</span>块，Eve 虽然解不开，却能看出“这些人工资一样”。用 ECB 加密<span class="zhen">（encryption）</span>一张图片，轮廓甚至还能看出来。</li>
+<li><b>CBC（Cipher Block Chaining，密文<span class="zhen">（ciphertext）</span>分组链接）</b>：每块明文<span class="zhen">（plaintext）</span>先和<b>上一块的密文<span class="zhen">（ciphertext）</span></b>做 XOR 再加密<span class="zhen">（encryption）</span>，第一块和一个随机的<b>初始向量（IV）</b>做 XOR。这样前后块像链条一样连在一起，即使 100 行内容一样，加密<span class="zhen">（encryption）</span>结果也各不相同，规律被隐藏了。</li>
 </ul>
-<p>分组密码还有不同的<b>工作模式</b>：</p>
 <figure>
 <svg viewBox="0 0 680 220" role="img" aria-label="ECB 与 CBC 模式对比">
   <defs><marker id="m4b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-n"/></marker></defs>
@@ -149,69 +205,137 @@
 </svg>
 <figcaption>ECB vs CBC（P4-15）。CBC 的 C 就是 Chaining，链接。</figcaption>
 </figure>
+<div class="check" data-a="0"><p class="cq">用 ECB 模式加密<span class="zhen">（encryption）</span>一份有很多重复行的文件，主要风险<span class="zhen">（risk）</span>是什么？</p>
+<div class="opts"><button class="opt">相同的明文<span class="zhen">（plaintext）</span>块产生相同的密文<span class="zhen">（ciphertext）</span>块，暴露数据规律</button><button class="opt">加密<span class="zhen">（encryption）</span>速度太慢</button><button class="opt">密钥<span class="zhen">（key）</span>会随密文<span class="zhen">（ciphertext）</span>一起泄露<span class="zhen">（leak）</span></button></div>
+<div class="cx"><p>ECB 每块独立加密<span class="zhen">（encryption）</span>，<b>相同输入 → 相同输出</b>，重复的内容在密文<span class="zhen">（ciphertext）</span>里一样重复。CBC 通过链接和 IV 解决这个问题。</p></div></div>
 </section>
 
 <!-- 4 -->
 <section class="sec" id="desaes">
-<h2><span class="n">4</span>DES、3DES、AES：三代对称加密标准</h2>
+<h2><span class="n">4</span>DES、3DES、AES：三代对称加密<span class="zhen">（symmetric encryption）</span>标准</h2>
+<p>上一节讲了对称加密<span class="zhen">（symmetric encryption）</span>的思想，这一节看具体算法。三代标准一脉相承：<b>DES</b> 是第一个公开的商用标准，被算力<span class="zhen">（computing power）</span>追上后用 <b>3DES</b> 临时顶替，最后由 <b>AES</b> 接班，沿用至今。</p>
+<div class="tbl"><table>
+<tr><th>年份</th><th>事件</th></tr>
+<tr><td>1973</td><td>美国国家标准局（NBS，今天的 NIST）公开征集国家加密标准<span class="zhen">（encryption standard）</span></td></tr>
+<tr><td>1976–77</td><td>IBM 的 Lucifer 修改后成为 <b>DES</b></td></tr>
+<tr><td>1998</td><td>EFF 用专用破解机 56 小时穷举出 DES 密钥<span class="zhen">（key）</span>；1999 年联合分布式计算<span class="zhen">（distributed computing）</span>缩短到约 22 小时</td></tr>
+<tr><td>1999</td><td>NIST 建议改用 <b>3DES</b> 作为过渡</td></tr>
+<tr><td>1997–2001</td><td>公开评选 DES 的接班人，Rijndael 胜出，2001 年成为 <b>AES</b></td></tr>
+<tr><td>今天</td><td>AES 是全球标准；DES、3DES 都已淘汰</td></tr>
+</table></div>
+
 <h3>DES：第一个商用标准（P4-21～P4-26）</h3>
-<p>1973 年，美国国家标准局（NBS，现在的 NIST）公开征集国家加密标准。IBM 的 Lucifer 方案经过修改后被采纳，<b>1976–77 年</b>成为 <b>DES</b>（Data Encryption Standard）。</p>
-<div class="key box"><span class="bt">DES 三个数字（必背）</span><p><b>分组 64 位，密钥 56 位，16 轮</b>。每个 64 位的块要做 16 轮代换和置换，前后各有一次置换（初始置换和最终置换）。</p></div>
-<div class="pitfall box"><span class="bt">易错点</span><p>样题 Q4-5：DES 的密钥多长？答案是 <b>56 位</b>，不是 64 位。64 是<b>分组</b>长度。（输入的密钥其实也是 64 位，但其中 8 位是校验位，有效的只有 56 位。）</p></div>
-<p><b>争议</b>：IBM 原设计的分组和密钥都是 128 位，被改成了 64 和 56；S 盒是在保密条件下设计的，又不给理由，于是有人怀疑 NSA 留了“后门”（trapdoor）。很多专家在 DES 被采纳之前就认为 56 位太短。</p>
-<p><b>结局</b>：1998 年 EFF 用 56 小时破解了 DES。如今 DES 已经过时，只在老系统和教学里使用。</p>
+<p>1973 年 NBS 公开征集方案，IBM 的 Lucifer 经过修改后被采纳，<b>1976–77 年</b>成为 <b>DES</b>（Data Encryption Standard）。</p>
+<div class="key box"><span class="bt">DES 三个数字（必背）</span><p><b>分组 64 位，密钥<span class="zhen">（key）</span> 56 位，16 轮</b>。</p></div>
+<p><b>一个 64 位的块在 DES 里怎么走：</b></p>
+<ol>
+<li><b>初始置换（IP）</b>：把 64 位按固定表格打乱顺序；</li>
+<li><b>切成两半</b>：左半 L<sub>0</sub>、右半 R<sub>0</sub>，各 32 位；</li>
+<li><b>16 轮</b>：每一轮用一把由主密钥<span class="zhen">（master secret）</span>生成的 48 位<b>子密钥<span class="zhen">（subkey）</span></b> K<sub>i</sub>，按下面的规则更新左右两半（这种结构叫 Feistel 结构）：<div class="out"><span class="eq">L<sub>i</sub> = R<sub>i−1</sub></span><span class="eq">R<sub>i</sub> = L<sub>i−1</sub> ⊕ f(R<sub>i−1</sub>, K<sub>i</sub>)</span></div>其中 f 函数里有扩展、和子密钥<span class="zhen">（subkey）</span>异或、查 S 盒<span class="zhen">（S-box）</span>（替换）、再置换几步。每一轮都在做<b>替换 + 置换</b>，16 轮后明文<span class="zhen">（plaintext）</span>被彻底打乱；</li>
+<li><b>最终置换（FP）</b>：IP 的逆操作，输出 64 位密文<span class="zhen">（ciphertext）</span>。</li>
+</ol>
+<p>解密<span class="zhen">（decryption）</span>用<b>完全相同的结构</b>，只要把 16 把子密钥<span class="zhen">（subkey）</span>倒过来用（K<sub>16</sub> 先用）。这就是 Feistel 结构的好处：加密<span class="zhen">（encryption）</span>和解密<span class="zhen">（decryption）</span>可以共用一套硬件。</p>
+<div class="pitfall box"><span class="bt">易错点</span><p>样题 Q4-5：DES 的密钥<span class="zhen">（key）</span>多长？答案是 <b>56 位</b>，不是 64 位。64 是<b>分组</b>长度。（输入的密钥<span class="zhen">（key）</span>其实也是 64 位，但其中 8 位是校验位<span class="zhen">（parity bits）</span>，有效的只有 56 位。）</p></div>
+<div class="teacher box" data-t="m4des"><span class="bt">老师课上强调 · W6</span><p>“DES 是 Data Encryption Standard，quiz 里有题，有学生选错。”“<b>密钥<span class="zhen">（key）</span>是 56 位</b>。有的资料写 64 位，那是完全错的：虽然输入 64 位，但 8 位是冗余的，攻击者<span class="zhen">（attacker）</span>只需要找 56 位。”</p></div>
+<div class="key box"><span class="bt">算一算：56 位为什么不够</span><p>56 位密钥<span class="zhen">（key）</span>一共有 2<sup>56</sup> ≈ <b>7.2 × 10<sup>16</sup></b> 种。假设每秒能试 10<sup>9</sup> 把：</p><div class="out"><span class="eq">7.2 × 10<sup>16</sup> ÷ 10<sup>9</sup> = 7.2 × 10<sup>7</sup> 秒</span><span class="eq">7.2 × 10<sup>7</sup> ÷ 31,536,000 ≈ <b>2.3 年</b>（一台机器）</span></div><p>一台机器要两年多，但用 1,000 台并行就不到一天。1998 年 EFF 的专用破解机花约 25 万美元，56 小时就破解了。这和第 1 章暴力破解<span class="zhen">（brute force）</span>题是同一个算法：组合数<span class="zhen">（number of combinations）</span> ÷ 速度，再换算成年。</p></div>
+<p><b>争议</b>：IBM 原设计的分组和密钥<span class="zhen">（key）</span>都是 128 位，被改成了 64 和 56；S 盒<span class="zhen">（S-box）</span>是在保密条件下设计的，又不给理由，于是有人怀疑 NSA 留了“后门<span class="zhen">（backdoor）</span>”（trapdoor）。很多专家在 DES 被采纳之前就认为 56 位太短。<b>结局</b>：如今 DES 已经过时，只在老系统和教学里使用。</p>
 
-<div class="teacher box" data-t="m4des"><span class="bt">老师课上强调 · W6</span><p>“DES 是 Data Encryption Standard，quiz 里有题，有学生选错。”“<b>密钥是 56 位</b>。有的资料写 64 位，那是完全错的：虽然输入 64 位，但 8 位是冗余的，攻击者只需要找 56 位。”</p></div>
-
-<h3>DES 被破了怎么办：加密两次、三次？</h3>
+<h3>DES 被破了怎么办：加密<span class="zhen">（encryption）</span>两次、三次？</h3>
+<p>换一个全新算法需要多年评审，最快的补救办法是<b>把 DES 用好几次</b>，让密钥<span class="zhen">（key）</span>变长。</p>
+<p><b>2DES（双重 DES）</b>：用两把密钥<span class="zhen">（key）</span>连续加密<span class="zhen">（encryption）</span>两次：</p>
+<div class="out"><span class="eq">C = E<sub>K2</sub>( E<sub>K1</sub>(M) )　　密钥<span class="zhen">（key）</span> 2 × 56 = 112 位</span></div>
+<p>看起来要试 2<sup>112</sup> 次，实际上会被<b>中间相遇攻击（meet-in-the-middle）</b>破解。假设攻击者<span class="zhen">（attacker）</span>手上有一对已知的明文<span class="zhen">（plaintext）</span> M 和密文<span class="zhen">（ciphertext）</span> C：</p>
+<ol>
+<li>从明文<span class="zhen">（plaintext）</span>一端：用全部 2<sup>56</sup> 个可能的 K1 加密<span class="zhen">（encryption）</span> M，把结果存成一张表；</li>
+<li>从密文<span class="zhen">（ciphertext）</span>一端：用全部 2<sup>56</sup> 个可能的 K2 解密<span class="zhen">（decryption）</span> C，每算出一个就去表里查；</li>
+<li>两边在“中间”对上了，就同时找到了 K1 和 K2。</li>
+</ol>
+<p>总工作量约 2<sup>56</sup> + 2<sup>56</sup> = <b>2<sup>57</sup></b>，只比破单 DES 多一倍，远不是 2<sup>112</sup>（代价是要一张很大的表）。所以 2DES 基本没用。</p>
+<p><b>3DES（三重 DES）</b>：用 DES 做三次，采用 <b>E-D-E</b>（加密<span class="zhen">（encryption）</span>-解密<span class="zhen">（decryption）</span>-加密<span class="zhen">（encryption）</span>）结构：</p>
+<div class="out"><span class="eq">加密<span class="zhen">（encryption）</span>：C = E<sub>K3</sub>( D<sub>K2</sub>( E<sub>K1</sub>(M) ) )</span><span class="eq">解密<span class="zhen">（decryption）</span>：M = D<sub>K1</sub>( E<sub>K2</sub>( D<sub>K3</sub>(C) ) )</span></div>
 <ul>
-<li><b>2DES</b>：用两把钥匙加密两次（2 × 56 = 112 位）。听起来更强，但有<b>中间相遇攻击（meet-in-the-middle）</b>：从明文一端加密、从密文一端解密，在中间对上答案，工作量和破解一次 DES 差不多。所以 2DES 基本没用；</li>
-<li><b>3DES</b>：用 DES 做三次，慢三倍，但用得当时安全性高得多。它是过渡到 AES 之前的临时方案。</li>
+<li><b>三把不同的钥匙</b>：密钥<span class="zhen">（key）</span> 3 × 56 = 168 位，受中间相遇攻击<span class="zhen">（meet-in-the-middle attack）</span>影响，实际强度约 112 位，仍然很安全；</li>
+<li><b>两把钥匙（K1 = K3）</b>：密钥<span class="zhen">（key）</span> 112 位，也很常用；</li>
+<li>中间用“解密<span class="zhen">（decryption）</span>”的好处：令 <b>K1 = K2</b> 时，前两步互相抵消，3DES 就退化成单 DES，方便和老设备兼容；但要是误用，安全性就只剩单 DES 的水平。</li>
 </ul>
-
-<div class="teacher box" data-t="m4tdes"><span class="bt">老师课上强调 · W6</span><ul><li>2DES 是两把 56 位密钥，不是一把 112 位，可以分开破，再加上中间相遇攻击，所以被放弃。</li><li>3DES 是 E-D-E 结构：用户给 168 位密钥，系统切成三把 56 位子密钥。<b>如果 K1 = K2</b>，第一步加密和第二步解密互相抵消，结果和单 DES 一样，还慢 3 倍。这种情况偶尔会发生，所以 3DES 只是临时方案。</li></ul></div>
+<p>3DES 的缺点是<b>慢</b>（每块要算三次 DES），分组也仍是 64 位，所以只是过渡方案；NIST 已在 2023 年底停止允许用它加密<span class="zhen">（encryption）</span>。</p>
+<div class="teacher box" data-t="m4tdes"><span class="bt">老师课上强调 · W6</span><ul><li>2DES 是两把 56 位密钥<span class="zhen">（key）</span>，不是一把 112 位，可以分开破，再加上中间相遇攻击<span class="zhen">（meet-in-the-middle attack）</span>，所以被放弃。</li><li>3DES 是 E-D-E 结构：用户给 168 位密钥<span class="zhen">（key）</span>，系统切成三把 56 位子密钥<span class="zhen">（subkey）</span>。<b>如果 K1 = K2</b>，第一步加密<span class="zhen">（encryption）</span>和第二步解密<span class="zhen">（decryption）</span>互相抵消，结果和单 DES 一样，还慢 3 倍。这种情况偶尔会发生，所以 3DES 只是临时方案。</li></ul></div>
+<div class="check" data-a="1"><p class="cq">2DES 用了两把 56 位密钥<span class="zhen">（key）</span>，为什么实际安全性只比单 DES 好一点点？</p>
+<div class="opts"><button class="opt">因为两把密钥<span class="zhen">（key）</span>一定相同</button><button class="opt">中间相遇攻击<span class="zhen">（meet-in-the-middle attack）</span>只需约 2<sup>57</sup> 次运算，而不是 2<sup>112</sup></button><button class="opt">因为 DES 的分组太短</button></div>
+<div class="cx"><p>攻击者<span class="zhen">（attacker）</span>从明文<span class="zhen">（plaintext）</span>和密文<span class="zhen">（ciphertext）</span>两端同时算、在中间对答案，工作量约 2 × 2<sup>56</sup> = <b>2<sup>57</sup></b>。所以要用 3DES，或直接换 AES。</p></div></div>
 
 <h3>AES：现在的金标准（P4-32～P4-40）</h3>
-<p>美国政府公开征集 DES 的替代者，经过 5 年严格评选（候选包括 MARS、RC6、Serpent、Twofish 等），最终选中两位比利时密码学家 Daemen 和 Rijmen 设计的 <b>Rijndael</b>，2001 年成为 <b>AES</b>（Advanced Encryption Standard）。2003 年起美国政府认可它保护机密信息，NSA 也用它加密绝密信息。</p>
+<p>美国政府公开征集 DES 的替代者，经过 5 年严格评选（候选包括 MARS、RC6、Serpent、Twofish 等），评选看重三点：<b>安全性、软硬件上的速度、实现的灵活性</b>。最终选中两位比利时密码学家<span class="zhen">（cryptographer）</span> Daemen 和 Rijmen 设计的 <b>Rijndael</b>，2001 年成为 <b>AES</b>（Advanced Encryption Standard）。2003 年起美国政府认可它保护机密信息，NSA 也用它加密<span class="zhen">（encryption）</span>绝密信息。</p>
+<p><b>AES 怎么加密<span class="zhen">（encryption）</span>一块：</b>把 128 位（16 字节<span class="zhen">（byte）</span>）的分组排成一个 <b>4 × 4 的字节<span class="zhen">（byte）</span>方阵</b>，叫“状态”（state）。先和第一把轮密钥<span class="zhen">（round key）</span>异或一次，然后重复多轮，每轮四步：</p>
 <div class="tbl"><table>
-<tr><th>算法</th><th>分组长度</th><th>密钥长度</th><th>轮数</th><th>现状</th></tr>
+<tr><th>步骤</th><th>做什么</th><th>作用</th></tr>
+<tr><td><b>SubBytes</b> 字节替换</td><td>每个字节查 S 盒<span class="zhen">（S-box）</span>换成另一个字节<span class="zhen">（byte）</span>，例如 53（十六进制）→ ED</td><td>替换，引入非线性（混淆）</td></tr>
+<tr><td><b>ShiftRows</b> 行移位</td><td>第 0 行不动，第 1、2、3 行分别循环左移 1、2、3 个字节<span class="zhen">（byte）</span></td><td>置换，把字节<span class="zhen">（byte）</span>打散到不同列</td></tr>
+<tr><td><b>MixColumns</b> 列混合</td><td>每一列的 4 个字节<span class="zhen">（byte）</span>按固定公式混合成新的 4 个字节<span class="zhen">（byte）</span></td><td>一个字节<span class="zhen">（byte）</span>变了，整列都跟着变（扩散）</td></tr>
+<tr><td><b>AddRoundKey</b> 加轮密钥</td><td>和这一轮的轮密钥<span class="zhen">（round key）</span>逐位异或</td><td>把密钥混进来，没有密钥就还原不了</td></tr>
+</table></div>
+<p>最后一轮<b>没有列混合<span class="zhen">（MixColumns）</span></b>。轮密钥<span class="zhen">（round key）</span>由主密钥<span class="zhen">（master secret）</span>“扩展”生成，AES-128 一共要 11 把（开头 1 把 + 10 轮各 1 把）。经过几轮之后，明文<span class="zhen">（plaintext）</span>只要改 1 位，密文<span class="zhen">（ciphertext）</span>大约一半的位都会变，这就是<b>雪崩效应<span class="zhen">（avalanche effect）</span></b>。</p>
+<div class="tbl"><table>
+<tr><th>算法</th><th>分组长度<span class="zhen">（block size）</span></th><th>密钥长度<span class="zhen">（key length）</span></th><th>轮数<span class="zhen">（number of rounds）</span></th><th>现状</th></tr>
 <tr><td><b>DES</b></td><td>64</td><td>56</td><td>16</td><td>已被破解，淘汰</td></tr>
-<tr><td>3DES</td><td>64</td><td>112 / 168</td><td>48</td><td>过渡方案，已淘汰</td></tr>
+<tr><td>3DES</td><td>64</td><td>112 / 168</td><td>48（3 × 16）</td><td>过渡方案，已淘汰</td></tr>
 <tr><td><b>AES-128</b></td><td rowspan="3"><b>128</b></td><td>128</td><td>10</td><td rowspan="3">安全，全球标准</td></tr>
 <tr><td><b>AES-192</b></td><td>192</td><td>12</td></tr>
 <tr><td><b>AES-256</b></td><td>256</td><td>14</td></tr>
 </table></div>
-<p>AES 每轮做四步：<b>SubBytes 替换、ShiftRows 行移位、MixColumns 列混合、AddRoundKey 加轮密钥</b>（最后一轮没有列混合）。AES-128 有 2<sup>128</sup> ≈ 3.4 × 10<sup>38</sup> 种密钥，现有计算机不可能穷举，目前也没有能破解完整 AES 的实用攻击。它被用在银行、Wi-Fi（WPA2/WPA3）、SSL/TLS、VPN 和加密货币里。</p>
-<div class="key box"><span class="bt">记忆法</span><p>AES：块固定 <b>128</b>；钥匙 <b>128/192/256</b>；轮数 <b>10/12/14</b>（钥匙每多 64 位，轮数加 2）。</p></div>
-<div class="check" data-a="1"><p class="cq">下面哪个是使用 64 位分组的对称密码？（样题 Q4-4）</p>
+<div class="key box"><span class="bt">算一算：AES-128 有多难破</span><p>2<sup>128</sup> ≈ <b>3.4 × 10<sup>38</sup></b> 种密钥<span class="zhen">（key）</span>。就算每秒试 10<sup>12</sup> 把：</p><div class="out"><span class="eq">3.4 × 10<sup>38</sup> ÷ 10<sup>12</sup> ÷ 31,536,000 ≈ <b>1.1 × 10<sup>19</sup> 年</b></span></div><p>宇宙年龄才约 1.4 × 10<sup>10</sup> 年。密钥<span class="zhen">（key）</span>从 56 位加到 128 位只多了 72 位，难度却翻了 2<sup>72</sup> 倍：这就是第 2 节说的“每多 1 位，难度翻倍”。目前也没有能破解完整 AES 的实用攻击。</p></div>
+<p><b>用在哪：</b>HTTPS（TLS 里最常用的是 AES-GCM）、Wi-Fi（WPA2/WPA3）、VPN、硬盘加密（BitLocker、FileVault）、银行系统。现在的 CPU 都有专门的 AES 指令，加密<span class="zhen">（encryption）</span>速度可达每秒数 GB。<b>选多长的密钥<span class="zhen">（key）</span>：</b>一般 AES-128 就够；保护绝密信息或要防范将来的量子计算机<span class="zhen">（quantum computer）</span>，就用 AES-256（量子算法大约能把对称密钥<span class="zhen">（symmetric key）</span>的强度减半，256 位减半后仍有 128 位）。</p>
+<div class="key box"><span class="bt">记忆法</span><p>AES：块固定 <b>128</b>；钥匙 <b>128/192/256</b>；轮数<span class="zhen">（number of rounds）</span> <b>10/12/14</b>（钥匙每多 64 位，轮数<span class="zhen">（number of rounds）</span>加 2）。DES：<b>64 / 56 / 16</b>。</p></div>
+<div class="check" data-a="1"><p class="cq">下面哪个是使用 64 位分组的对称密码<span class="zhen">（symmetric cipher）</span>？（样题 Q4-4）</p>
 <div class="opts"><button class="opt">RSA</button><button class="opt">DES</button><button class="opt">PGP</button><button class="opt">AES</button></div>
-<div class="cx"><p>DES 分组 64 位。RSA 是非对称算法；PGP 是邮件加密软件；AES 的分组是 128 位。</p></div></div>
+<div class="cx"><p>DES 分组 64 位。RSA 是非对称算法<span class="zhen">（asymmetric algorithm）</span>；PGP 是邮件加密<span class="zhen">（encryption）</span>软件；AES 的分组是 128 位。</p></div></div>
 <div class="check" data-a="2"><p class="cq">AES-256 有多少轮？</p>
 <div class="opts"><button class="opt">10</button><button class="opt">12</button><button class="opt">14</button><button class="opt">16</button></div>
 <div class="cx"><p>128 → 10，192 → 12，256 → 14。16 轮是 DES。</p></div></div>
-<div class="teacher box" data-t="m4aes"><span class="bt">老师课上强调 · W6</span><ul><li>“从 quiz 角度要知道”：AES 分组固定 <b>128 位</b>；密钥 128/192/256 位，分别对应 <b>10/12/14 轮</b>。<b>不考 AES 结构图</b>。</li><li>AES 和 Rijndael 唯一的区别：Rijndael 的分组和密钥长度可以是任意 32 的倍数，AES 把它们固定了。原因是国际标准要统一参数，通信双方不用协商，也没有兼容问题。</li></ul></div>
+<div class="teacher box" data-t="m4aes"><span class="bt">老师课上强调 · W6</span><ul><li>“从 quiz 角度要知道”：AES 分组固定 <b>128 位</b>；密钥<span class="zhen">（key）</span> 128/192/256 位，分别对应 <b>10/12/14 轮</b>。<b>不考 AES 结构图</b>。</li><li>AES 和 Rijndael 唯一的区别：Rijndael 的分组和密钥长度<span class="zhen">（key length）</span>可以是任意 32 的倍数，AES 把它们固定了。原因是国际标准要统一参数，通信双方不用协商，也没有兼容问题。</li></ul></div>
 
 <h3>选算法时该信什么（样题 Q4-8～Q4-11 连环题）</h3>
+<p>样题有一组连环题，问的是“怎么判断一个加密算法<span class="zhen">（encryption algorithm）</span>值得信”。答题思路就是本节的历史：DES 用了二十年才被算力<span class="zhen">（computing power）</span>追上，AES 经过 5 年公开评选、又被全世界攻了二十多年都没破，所以可信。</p>
 <ul>
-<li>最该看重：<b>算法已经存在多久</b>，是否经过多年公开检验（Q&amp;A Q23：算法要被工业界、学术界、数学和密码专家测试很多年）；</li>
-<li>宣传“牢不可破”的：多半是<b>夸大</b>；</li>
-<li>“认证过的加密”：课件的观点是<b>没有这种东西</b>（There is no such thing as certified encryption）；</li>
-<li>新算法：<b>可以用，但要谨慎</b>。</li>
+<li>最该看重：<b>算法已经存在多久</b>，是否经过多年公开检验（Q&amp;A Q23：算法要被工业界、学术界、数学和密码<span class="zhen">（password）</span>专家测试很多年）；</li>
+<li>宣传“牢不可破”（unbreakable）的：多半是<b>夸大</b>，只要算力<span class="zhen">（computing power）</span>够，任何密钥<span class="zhen">（key）</span>都能穷举；</li>
+<li>“认证过的加密”（certified encryption）：课件的观点是<b>没有这种东西</b>；</li>
+<li>新算法：<b>可以用，但要谨慎</b>；</li>
+<li>反面例子：自己发明、不公开细节的“秘密算法”最不可信，安全不能靠算法保密，只能靠密钥<span class="zhen">（key）</span>保密。</li>
 </ul>
-<div class="teacher box" data-t="m4pick"><span class="bt">老师课上强调 · W8</span><ul><li>算法复杂不等于安全；厂商的数据来自理想条件，不能信；<b>用得越久还没被破</b>越可靠（AES 从 2001 年用到现在，RSA 从 1978 年用到现在）。</li><li>没有 “unbreakable”，只要算力够总能破；也没有 “certified encryption”，那只是营销说法。</li><li>新算法：课上大多数人选“可以用，但要谨慎”，这就是答案；“永远不用”就永远无法证明它好不好。</li></ul></div>
+<div class="teacher box" data-t="m4pick"><span class="bt">老师课上强调 · W8</span><ul><li>算法复杂不等于安全；厂商的数据来自理想条件，不能信；<b>用得越久还没被破</b>越可靠（AES 从 2001 年用到现在，RSA 从 1978 年用到现在）。</li><li>没有 “unbreakable”，只要算力<span class="zhen">（computing power）</span>够总能破；也没有 “certified encryption”，那只是营销说法。</li><li>新算法：课上大多数人选“可以用，但要谨慎”，这就是答案；“永远不用”就永远无法证明它好不好。</li></ul></div>
 
 </section>
 
 <!-- 5 -->
 <section class="sec" id="pk">
-<h2><span class="n">5</span>公钥加密：一对钥匙，彻底解决“钥匙怎么送”</h2>
-<p>1976 年，斯坦福的两位博士生 Diffie 和 Hellman 提出了一个革命性的想法：<b>用两把不同但数学上相关的钥匙</b>（P4-47）。</p>
+<h2><span class="n">5</span>公钥加密<span class="zhen">（public-key encryption）</span>：一对钥匙，彻底解决“钥匙怎么送”</h2>
+<p>第 3 节留下了一个难题：对称加密<span class="zhen">（symmetric encryption）</span>的双方必须<b>事先</b>共享同一把钥匙，而这把钥匙没法安全地在网上传。1976 年，斯坦福的两位研究者 Diffie 和 Hellman 提出了一个革命性的想法：<b>用两把不同但数学上相关的钥匙</b>（P4-47）。1978 年 Rivest、Shamir、Adleman 又提出了 RSA，让这个想法真正可用。</p>
 <ul>
-<li><b>公钥（public key）</b>：公开给全世界，用来<b>加密</b>和<b>验证签名</b>；</li>
-<li><b>私钥（private key）</b>：只有主人自己知道，用来<b>解密</b>和<b>生成签名</b>。</li>
+<li><b>公钥（public key）</b>：公开给全世界，可以挂在网站上、印在名片上，用来<b>加密<span class="zhen">（encryption）</span></b>和<b>验证签名<span class="zhen">（signature）</span></b>；</li>
+<li><b>私钥（private key）</b>：只有主人自己知道，用来<b>解密<span class="zhen">（decryption）</span></b>和<b>生成签名<span class="zhen">（signature）</span></b>。</li>
 </ul>
-<p>规则只有一条：<b>用其中一把加密的东西，只有另一把能解开</b>。而且从公钥<b>推不出</b>私钥（Q&amp;A Q23）。</p>
-<div class="analogy box"><span class="bt">类比：挂锁</span><p>Bob 买了很多把<b>打开着的挂锁</b>，发给所有人（这就是公钥），钥匙只有他自己有（私钥）。Alice 想给 Bob 寄东西，就把东西放进箱子，<b>咔嚓</b>锁上 Bob 的挂锁寄出。路上谁拿到箱子都打不开，连 Alice 自己也打不开了，只有 Bob 能开。钥匙从来不需要寄送，对称加密“钥匙怎么送”的难题就这样解决了。</p></div>
+<p>规则只有一条：<b>用其中一把加密<span class="zhen">（encryption）</span>的东西，只有另一把能解开</b>。而且从公钥<span class="zhen">（public key）</span><b>推不出</b>私钥（Q&amp;A Q23）。</p>
+<div class="analogy box"><span class="bt">类比：挂锁</span><p>Bob 买了很多把<b>打开着的挂锁</b>，发给所有人（这就是公钥<span class="zhen">（public key）</span>），钥匙只有他自己有（私钥<span class="zhen">（private key）</span>）。Alice 想给 Bob 寄东西，就把东西放进箱子，<b>咔嚓</b>锁上 Bob 的挂锁寄出。路上谁拿到箱子都打不开，连 Alice 自己也打不开了，只有 Bob 能开。钥匙从来不需要寄送，对称加密<span class="zhen">（symmetric encryption）</span>“钥匙怎么送”的难题就这样解决了。</p></div>
+
+<h3>为什么“从公钥<span class="zhen">（public key）</span>推不出私钥<span class="zhen">（private key）</span>”：单向<span class="zhen">（one-way）</span>陷门<span class="zhen">（trapdoor）</span>函数</h3>
+<p>公钥算法<span class="zhen">（public key algorithm）</span>都建立在一种特殊的数学运算上：<b>正着算很容易，倒着算极难</b>，除非你知道一个秘密（陷门<span class="zhen">（trapdoor）</span>）。</p>
+<ul>
+<li><b>RSA 用的是大数分解<span class="zhen">（integer factorization）</span></b>：算 13 × 17 = 221 一眼就行；但只给你 221，让你找出是哪两个素数<span class="zhen">（prime number）</span>相乘，就得一个个试。把数字换成 600 多位，正着乘仍是瞬间完成，倒着分解<span class="zhen">（factorization）</span>用全世界的计算机也要算到宇宙毁灭。公钥<span class="zhen">（public key）</span>里有那个大数 n，私钥<span class="zhen">（private key）</span>藏着它的两个因子。</li>
+<li><b>Diffie-Hellman、ElGamal 用的是离散对数<span class="zhen">（discrete logarithm）</span></b>：算 g<sup>x</sup> mod p 很快，已知结果反推 x 极难（第 7 节）。</li>
+<li><b>ECC 用的是椭圆曲线上的离散对数<span class="zhen">（discrete logarithm）</span></b>：同样难，但密钥<span class="zhen">（key）</span>短得多（第 9 节）。</li>
+</ul>
+
+<h3>一个能手算的例子：Bob 的一对迷你钥匙</h3>
+<p>先不管钥匙怎么生成（第 8 节 RSA 会手算全过程），假设 Bob 已经有了一对 RSA 钥匙：</p>
+<div class="out"><span class="eq">Bob 的公钥<span class="zhen">（public key）</span>（公开）：e = 7，n = 33</span><span class="eq">Bob 的私钥<span class="zhen">（private key）</span>（只有他知道）：d = 3</span></div>
+<div class="stepper"><div class="sh"><span>例：同一对钥匙的两种用法</span><span class="ctr"></span></div>
+<div class="st"><p><b>用法一：保密。Alice 要把数字 2 秘密地发给 Bob。</b>她从网上拿到 Bob 的<b>公钥<span class="zhen">（public key）</span></b> (7, 33)，加密<span class="zhen">（encryption）</span>：</p><div class="out"><span class="eq">C = M<sup>e</sup> mod n = 2<sup>7</sup> mod 33 = 128 mod 33 = <b>29</b></span></div><p>Alice 把 29 发出去。Eve 截到 29，也知道公钥<span class="zhen">（public key）</span> (7, 33)，但没有 d，解不开。</p></div>
+<div class="st"><p><b>Bob 用自己的私钥<span class="zhen">（private key）</span> d = 3 解密<span class="zhen">（decryption）</span>：</b></p><div class="out"><span class="eq">M = C<sup>d</sup> mod n = 29<sup>3</sup> mod 33 = 24389 mod 33 = <b>2</b> ✓</span></div><p>全程没有任何秘密在网上传过：Alice 只用了公开的东西，却完成了只有 Bob 能读的加密<span class="zhen">（encryption）</span>。这就是公钥加密<span class="zhen">（public-key encryption）</span>的威力。</p></div>
+<div class="st"><p><b>用法二：签名<span class="zhen">（signature）</span>。Bob 要发一个数字 5，并证明是他本人发的。</b>他用自己的<b>私钥<span class="zhen">（private key）</span></b>签名<span class="zhen">（signature）</span>：</p><div class="out"><span class="eq">S = M<sup>d</sup> mod n = 5<sup>3</sup> mod 33 = 125 mod 33 = <b>26</b></span></div><p>Bob 把消息 5 和签名<span class="zhen">（signature）</span> 26 一起发出去。</p></div>
+<div class="st"><p><b>任何人都能用 Bob 的公钥<span class="zhen">（public key）</span>验证：</b></p><div class="out"><span class="eq">S<sup>e</sup> mod n = 26<sup>7</sup> mod 33 = <b>5</b> = 消息 ✓</span></div><p>算出来正好等于 5，说明签名<span class="zhen">（signature）</span>一定是用 Bob 的私钥<span class="zhen">（private key）</span>做的，而私钥<span class="zhen">（private key）</span>只有 Bob 有。注意：签名<span class="zhen">（signature）</span><b>不保密</b>，人人都能验证、都能看到 5；它保证的是“是谁发的”和“没被改过”。</p></div>
+<div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
+
 <h3>两种用法：方向正好相反</h3>
 <figure>
 <svg viewBox="0 0 680 260" role="img" aria-label="公钥加密的两种用法：保密与认证">
@@ -229,159 +353,186 @@
   <line x1="140" y1="187" x2="268" y2="187" class="lg" marker-end="url(#m4d)"/><line x1="410" y1="187" x2="538" y2="187" class="lg" marker-end="url(#m4d)"/>
   <text x="340" y="234" text-anchor="middle" font-size="12" class="tm">能用 Bob 的公钥解开 → 一定是 Bob 发的（任何人都能验证）</text>
 </svg>
-<figcaption>课件 P4-48、P4-49：保密用<b>接收方的公钥</b>，认证用<b>发送方的私钥</b>。</figcaption>
+<figcaption>课件 P4-48、P4-49：保密用<b>接收方的公钥<span class="zhen">（public key）</span></b>，认证<span class="zhen">（authentication）</span>用<b>发送方的私钥<span class="zhen">（private key）</span></b>。</figcaption>
 </figure>
 <div class="key box"><span class="bt">万能口诀：谁用谁的哪把钥匙</span><div class="tbl" style="margin:6px 0 0"><table>
 <tr><th>目的</th><th>发送方用</th><th>接收方用</th></tr>
-<tr><td><b>保密</b>（只让对方看）</td><td><b>接收方的公钥</b>加密</td><td><b>自己的私钥</b>解密</td></tr>
-<tr><td><b>签名</b>（证明是我发的）</td><td><b>自己的私钥</b>签名</td><td><b>发送方的公钥</b>验证</td></tr>
+<tr><td><b>保密</b>（只让对方看）</td><td><b>接收方的公钥<span class="zhen">（public key）</span></b>加密<span class="zhen">（encryption）</span></td><td><b>自己的私钥<span class="zhen">（private key）</span></b>解密<span class="zhen">（decryption）</span></td></tr>
+<tr><td><b>签名<span class="zhen">（signature）</span></b>（证明是我发的）</td><td><b>自己的私钥<span class="zhen">（private key）</span></b>签名<span class="zhen">（signature）</span></td><td><b>发送方的公钥<span class="zhen">（public key）</span></b>验证</td></tr>
 </table></div></div>
+<p><b>两种一起用</b>：Alice 想让消息<b>既保密、又能证明是她发的</b>，就先用<b>自己的私钥<span class="zhen">（private key）</span></b>签名<span class="zhen">（signature）</span>，再用 <b>Bob 的公钥<span class="zhen">（public key）</span></b>加密<span class="zhen">（encryption）</span>。Bob 收到后先用<b>自己的私钥<span class="zhen">（private key）</span></b>解密<span class="zhen">（decryption）</span>，再用 <b>Alice 的公钥<span class="zhen">（public key）</span></b>验证签名<span class="zhen">（signature）</span>。整个过程一共用到 4 把钥匙（两人各一对），这正是第 11 节数字签名<span class="zhen">（digital signature）</span>的基础。</p>
+
+<h3>钥匙数量：从 n(n−1)/2 降到 2n</h3>
+<p>公钥<span class="zhen">（public key）</span>体系里每人只要<b>一对</b>钥匙：自己保管私钥<span class="zhen">（private key）</span>，公钥<span class="zhen">（public key）</span>谁都可以用。所以 n 个人一共只要 <b>2n</b> 把钥匙（n 对），而且新来一个人只需新增一对，不用和每个人重新约定。</p>
+<div class="tbl"><table>
+<tr><th>人数</th><th>对称加密<span class="zhen">（symmetric encryption）</span> n(n−1)/2</th><th>公钥加密<span class="zhen">（public-key encryption）</span> 2n</th></tr>
+<tr><td>10</td><td>45</td><td>20</td></tr>
+<tr><td>100</td><td>4,950</td><td>200</td></tr>
+<tr><td>1,000</td><td>499,500</td><td>2,000</td></tr>
+</table></div>
+
+<h3>代价：慢，而且“这把公钥<span class="zhen">（public key）</span>真是 Bob 的吗？”</h3>
+<div class="tbl"><table>
+<tr><th></th><th>对称加密<span class="zhen">（symmetric encryption）</span></th><th>公钥加密<span class="zhen">（public-key encryption）</span></th></tr>
+<tr><td>钥匙</td><td>双方共享同一把</td><td>每人一对：公钥<span class="zhen">（public key）</span>公开，私钥<span class="zhen">（private key）</span>自留</td></tr>
+<tr><td>速度</td><td><b>快</b>，适合大量数据</td><td><b>慢</b>，通常慢几百到上千倍</td></tr>
+<tr><td>同等安全所需密钥长度<span class="zhen">（key length）</span></td><td>AES 128 位</td><td>RSA 3072 位，或 ECC 256 位</td></tr>
+<tr><td>密钥分发<span class="zhen">（key distribution）</span></td><td>难，必须事先安全共享</td><td>容易，公钥<span class="zhen">（public key）</span>可以公开</td></tr>
+<tr><td>能否签名<span class="zhen">（signature）</span>、不可否认<span class="zhen">（non-repudiation）</span></td><td>不能</td><td>能</td></tr>
+<tr><td>常见算法</td><td>DES、3DES、AES</td><td>RSA、Diffie-Hellman、ElGamal、ECC、DSA</td></tr>
+</table></div>
+<p><b>代价一：慢。</b>RSA 要对几百位的大数做乘方取模，比 AES 的字节<span class="zhen">（byte）</span>替换慢得多（在一台普通笔记本上实测，一次 RSA-2048 签名<span class="zhen">（signature）</span>约 0.44 毫秒，同样的时间 AES 能加密<span class="zhen">（encryption）</span>约 4.6 MB 数据）。而且 RSA 一次能加密<span class="zhen">（encryption）</span>的数据长度不能超过 n。所以实际中<b>只用公钥加密<span class="zhen">（public-key encryption）</span>传一把对称密钥<span class="zhen">（symmetric key）</span></b>，真正的数据仍用 AES 加密<span class="zhen">（encryption）</span>，这就是第 9 节的<b>混合系统<span class="zhen">（hybrid system）</span></b>。</p>
+<p><b>代价二：要确认公钥<span class="zhen">（public key）</span>的主人。</b>公钥<span class="zhen">（public key）</span>是公开的，攻击者<span class="zhen">（attacker）</span> Mallory 也可以发布一把自己的公钥<span class="zhen">（public key）</span>，谎称“这是 Bob 的”。Alice 一旦用了它，消息就被 Mallory 解开了（中间人攻击<span class="zhen">（man-in-the-middle attack (MITM)）</span>）。所以需要一个可信的第三方给公钥<span class="zhen">（public key）</span>“盖章”，证明“这把公钥<span class="zhen">（public key）</span>确实属于 Bob”，这就是后面要讲的<b>数字证书<span class="zhen">（digital certificate）</span>和 CA</b>。</p>
+<p><b>各算法能做什么：</b>RSA 既能加密<span class="zhen">（encryption）</span>也能签名<span class="zhen">（signature）</span>；Diffie-Hellman <b>只能交换密钥<span class="zhen">（key）</span></b>，不能直接加密<span class="zhen">（encryption）</span>或签名<span class="zhen">（signature）</span>；DSA 只用于签名<span class="zhen">（signature）</span>；ECC 是一类方法，有用于密钥交换<span class="zhen">（key exchange）</span>的 ECDH 和用于签名<span class="zhen">（signature）</span>的 ECDSA。</p>
 <div class="pitfall box"><span class="bt">易错点</span><ul>
-<li>样题 Q4-12：“非对称加密只用公钥加密和解密”是 <b>False</b>，它用一对钥匙。</li>
-<li>样题 Q4-13：“非对称加密能用于保密但不能用于认证”是 <b>False</b>，两者都能。</li>
-<li>样题 Q4-14：“公钥加密比对称加密更安全，因为用两把钥匙”是 <b>False</b>。安全取决于算法强度和密钥长度：128 位 AES 和 3072 位 RSA 强度相当。公钥解决的是<b>分发问题</b>，不是强度问题。</li></ul></div>
-<div class="check" data-a="1"><p class="cq">Carol 要给 Bob 发一条机密消息，她用哪把钥匙加密？（样题 Q4-21）</p>
-<div class="opts"><button class="opt">一把公钥</button><button class="opt">Bob 的公钥</button><button class="opt">Carol 的私钥</button></div>
-<div class="cx"><p>保密 → 用<b>接收方</b>的公钥。A 太含糊（是谁的公钥？）；C 是签名的用法。接着样题 Q4-22：Bob 用<b>自己的私钥</b>解密；Q4-24：私钥由<b>接收方</b>用来解密。</p></div></div>
-<div class="check" data-a="3"><p class="cq">班上 30 个学生都要把加密作业交给教授，需要多少把公钥和私钥？（样题 Q4-23）</p>
+<li>样题 Q4-12：“非对称加密<span class="zhen">（asymmetric encryption）</span>只用公钥加密<span class="zhen">（public-key encryption）</span>和解密<span class="zhen">（decryption）</span>”是 <b>False</b>，它用一对钥匙。</li>
+<li>样题 Q4-13：“非对称加密<span class="zhen">（asymmetric encryption）</span>能用于保密但不能用于认证<span class="zhen">（authentication）</span>”是 <b>False</b>，两者都能。</li>
+<li>样题 Q4-14：“公钥加密<span class="zhen">（public-key encryption）</span>比对称加密<span class="zhen">（symmetric encryption）</span>更安全，因为用两把钥匙”是 <b>False</b>。安全取决于算法强度<span class="zhen">（algorithm strength）</span>和密钥长度<span class="zhen">（key length）</span>：128 位 AES 和 3072 位 RSA 强度相当。公钥<span class="zhen">（public key）</span>解决的是<b>分发问题</b>，不是强度问题。</li></ul></div>
+<div class="check" data-a="1"><p class="cq">Carol 要给 Bob 发一条机密消息，她用哪把钥匙加密<span class="zhen">（encryption）</span>？（样题 Q4-21）</p>
+<div class="opts"><button class="opt">一把公钥<span class="zhen">（public key）</span></button><button class="opt">Bob 的公钥<span class="zhen">（public key）</span></button><button class="opt">Carol 的私钥<span class="zhen">（private key）</span></button></div>
+<div class="cx"><p>保密 → 用<b>接收方</b>的公钥<span class="zhen">（public key）</span>。A 太含糊（是谁的公钥<span class="zhen">（public key）</span>？）；C 是签名<span class="zhen">（signature）</span>的用法。接着样题 Q4-22：Bob 用<b>自己的私钥<span class="zhen">（private key）</span></b>解密<span class="zhen">（decryption）</span>；Q4-24：私钥<span class="zhen">（private key）</span>由<b>接收方</b>用来解密<span class="zhen">（decryption）</span>。</p></div></div>
+<div class="check" data-a="3"><p class="cq">班上 30 个学生都要把加密<span class="zhen">（encryption）</span>作业交给教授，需要多少把公钥<span class="zhen">（public key）</span>和私钥<span class="zhen">（private key）</span>？（样题 Q4-23）</p>
 <div class="opts"><button class="opt">30 公 30 私</button><button class="opt">1 公 30 私</button><button class="opt">1 公 1 私</button><button class="opt">取决于具体应用</button></div>
-<div class="cx"><p>官方答案是 <b>D</b>。如果只要保密，大家都用教授的公钥加密，只需教授的 1 对钥匙；如果还要证明作业是哪个学生交的（签名），每个学生还要有自己的一对钥匙。<b>数量取决于需求</b>，这题考的就是这一点。</p></div></div>
+<div class="cx"><p>官方答案是 <b>D</b>。如果只要保密，大家都用教授的公钥加密<span class="zhen">（public-key encryption）</span>，只需教授的 1 对钥匙；如果还要证明作业是哪个学生交的（签名<span class="zhen">（signature）</span>），每个学生还要有自己的一对钥匙。<b>数量取决于需求</b>，这题考的就是这一点。</p></div></div>
+<div class="check" data-a="2"><p class="cq">Alice 要给公开的合同签名<span class="zhen">（signature）</span>，让任何人都能确认是她签的。她该用哪把钥匙？</p>
+<div class="opts"><button class="opt">Alice 的公钥<span class="zhen">（public key）</span></button><button class="opt">接收方的公钥<span class="zhen">（public key）</span></button><button class="opt">Alice 的私钥<span class="zhen">（private key）</span></button><button class="opt">一把共享的对称密钥<span class="zhen">（symmetric key）</span></button></div>
+<div class="cx"><p>签名<span class="zhen">（signature）</span>用<b>发送方自己的私钥<span class="zhen">（private key）</span></b>，验证用发送方的公钥<span class="zhen">（public key）</span>。只有 Alice 有自己的私钥<span class="zhen">（private key）</span>，所以能证明是她签的。用接收方公钥<span class="zhen">（public key）</span>是“保密”的方向；对称密钥<span class="zhen">（symmetric key）</span>双方都有，没法证明是谁签的。</p></div></div>
 </section>
 
 <!-- 6 -->
 <section class="sec" id="mod">
-<h2><span class="n">6</span>数学准备：模运算（只要会除法就行）</h2>
-<p>RSA 和 Diffie-Hellman 都建立在<b>模运算</b>上。别怕，<code>a mod n</code> 就是 <b>a 除以 n 的余数</b>。</p>
-<div class="analogy box"><span class="bt">类比：钟表</span><p>现在 10 点，再过 5 小时是几点？10 + 5 = 15，钟表上是 3 点。这就是 15 mod 12 = 3。模运算就是“绕圈计数”。</p></div>
+<h2><span class="n">6</span>数学准备：模运算<span class="zhen">（modular arithmetic）</span>（只要会除法就行）</h2>
+<p>RSA 和 Diffie-Hellman 都建立在<b>模运算<span class="zhen">（modular arithmetic）</span></b>上。别怕，<code>a mod n</code> 就是 <b>a 除以 n 的余数<span class="zhen">（remainder）</span></b>。</p>
+<div class="analogy box"><span class="bt">类比：钟表</span><p>现在 10 点，再过 5 小时是几点？10 + 5 = 15，钟表上是 3 点。这就是 15 mod 12 = 3。模运算<span class="zhen">（modular arithmetic）</span>就是“绕圈计数”。</p></div>
 <p>课件的例子（P4-50）：</p>
 <ul>
-<li>15 mod 20 = <b>15</b>（15 比 20 小，余数就是它自己）；</li>
+<li>15 mod 20 = <b>15</b>（15 比 20 小，余数<span class="zhen">（remainder）</span>就是它自己）；</li>
 <li>320 mod 9：计算器上 320 ÷ 9 = 35.5555…，取整数部分 35，再算 320 − 35 × 9 = 320 − 315 = <b>5</b>。课件的方法是用小数部分 0.5555… × 9 = 5，结果一样，但小数误差容易出错，<b>推荐“减去整数倍”的方法</b>。</li>
 </ul>
-<h3>模幂：x<sup>e</sup> mod n 怎么手算</h3>
-<p>RSA 要算 1819<sup>13</sup> mod 2537 这种东西，1819<sup>13</sup> 有 43 位，计算器装不下。诀窍是：<b>每乘一次，就取一次余数</b>，数字永远不会变大。最快的方法叫<b>平方-乘法</b>：</p>
+<h3>模幂<span class="zhen">（modular exponentiation）</span>：x<sup>e</sup> mod n 怎么手算</h3>
+<p>RSA 要算 1819<sup>13</sup> mod 2537 这种东西，1819<sup>13</sup> 有 43 位，计算器装不下。诀窍是：<b>每乘一次，就取一次余数<span class="zhen">（remainder）</span></b>，数字永远不会变大。最快的方法叫<b>平方-乘法<span class="zhen">（square-and-multiply）</span></b>：</p>
 <div class="stepper"><div class="sh"><span>例：算 5<sup>13</sup> mod 23</span><span class="ctr"></span></div>
-<div class="st"><p><b>第一步：把指数写成 2 的幂之和。</b>13 = 8 + 4 + 1（二进制 1101）。所以 5<sup>13</sup> = 5<sup>8</sup> × 5<sup>4</sup> × 5<sup>1</sup>。</p></div>
+<div class="st"><p><b>第一步：把指数<span class="zhen">（exponent）</span>写成 2 的幂之和。</b>13 = 8 + 4 + 1（二进制 1101）。所以 5<sup>13</sup> = 5<sup>8</sup> × 5<sup>4</sup> × 5<sup>1</sup>。</p></div>
 <div class="st"><p><b>第二步：反复平方，每步取余。</b></p><div class="out"><span class="eq">5<sup>1</sup> mod 23 = 5</span><span class="eq">5<sup>2</sup> = 25 mod 23 = 2</span><span class="eq">5<sup>4</sup> = (5<sup>2</sup>)<sup>2</sup> = 2<sup>2</sup> = 4</span><span class="eq">5<sup>8</sup> = (5<sup>4</sup>)<sup>2</sup> = 4<sup>2</sup> = 16</span></div></div>
 <div class="st"><p><b>第三步：把需要的几项乘起来，每步取余。</b></p><div class="out"><span class="eq">5<sup>13</sup> = 5<sup>8</sup> × 5<sup>4</sup> × 5<sup>1</sup> ≡ 16 × 4 × 5</span><span class="eq">16 × 4 = 64 mod 23 = 18</span><span class="eq">18 × 5 = 90 mod 23 = 90 − 69 = <b>21</b></span></div><p>答案：5<sup>13</sup> mod 23 = <b>21</b>。全程最大的数只有 90。</p></div>
 <div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
-<div class="lab"><p class="lt">模幂计算器（带平方-乘法表）</p>
-<div class="fields"><div class="fld"><label for="mx">底数 x</label><input id="mx" type="number" value="5"></div><div class="fld"><label for="me">指数 e</label><input id="me" type="number" value="13"></div><div class="fld"><label for="mn">模 n</label><input id="mn" type="number" value="23"></div></div>
+<div class="lab"><p class="lt">模幂<span class="zhen">（modular exponentiation）</span>计算器（带平方-乘法<span class="zhen">（square-and-multiply）</span>表）</p>
+<div class="fields"><div class="fld"><label for="mx">底数<span class="zhen">（base）</span> x</label><input id="mx" type="number" value="5"></div><div class="fld"><label for="me">指数<span class="zhen">（exponent）</span> e</label><input id="me" type="number" value="13"></div><div class="fld"><label for="mn">模 n</label><input id="mn" type="number" value="23"></div></div>
 <div class="out" id="mout" style="overflow-x:auto"></div></div>
 </section>
 
 <!-- 7 -->
 <section class="sec" id="dh">
 <h2><span class="n">7</span>Diffie-Hellman：在大庭广众下约定一个秘密</h2>
-<p>问题（Q&amp;A Q30）：Alice 和 Bob 想共用一把对称密钥，但他们<b>只能通过 Eve 能看到一切的信道</b>说话。怎么才能约定一把 Eve 不知道的钥匙？</p>
+<p>问题（Q&amp;A Q30）：Alice 和 Bob 想共用一把对称密钥<span class="zhen">（symmetric key）</span>，但他们<b>只能通过 Eve 能看到一切的信道<span class="zhen">（channel）</span></b>说话。怎么才能约定一把 Eve 不知道的钥匙？</p>
 <div class="analogy box"><span class="bt">类比：混颜料</span><ol>
 <li>两人公开约定一种<b>公共颜色</b>：黄色（Eve 也知道）；</li>
 <li>各自偷偷选一种<b>秘密颜色</b>：Alice 红，Bob 蓝；</li>
 <li>各自把秘密色混进黄色，把<b>混合色</b>公开发给对方：Alice 发橙色，Bob 发绿色（Eve 看得到）；</li>
 <li>各自把<b>自己的秘密色</b>加进<b>对方发来的混合色</b>：Alice 得到黄 + 蓝 + 红，Bob 得到黄 + 红 + 蓝，<b>完全相同</b>；</li>
 <li>Eve 只有黄、橙、绿三种颜色。混合容易，<b>拆分</b>极难，她调不出最终颜色。</li></ol>
-<p>在数学里，“混合”就是模幂运算，“拆不开”就是<b>离散对数难题</b>。</p></div>
+<p>在数学里，“混合”就是模幂运算<span class="zhen">（modular exponentiation）</span>，“拆不开”就是<b>离散对数难题<span class="zhen">（discrete logarithm problem）</span></b>。</p></div>
 <h3>算法步骤（P4-53～P4-55）</h3>
 <div class="tbl"><table>
 <tr><th>步骤</th><th>A（Alice）</th><th>B（Bob）</th><th>Eve 能看到吗</th></tr>
-<tr><td>1. 公开参数</td><td colspan="2">选一个素数 <b>q</b> 和它的<b>原根 a</b>（课件也写作 p 和 g）</td><td>能</td></tr>
-<tr><td>2. 选私钥</td><td>随机选 X<sub>A</sub> &lt; q</td><td>随机选 X<sub>B</sub> &lt; q</td><td>不能</td></tr>
-<tr><td>3. 算公开值</td><td>Y<sub>A</sub> = a<sup>X<sub>A</sub></sup> mod q</td><td>Y<sub>B</sub> = a<sup>X<sub>B</sub></sup> mod q</td><td>—</td></tr>
+<tr><td>1. 公开参数<span class="zhen">（public parameters）</span></td><td colspan="2">选一个素数<span class="zhen">（prime number）</span> <b>q</b> 和它的<b>原根<span class="zhen">（primitive root）</span> a</b>（课件也写作 p 和 g）</td><td>能</td></tr>
+<tr><td>2. 选私钥<span class="zhen">（private key）</span></td><td>随机选 X<sub>A</sub> &lt; q</td><td>随机选 X<sub>B</sub> &lt; q</td><td>不能</td></tr>
+<tr><td>3. 算公开值<span class="zhen">（public value）</span></td><td>Y<sub>A</sub> = a<sup>X<sub>A</sub></sup> mod q</td><td>Y<sub>B</sub> = a<sup>X<sub>B</sub></sup> mod q</td><td>—</td></tr>
 <tr><td>4. 交换</td><td>把 Y<sub>A</sub> 发给 B</td><td>把 Y<sub>B</sub> 发给 A</td><td>能</td></tr>
-<tr><td>5. 算共享密钥</td><td>K = (Y<sub>B</sub>)<sup>X<sub>A</sub></sup> mod q</td><td>K = (Y<sub>A</sub>)<sup>X<sub>B</sub></sup> mod q</td><td>不能</td></tr>
+<tr><td>5. 算共享密钥<span class="zhen">（shared key）</span></td><td>K = (Y<sub>B</sub>)<sup>X<sub>A</sub></sup> mod q</td><td>K = (Y<sub>A</sub>)<sup>X<sub>B</sub></sup> mod q</td><td>不能</td></tr>
 </table></div>
-<p>为什么两边相等？(a<sup>X<sub>B</sub></sup>)<sup>X<sub>A</sub></sup> = a<sup>X<sub>A</sub>X<sub>B</sub></sup> = (a<sup>X<sub>A</sub></sup>)<sup>X<sub>B</sub></sup>，指数相乘的顺序无所谓。</p>
-<p><b>原根</b>是什么？课件定义：素数 p 的原根，是它的各次幂能生成 1 到 p−1 所有整数的那个数。考试题会直接给出，你不用自己找。</p>
-<div class="teacher box" data-t="m4dh"><span class="bt">老师课上强调 · W6</span><ul><li>期末可能这样问：① 简述 DH 怎样工作；② 给素数、生成元和双方私密数，算双方公钥和共享密钥（15 分）；③ 追问：私密数泄露会怎样（完全不安全）、数字太小会怎样（会被试出来，实际至少 2048 位）。</li><li>六步：公开选 p、g → 各选私密数 → A 算 Y<sub>A</sub> = g<sup>a</sup> mod p → B 算 Y<sub>B</sub> → 交换公钥 → 各自算 K = Y<sub>对方</sub><sup>自己私密数</sup> mod p。</li><li>DH <b>只交换密钥，不能加密</b>；交换完用 AES 加密数据。</li></ul></div>
+<p>为什么两边相等？(a<sup>X<sub>B</sub></sup>)<sup>X<sub>A</sub></sup> = a<sup>X<sub>A</sub>X<sub>B</sub></sup> = (a<sup>X<sub>A</sub></sup>)<sup>X<sub>B</sub></sup>，指数<span class="zhen">（exponent）</span>相乘的顺序无所谓。</p>
+<p><b>原根<span class="zhen">（primitive root）</span></b>是什么？课件定义：素数<span class="zhen">（prime number）</span> p 的原根<span class="zhen">（primitive root）</span>，是它的各次幂能生成 1 到 p−1 所有整数的那个数。考试题会直接给出，你不用自己找。</p>
+<div class="teacher box" data-t="m4dh"><span class="bt">老师课上强调 · W6</span><ul><li>期末可能这样问：① 简述 DH 怎样工作；② 给素数<span class="zhen">（prime number）</span>、生成元<span class="zhen">（generator）</span>和双方私密数<span class="zhen">（private value）</span>，算双方公钥<span class="zhen">（public key）</span>和共享密钥<span class="zhen">（shared key）</span>（15 分）；③ 追问：私密数<span class="zhen">（private value）</span>泄露<span class="zhen">（leak）</span>会怎样（完全不安全）、数字太小会怎样（会被试出来，实际至少 2048 位）。</li><li>六步：公开选 p、g → 各选私密数<span class="zhen">（private value）</span> → A 算 Y<sub>A</sub> = g<sup>a</sup> mod p → B 算 Y<sub>B</sub> → 交换公钥<span class="zhen">（public key）</span> → 各自算 K = Y<sub>对方</sub><sup>自己私密数<span class="zhen">（private value）</span></sup> mod p。</li><li>DH <b>只交换密钥<span class="zhen">（key）</span>，不能加密<span class="zhen">（encryption）</span></b>；交换完用 AES 加密<span class="zhen">（encryption）</span>数据。</li></ul></div>
 
 <h3>手算一个完整例子（课件 P4-62）</h3>
 <p>p = 23，g = 5；Alice 选 a = 6，Bob 选 b = 15。</p>
-<div class="out"><span class="eq">Alice 公开值 A = 5<sup>6</sup> mod 23 = 15625 mod 23 = <b>8</b>（15625 − 679 × 23 = 15625 − 15617 = 8）</span><span class="eq">Bob 公开值 B = 5<sup>15</sup> mod 23 = <b>19</b></span><span class="eq">Alice：K = 19<sup>6</sup> mod 23 = <b>2</b></span><span class="eq">Bob：K = 8<sup>15</sup> mod 23 = <b>2</b>　✓ 相同</span></div>
+<div class="out"><span class="eq">Alice 公开值<span class="zhen">（public value）</span> A = 5<sup>6</sup> mod 23 = 15625 mod 23 = <b>8</b>（15625 − 679 × 23 = 15625 − 15617 = 8）</span><span class="eq">Bob 公开值<span class="zhen">（public value）</span> B = 5<sup>15</sup> mod 23 = <b>19</b></span><span class="eq">Alice：K = 19<sup>6</sup> mod 23 = <b>2</b></span><span class="eq">Bob：K = 8<sup>15</sup> mod 23 = <b>2</b>　✓ 相同</span></div>
 <div class="lab"><p class="lt">Diffie-Hellman 计算器</p><p class="ld">默认是 Q&amp;A Q30 的例子（q = 353，g = 3，Alice 97，Bob 233，结果 40 / 248 / 160）。可以换成课件其他例题验证。</p>
-<div class="fields"><div class="fld"><label for="dq">素数 q</label><input id="dq" type="number" value="353"></div><div class="fld"><label for="dg">原根 a (g)</label><input id="dg" type="number" value="3"></div><div class="fld"><label for="dxa">Alice 私钥 X<sub>A</sub></label><input id="dxa" type="number" value="97"></div><div class="fld"><label for="dxb">Bob 私钥 X<sub>B</sub></label><input id="dxb" type="number" value="233"></div></div>
+<div class="fields"><div class="fld"><label for="dq">素数<span class="zhen">（prime number）</span> q</label><input id="dq" type="number" value="353"></div><div class="fld"><label for="dg">原根<span class="zhen">（primitive root）</span> a (g)</label><input id="dg" type="number" value="3"></div><div class="fld"><label for="dxa">Alice 私钥<span class="zhen">（private key）</span> X<sub>A</sub></label><input id="dxa" type="number" value="97"></div><div class="fld"><label for="dxb">Bob 私钥<span class="zhen">（private key）</span> X<sub>B</sub></label><input id="dxb" type="number" value="233"></div></div>
 <div class="out" id="dhout"></div></div>
 <div class="pitfall box"><span class="bt">课件勘误</span><p>P4-63 例 8（p = 29，g = 2，a = 5，b = 13）：课件写 B = 2<sup>13</sup> mod 29 = 27，K = 26，这是错的。正确值是 <b>B = 14，K = 19</b>。用上面的计算器输入就能验证。考试遇到要自己算，别照抄课件。</p></div>
 <div class="key box"><span class="bt">DH 的要点</span><ul>
-<li>DH <b>只用于交换密钥，不能加密或解密消息</b>（P4-51）；</li>
-<li>安全性基于<b>离散对数难题</b>：已知 g、x、p，求 y = g<sup>x</sup> mod p 很容易；已知 y、g、p，反求 x 极难（样题 Q4-16：True）；</li>
-<li>用于 SSL 的密钥交换；TLS 1.3 只保留了 ephemeral DH（模块 5）；</li>
-<li>弱点：DH 本身<b>不验证对方身份</b>，可能被中间人攻击，所以 TLS 会用签名保护它。</li></ul></div>
-<div class="check" data-a="2"><p class="cq">Diffie-Hellman 能直接用来加密一封邮件吗？</p>
-<div class="opts"><button class="opt">能，它是公钥加密算法</button><button class="opt">能，但只能加密短消息</button><button class="opt">不能，它只用来协商一把共享密钥，再用对称算法去加密</button></div>
+<li>DH <b>只用于交换密钥<span class="zhen">（key）</span>，不能加密<span class="zhen">（encryption）</span>或解密<span class="zhen">（decryption）</span>消息</b>（P4-51）；</li>
+<li>安全性基于<b>离散对数难题<span class="zhen">（discrete logarithm problem）</span></b>：已知 g、x、p，求 y = g<sup>x</sup> mod p 很容易；已知 y、g、p，反求 x 极难（样题 Q4-16：True）；</li>
+<li>用于 SSL 的密钥交换<span class="zhen">（key exchange）</span>；TLS 1.3 只保留了 ephemeral DH（模块 5）；</li>
+<li>弱点：DH 本身<b>不验证对方身份</b>，可能被中间人攻击<span class="zhen">（man-in-the-middle attack (MITM)）</span>，所以 TLS 会用签名<span class="zhen">（signature）</span>保护它。</li></ul></div>
+<div class="check" data-a="2"><p class="cq">Diffie-Hellman 能直接用来加密<span class="zhen">（encryption）</span>一封邮件吗？</p>
+<div class="opts"><button class="opt">能，它是公钥加密<span class="zhen">（public-key encryption）</span>算法</button><button class="opt">能，但只能加密<span class="zhen">（encryption）</span>短消息</button><button class="opt">不能，它只用来协商一把共享密钥<span class="zhen">（shared key）</span>，再用对称算法<span class="zhen">（symmetric algorithm）</span>去加密<span class="zhen">（encryption）</span></button></div>
 <div class="cx"><p>课件原话：“only for Key Exchange and does NOT Encrypt or Decrypt the message.”</p></div></div>
 </section>
 
 <!-- 8 -->
 <section class="sec" id="rsa">
-<h2><span class="n">8</span>RSA：最常用的公钥系统，手算全流程</h2>
-<p>RSA 以三位 MIT 教授 Rivest、Shamir、Adleman 的姓氏命名，1978 年发表（英国 GCHQ 在 1973 年就秘密发现过），是<b>最广泛使用的公钥系统</b>（样题 Q4-15、Q4-17）。和 DH 不同，它是完整的系统：<b>密钥生成 + 加密 + 解密 + 签名</b>都能做。安全性来自<b>大数分解难题</b>：两个大素数相乘很容易，把乘积分解回去几乎不可能（样题 Q4-20）。</p>
-<h3>密钥生成五步（P4-67、P4-68）</h3>
+<h2><span class="n">8</span>RSA：最常用的公钥<span class="zhen">（public key）</span>系统，手算全流程</h2>
+<p>RSA 以三位 MIT 教授 Rivest、Shamir、Adleman 的姓氏命名，1978 年发表（英国 GCHQ 在 1973 年就秘密发现过），是<b>最广泛使用的公钥<span class="zhen">（public key）</span>系统</b>（样题 Q4-15、Q4-17）。和 DH 不同，它是完整的系统：<b>密钥生成<span class="zhen">（key generation）</span> + 加密<span class="zhen">（encryption）</span> + 解密<span class="zhen">（decryption）</span> + 签名<span class="zhen">（signature）</span></b>都能做。安全性来自<b>大数分解难题<span class="zhen">（integer factorization problem）</span></b>：两个大素数<span class="zhen">（large prime）</span>相乘很容易，把乘积分解<span class="zhen">（factorization）</span>回去几乎不可能（样题 Q4-20）。</p>
+<h3>密钥生成<span class="zhen">（key generation）</span>五步（P4-67、P4-68）</h3>
 <div class="stepper"><div class="sh"><span>用 p = 5、q = 11 生成一对 RSA 钥匙（课件 P4-70～P4-72）</span><span class="ctr"></span></div>
-<div class="st"><p><b>① 选两个素数</b> p = 5，q = 11（真实系统里是几百位的大素数）。</p></div>
-<div class="st"><p><b>② 算模数</b> n = p × q = 5 × 11 = <b>55</b>。n 是公开的。</p></div>
+<div class="st"><p><b>① 选两个素数<span class="zhen">（prime number）</span></b> p = 5，q = 11（真实系统里是几百位的大素数<span class="zhen">（large prime）</span>）。</p></div>
+<div class="st"><p><b>② 算模数<span class="zhen">（modulus）</span></b> n = p × q = 5 × 11 = <b>55</b>。n 是公开的。</p></div>
 <div class="st"><p><b>③ 算 φ(n)</b> = (p−1)(q−1) = 4 × 10 = <b>40</b>。φ 必须保密。</p><div class="pitfall box" style="margin:8px 0 0"><span class="bt">陷阱</span><p>样题 Q4-18 问 p = 5、q = 11 时的 φ，选项里有 55（那是 n），正确答案 40 不在选项里，选 <b>None of the above</b>。Q4-19 问 n，答 55。</p></div></div>
-<div class="st"><p><b>④ 选公钥 e</b>：要求 1 &lt; e &lt; φ，且 e 和 φ <b>没有公因子</b>（互素）。课件的做法：e 取素数，检查它和 p−1 = 4、q−1 = 10 有没有公因子：</p><ul><li>e = 2：和 4、10 都有公因子 2，✗</li><li>e = <b>3</b>：没有公因子，✓</li><li>e = 5：和 10 有公因子 5，✗</li><li>e = 7：没有公因子，✓</li></ul><p>选 <b>e = 3</b>。</p></div>
-<div class="st"><p><b>⑤ 求私钥 d</b>：要满足 e × d ≡ 1 (mod φ)，也就是 e × d = k × φ + 1。课件的方法：<b>d = (k × φ + 1) ÷ e</b>，k 从 1 开始试，直到能整除：</p><div class="out"><span class="eq">k = 1：(40 + 1) ÷ 3 = 41 ÷ 3，不能整除 ✗</span><span class="eq">k = 2：(80 + 1) ÷ 3 = 81 ÷ 3 = <b>27</b> ✓</span></div><p>所以 <b>d = 27</b>。验证：3 × 27 = 81 = 2 × 40 + 1 ✓。</p><p><b>公钥 = (n, e) = (55, 3)</b>，公开给所有人；<b>私钥 = d = 27</b>，自己保管。</p></div>
+<div class="st"><p><b>④ 选公钥<span class="zhen">（public key）</span> e</b>：要求 1 &lt; e &lt; φ，且 e 和 φ <b>没有公因子<span class="zhen">（common factor）</span></b>（互素<span class="zhen">（relatively prime）</span>）。课件的做法：e 取素数<span class="zhen">（prime number）</span>，检查它和 p−1 = 4、q−1 = 10 有没有公因子<span class="zhen">（common factor）</span>：</p><ul><li>e = 2：和 4、10 都有公因子<span class="zhen">（common factor）</span> 2，✗</li><li>e = <b>3</b>：没有公因子<span class="zhen">（common factor）</span>，✓</li><li>e = 5：和 10 有公因子<span class="zhen">（common factor）</span> 5，✗</li><li>e = 7：没有公因子<span class="zhen">（common factor）</span>，✓</li></ul><p>选 <b>e = 3</b>。</p></div>
+<div class="st"><p><b>⑤ 求私钥<span class="zhen">（private key）</span> d</b>：要满足 e × d ≡ 1 (mod φ)，也就是 e × d = k × φ + 1。课件的方法：<b>d = (k × φ + 1) ÷ e</b>，k 从 1 开始试，直到能整除：</p><div class="out"><span class="eq">k = 1：(40 + 1) ÷ 3 = 41 ÷ 3，不能整除 ✗</span><span class="eq">k = 2：(80 + 1) ÷ 3 = 81 ÷ 3 = <b>27</b> ✓</span></div><p>所以 <b>d = 27</b>。验证：3 × 27 = 81 = 2 × 40 + 1 ✓。</p><p><b>公钥<span class="zhen">（public key）</span> = (n, e) = (55, 3)</b>，公开给所有人；<b>私钥<span class="zhen">（private key）</span> = d = 27</b>，自己保管。</p></div>
 <div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
-<div class="teacher box" data-t="m4rsa"><span class="bt">老师课上强调 · W7</span><ul><li>选 e 的<b>三个条件</b>（期末要写）：① 1 &lt; e &lt; φ；② <b>e 是素数</b>；③ e 与 p−1、q−1 没有公因子。标准说法只要求 gcd(e, φ) = 1，考试按老师的三条写。</li><li><b>往年原题：为什么 2 永远不能当公钥？</b>除 2 以外的素数都是奇数，减 1 后是偶数，所以 2 一定是 p−1、q−1 的公因子，不满足第 ③ 条。</li><li>求 d 用 k 法：d = (kφ + 1)/e，k = 1, 2, 3… 直到整除。老师建议考试就用这个方法，省时间。</li><li>典型 15 分题：为什么 e ≠ 2 → 求 n、φ → 选 e、求 d → 给 M，加密再解密验证。课上的练习：p=5, q=11 自选密钥；p=17, q=19, e=5, M=25；p=13, q=23, e=7。</li></ul></div>
+<div class="teacher box" data-t="m4rsa"><span class="bt">老师课上强调 · W7</span><ul><li>选 e 的<b>三个条件</b>（期末要写）：① 1 &lt; e &lt; φ；② <b>e 是素数<span class="zhen">（prime number）</span></b>；③ e 与 p−1、q−1 没有公因子<span class="zhen">（common factor）</span>。标准说法只要求 gcd(e, φ) = 1，考试按老师的三条写。</li><li><b>往年原题：为什么 2 永远不能当公钥<span class="zhen">（public key）</span>？</b>除 2 以外的素数<span class="zhen">（prime number）</span>都是奇数，减 1 后是偶数，所以 2 一定是 p−1、q−1 的公因子<span class="zhen">（common factor）</span>，不满足第 ③ 条。</li><li>求 d 用 k 法：d = (kφ + 1)/e，k = 1, 2, 3… 直到整除。老师建议考试就用这个方法，省时间。</li><li>典型 15 分题：为什么 e ≠ 2 → 求 n、φ → 选 e、求 d → 给 M，加密<span class="zhen">（encryption）</span>再解密<span class="zhen">（decryption）</span>验证。课上的练习：p=5, q=11 自选密钥<span class="zhen">（key）</span>；p=17, q=19, e=5, M=25；p=13, q=23, e=7。</li></ul></div>
 
-<h3>加密和解密</h3>
-<div class="key box"><span class="bt">公式</span><p>加密（用接收方公钥）：<b>C = M<sup>e</sup> mod n</b>　　　解密（用自己的私钥）：<b>M = C<sup>d</sup> mod n</b></p><p>要求：明文 M 必须<b>小于 n</b>。</p></div>
-<p><b>例（P4-72）：</b>加密 “DC”。按 A = 0, B = 1, C = 2, D = 3… 编码，DC → 32。</p>
-<div class="out"><span class="eq">加密：C = 32<sup>3</sup> mod 55 = 32768 mod 55 = <b>43</b></span><span class="eq">解密：M = 43<sup>27</sup> mod 55 = <b>32</b> → 3 = D，2 = C → “DC” ✓</span></div>
+<h3>加密<span class="zhen">（encryption）</span>和解密<span class="zhen">（decryption）</span></h3>
+<div class="key box"><span class="bt">公式</span><p>加密<span class="zhen">（encryption）</span>（用接收方公钥<span class="zhen">（public key）</span>）：<b>C = M<sup>e</sup> mod n</b>　　　解密<span class="zhen">（decryption）</span>（用自己的私钥<span class="zhen">（private key）</span>）：<b>M = C<sup>d</sup> mod n</b></p><p>要求：明文<span class="zhen">（plaintext）</span> M 必须<b>小于 n</b>。</p></div>
+<p><b>例（P4-72）：</b>加密<span class="zhen">（encryption）</span> “DC”。按 A = 0, B = 1, C = 2, D = 3… 编码，DC → 32。</p>
+<div class="out"><span class="eq">加密<span class="zhen">（encryption）</span>：C = 32<sup>3</sup> mod 55 = 32768 mod 55 = <b>43</b></span><span class="eq">解密<span class="zhen">（decryption）</span>：M = 43<sup>27</sup> mod 55 = <b>32</b> → 3 = D，2 = C → “DC” ✓</span></div>
 
-<h3>Q&amp;A 大题：用 4 位一块加密 STOP（Q25）</h3>
+<h3>Q&amp;A 大题：用 4 位一块加密<span class="zhen">（encryption）</span> STOP（Q25）</h3>
 <p>p = 43，q = 59，e = 13。</p>
 <ol>
 <li>n = 43 × 59 = <b>2537</b>；</li>
 <li>字母编码（A = 00 … Z = 25）：S = 18，T = 19，O = 14，P = 15。每两个字母拼成 4 位一块：<b>1819 1415</b>（为什么能 4 位一块？最大的块 2525 也小于 n = 2537）；</li>
-<li>逐块加密：1819<sup>13</sup> mod 2537 = <b>2081</b>；1415<sup>13</sup> mod 2537 = <b>2182</b>；</li>
-<li>密文：<b>2081 2182</b>。</li>
+<li>逐块加密<span class="zhen">（encryption）</span>：1819<sup>13</sup> mod 2537 = <b>2081</b>；1415<sup>13</sup> mod 2537 = <b>2182</b>；</li>
+<li>密文<span class="zhen">（ciphertext）</span>：<b>2081 2182</b>。</li>
 </ol>
-<h3>解密 0981 0461（Q26）</h3>
+<h3>解密<span class="zhen">（decryption）</span> 0981 0461（Q26）</h3>
 <ol>
 <li>φ = 42 × 58 = <b>2436</b>；</li>
 <li>求 d：d = (k × 2436 + 1) ÷ 13。一个个试太慢，有个技巧：2436 mod 13 = 5，所以需要 5k + 1 能被 13 整除，k = 5 时 26 ÷ 13 = 2 ✓。于是 d = (5 × 2436 + 1) ÷ 13 = 12181 ÷ 13 = <b>937</b>；</li>
 <li>0981<sup>937</sup> mod 2537 = <b>0704</b> → 07 = h，04 = e；0461<sup>937</sup> mod 2537 = <b>1115</b> → 11 = l，15 = p；</li>
-<li>明文：<b>“help”</b>。</li>
+<li>明文<span class="zhen">（plaintext）</span>：<b>“help”</b>。</li>
 </ol>
-<div class="lab"><p class="lt">RSA 全流程计算器</p><p class="ld">输入 p、q、e（e 留空时按课件方法自动选），再输入明文（字母或数字）或密文。默认是 Q25。可以再试：p=43 q=59 e=13，密文填 0981 0461（Q26）；或者 p=13 q=17 e=5（Q27a）。</p>
-<div class="fields"><div class="fld"><label for="rp">素数 p</label><input id="rp" type="number" value="43"></div><div class="fld"><label for="rq">素数 q</label><input id="rq" type="number" value="59"></div><div class="fld"><label for="re">公钥 e</label><input id="re" type="text" value="13" inputmode="numeric"></div><div class="fld" style="grid-column:1/-1"><label for="rpt">明文（字母按 A=00 编码，或用空格隔开的数字）</label><input id="rpt" type="text" value="STOP"></div><div class="fld" style="grid-column:1/-1"><label for="rct">密文（空格隔开，可选）</label><input id="rct" type="text" value=""></div></div>
+<div class="lab"><p class="lt">RSA 全流程计算器</p><p class="ld">输入 p、q、e（e 留空时按课件方法自动选），再输入明文<span class="zhen">（plaintext）</span>（字母或数字）或密文<span class="zhen">（ciphertext）</span>。默认是 Q25。可以再试：p=43 q=59 e=13，密文<span class="zhen">（ciphertext）</span>填 0981 0461（Q26）；或者 p=13 q=17 e=5（Q27a）。</p>
+<div class="fields"><div class="fld"><label for="rp">素数<span class="zhen">（prime number）</span> p</label><input id="rp" type="number" value="43"></div><div class="fld"><label for="rq">素数<span class="zhen">（prime number）</span> q</label><input id="rq" type="number" value="59"></div><div class="fld"><label for="re">公钥<span class="zhen">（public key）</span> e</label><input id="re" type="text" value="13" inputmode="numeric"></div><div class="fld" style="grid-column:1/-1"><label for="rpt">明文<span class="zhen">（plaintext）</span>（字母按 A=00 编码，或用空格隔开的数字）</label><input id="rpt" type="text" value="STOP"></div><div class="fld" style="grid-column:1/-1"><label for="rct">密文<span class="zhen">（ciphertext）</span>（空格隔开，可选）</label><input id="rct" type="text" value=""></div></div>
 <div class="out" id="rout" style="overflow-x:auto"></div></div>
-<div class="pitfall box"><span class="bt">Q27c 的坑</span><p>p = 19，q = 23，e = 3：n = 437，φ = 18 × 22 = 396 = 4 × 9 × 11。<b>e = 3 和 396 有公因子 3</b>，所以这组参数下私钥 d 根本不存在。题目只问 n 和 φ，大概正是这个原因。在计算器里输入试试，会看到提示。</p></div>
+<div class="pitfall box"><span class="bt">Q27c 的坑</span><p>p = 19，q = 23，e = 3：n = 437，φ = 18 × 22 = 396 = 4 × 9 × 11。<b>e = 3 和 396 有公因子<span class="zhen">（common factor）</span> 3</b>，所以这组参数下私钥<span class="zhen">（private key）</span> d 根本不存在。题目只问 n 和 φ，大概正是这个原因。在计算器里输入试试，会看到提示。</p></div>
 <h3>RSA 的概念题（Q&amp;A Q24、Q29）</h3>
 <ul>
-<li><b>单向函数</b>：C = M<sup>e</sup> mod n，已知 M 和 e 算 C 很容易；已知 C 和 e，n 很大时反推 M 很难；</li>
-<li><b>陷门（trapdoor）</b>：私钥 d，掌握它就能轻松反推，M = C<sup>d</sup> mod n；</li>
-<li><b>公钥</b> e（连同 n），<b>私钥</b> d；</li>
-<li><b>安全性</b>主要取决于分解 n 的难度；n 很大、e 选得合适，系统就是安全的；</li>
+<li><b>单向函数<span class="zhen">（one-way function）</span></b>：C = M<sup>e</sup> mod n，已知 M 和 e 算 C 很容易；已知 C 和 e，n 很大时反推 M 很难；</li>
+<li><b>陷门（trapdoor）</b>：私钥<span class="zhen">（private key）</span> d，掌握它就能轻松反推，M = C<sup>d</sup> mod n；</li>
+<li><b>公钥<span class="zhen">（public key）</span></b> e（连同 n），<b>私钥<span class="zhen">（private key）</span></b> d；</li>
+<li><b>安全性</b>主要取决于分解<span class="zhen">（factorization）</span> n 的难度；n 很大、e 选得合适，系统就是安全的；</li>
 <li><b>p 和 q 能公开吗？不能</b>。知道 p、q 就能算出 φ，有了 φ 就能由 e 算出 d。反过来，知道 n 和 φ 也能解出 p、q。所以 p、q、φ、d 都要保密，只公开 n 和 e。</li>
 </ul>
-<div class="check" data-a="0"><p class="cq">RSA 中 p = 3，q = 11，e = 7，私钥 d 是多少？</p>
+<div class="check" data-a="0"><p class="cq">RSA 中 p = 3，q = 11，e = 7，私钥<span class="zhen">（private key）</span> d 是多少？</p>
 <div class="opts"><button class="opt">3</button><button class="opt">7</button><button class="opt">11</button><button class="opt">21</button></div>
 <div class="cx"><p>φ = 2 × 10 = 20。k = 1：(20 + 1) ÷ 7 = 3 ✓，所以 d = 3（课件 P4-76）。验证：7 × 3 = 21 = 20 + 1。</p></div></div>
 <div class="check" data-a="1"><p class="cq">RSA 的安全性依赖于？</p>
-<div class="opts"><button class="opt">离散对数难题</button><button class="opt">大数分解难题</button><button class="opt">哈希碰撞难题</button></div>
-<div class="cx"><p>RSA 依赖<b>分解</b>；DH 和 ElGamal 依赖<b>离散对数</b>。这一对常被拿来对比出题。</p></div></div>
+<div class="opts"><button class="opt">离散对数难题<span class="zhen">（discrete logarithm problem）</span></button><button class="opt">大数分解难题<span class="zhen">（integer factorization problem）</span></button><button class="opt">哈希碰撞<span class="zhen">（hash collision）</span>难题</button></div>
+<div class="cx"><p>RSA 依赖<b>分解<span class="zhen">（factorization）</span></b>；DH 和 ElGamal 依赖<b>离散对数<span class="zhen">（discrete logarithm）</span></b>。这一对常被拿来对比出题。</p></div></div>
 </section>
 
 <!-- 9 -->
 <section class="sec" id="hybrid">
-<h2><span class="n">9</span>ElGamal、ECC 与混合系统</h2>
+<h2><span class="n">9</span>ElGamal、ECC 与混合系统<span class="zhen">（hybrid system）</span></h2>
 <ul>
-<li><b>ElGamal</b>（1985）：基于 DH 的思想，安全性也基于离散对数；能加密也能签名；但<b>密文是明文的两倍长，速度慢</b>；</li>
-<li><b>ECC 椭圆曲线密码</b>（1985 年提出，2005 年后才广泛使用）：<b>用更短的密钥达到同样的安全性</b>，在加密货币里很流行。</li>
+<li><b>ElGamal</b>（1985）：基于 DH 的思想，安全性也基于离散对数<span class="zhen">（discrete logarithm）</span>；能加密<span class="zhen">（encryption）</span>也能签名<span class="zhen">（signature）</span>；但<b>密文<span class="zhen">（ciphertext）</span>是明文<span class="zhen">（plaintext）</span>的两倍长，速度慢</b>；</li>
+<li><b>ECC 椭圆曲线密码</b>（1985 年提出，2005 年后才广泛使用）：<b>用更短的密钥<span class="zhen">（key）</span>达到同样的安全性</b>，在加密货币<span class="zhen">（cryptocurrency）</span>里很流行。</li>
 </ul>
 <div class="tbl"><table>
-<tr><th>对称密钥</th><th>ECC</th><th>RSA</th></tr>
+<tr><th>对称密钥<span class="zhen">（symmetric key）</span></th><th>ECC</th><th>RSA</th></tr>
 <tr><td>80</td><td>160</td><td>1024</td></tr>
 <tr><td>112</td><td>224</td><td>2048</td></tr>
 <tr><td><b>128</b></td><td><b>256</b></td><td><b>3072</b></td></tr>
 <tr><td>256</td><td>512</td><td>15360</td></tr>
 </table></div>
-<p class="ref" style="white-space:normal">等效安全强度对照（P4-97）</p>
-<h3>混合系统：两全其美</h3>
-<p>公钥强大但慢，对称快但钥匙难送。<b>混合系统</b>把两者结合起来（P4-98、P4-99）：</p>
+<p class="ref" style="white-space:normal">等效安全强度<span class="zhen">（equivalent security strength）</span>对照（P4-97）</p>
+<h3>混合系统<span class="zhen">（hybrid system）</span>：两全其美</h3>
+<p>公钥<span class="zhen">（public key）</span>强大但慢，对称<span class="zhen">（symmetric）</span>快但钥匙难送。<b>混合系统<span class="zhen">（hybrid system）</span></b>把两者结合起来（P4-98、P4-99）：</p>
 <figure>
 <svg viewBox="0 0 680 230" role="img" aria-label="混合加密系统流程">
   <defs><marker id="m4e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-a"/></marker><marker id="m4f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-g"/></marker></defs>
@@ -393,60 +544,60 @@
   <text x="590" y="150" text-anchor="middle" font-size="11">④ 用私钥解出 3486</text>
   <line x1="162" y1="185" x2="518" y2="185" class="lg" marker-end="url(#m4f)"/><line x1="518" y1="197" x2="162" y2="197" class="lg" marker-end="url(#m4f)"/><text x="340" y="179" text-anchor="middle" font-size="12" class="tg">⑤ 之后所有数据都用对称会话密钥加密</text>
 </svg>
-<figcaption>混合系统：公钥负责“送钥匙”，对称密钥负责“加数据”。SSL/TLS 就是这么工作的。</figcaption>
+<figcaption>混合系统<span class="zhen">（hybrid system）</span>：公钥<span class="zhen">（public key）</span>负责“送钥匙”，对称密钥<span class="zhen">（symmetric key）</span>负责“加数据”。SSL/TLS 就是这么工作的。</figcaption>
 </figure>
-<div class="check" data-a="1"><p class="cq">混合系统中，公钥密码用来做什么？会话数据用什么加密？（样题 Q4-34、Q4-35）</p>
-<div class="opts"><button class="opt">加密全部数据；用非对称加密</button><button class="opt">交换会话密钥；用对称加密</button><button class="opt">两者都做；两者都用</button></div>
-<div class="cx"><p>公钥送钥匙，对称加数据。会话数据量大，需要对称算法的速度。</p></div></div>
-<div class="teacher box" data-t="m4hyb"><span class="bt">老师课上强调 · W7–W8</span><ul><li>同等安全强度下速度：<b>AES &gt; ECC &gt; RSA</b>（AES-128 ≈ ECC-256；AES-256 ≈ ECC-512 ≈ RSA-15360）。老师个人认为 ECC 不会取代 RSA。ElGamal 的密文是明文的两倍，太慢，所以不用。</li><li>混合系统：客户端不需要任何密钥，<b>服务器必须有 SSL 证书</b>（证书里嵌着公钥）。会话密钥只用一次会话，下次登录换新的。</li></ul></div>
+<div class="check" data-a="1"><p class="cq">混合系统<span class="zhen">（hybrid system）</span>中，公钥密码<span class="zhen">（public-key cryptography）</span>用来做什么？会话<span class="zhen">（session）</span>数据用什么加密<span class="zhen">（encryption）</span>？（样题 Q4-34、Q4-35）</p>
+<div class="opts"><button class="opt">加密<span class="zhen">（encryption）</span>全部数据；用非对称加密<span class="zhen">（asymmetric encryption）</span></button><button class="opt">交换会话密钥<span class="zhen">（session key）</span>；用对称加密<span class="zhen">（symmetric encryption）</span></button><button class="opt">两者都做；两者都用</button></div>
+<div class="cx"><p>公钥<span class="zhen">（public key）</span>送钥匙，对称<span class="zhen">（symmetric）</span>加数据。会话<span class="zhen">（session）</span>数据量大，需要对称算法<span class="zhen">（symmetric algorithm）</span>的速度。</p></div></div>
+<div class="teacher box" data-t="m4hyb"><span class="bt">老师课上强调 · W7–W8</span><ul><li>同等安全强度下速度：<b>AES &gt; ECC &gt; RSA</b>（AES-128 ≈ ECC-256；AES-256 ≈ ECC-512 ≈ RSA-15360）。老师个人认为 ECC 不会取代 RSA。ElGamal 的密文<span class="zhen">（ciphertext）</span>是明文<span class="zhen">（plaintext）</span>的两倍，太慢，所以不用。</li><li>混合系统<span class="zhen">（hybrid system）</span>：客户端<span class="zhen">（client）</span>不需要任何密钥<span class="zhen">（key）</span>，<b>服务器<span class="zhen">（server）</span>必须有 SSL 证书<span class="zhen">（certificate）</span></b>（证书<span class="zhen">（certificate）</span>里嵌着公钥<span class="zhen">（public key）</span>）。会话密钥<span class="zhen">（session key）</span>只用一次会话<span class="zhen">（session）</span>，下次登录换新的。</li></ul></div>
 
 </section>
 
 <!-- 10 -->
 <section class="sec" id="hash">
-<h2><span class="n">10</span>哈希：给数据按一个“指纹”</h2>
-<p><b>Hash function</b> 把<b>任意长度</b>的数据压缩成一串<b>固定长度</b>的“摘要”（digest）。它是<b>单向</b>的：从摘要无法还原原文。课件称它为“a special mathematical function that performs <b>one-way encryption</b>”（样题 Q4-33）。</p>
-<div class="analogy box"><span class="bt">类比</span><p>就像人的指纹：从一个人很容易得到他的指纹，但只看指纹没法“复原”出这个人；两个人指纹相同几乎不可能。Q&amp;A Q31 用的类比是软件包装盒上的<b>防拆封条</b>：盒子被打开过（文件被改过），一眼就能看出来。</p></div>
-<h3>哈希的性质（P4-108）</h3>
+<h2><span class="n">10</span>哈希<span class="zhen">（hash）</span>：给数据按一个“指纹<span class="zhen">（fingerprint）</span>”</h2>
+<p><b>Hash function</b> 把<b>任意长度</b>的数据压缩成一串<b>固定长度</b>的“摘要”（digest）。它是<b>单向<span class="zhen">（one-way）</span></b>的：从摘要无法还原原文。课件称它为“a special mathematical function that performs <b>one-way encryption</b>”（样题 Q4-33）。</p>
+<div class="analogy box"><span class="bt">类比</span><p>就像人的指纹<span class="zhen">（fingerprint）</span>：从一个人很容易得到他的指纹<span class="zhen">（fingerprint）</span>，但只看指纹<span class="zhen">（fingerprint）</span>没法“复原”出这个人；两个人指纹<span class="zhen">（fingerprint）</span>相同几乎不可能。Q&amp;A Q31 用的类比是软件包装盒上的<b>防拆封条<span class="zhen">（tamper-evident seal）</span></b>：盒子被打开过（文件被改过），一眼就能看出来。</p></div>
+<h3>哈希<span class="zhen">（hash）</span>的性质（P4-108）</h3>
 <ul>
 <li>可以处理任意大小的数据，输出<b>固定长度</b>，计算很快；</li>
-<li><b>单向（抗原像）</b>：给定摘要 h，找不到 x 使 H(x) = h；</li>
-<li><b>弱抗碰撞</b>：给定 x，找不到另一个 y ≠ x 使 H(y) = H(x)；</li>
-<li><b>强抗碰撞</b>：找不到<b>任意一对</b> x、y 使 H(x) = H(y)；</li>
-<li><b>雪崩效应</b>：输入改一个字母，输出完全变样（P4-111）。</li>
+<li><b>单向<span class="zhen">（one-way）</span>（抗原像<span class="zhen">（preimage resistance）</span>）</b>：给定摘要<span class="zhen">（digest）</span> h，找不到 x 使 H(x) = h；</li>
+<li><b>弱抗碰撞<span class="zhen">（weak collision resistance）</span></b>：给定 x，找不到另一个 y ≠ x 使 H(y) = H(x)；</li>
+<li><b>强抗碰撞<span class="zhen">（strong collision resistance）</span></b>：找不到<b>任意一对</b> x、y 使 H(x) = H(y)；</li>
+<li><b>雪崩效应<span class="zhen">（avalanche effect）</span></b>：输入改一个字母，输出完全变样（P4-111）。</li>
 </ul>
-<div class="lab"><p class="lt">雪崩效应实验（真实的 SHA-256）</p><p class="ld">两段只差一个字母的文字，看看它们的 SHA-256 摘要有多少位不同。红色标出两者不同的十六进制字符。</p>
+<div class="lab"><p class="lt">雪崩效应<span class="zhen">（avalanche effect）</span>实验（真实的 SHA-256）</p><p class="ld">两段只差一个字母的文字，看看它们的 SHA-256 摘要<span class="zhen">（digest）</span>有多少位不同。红色标出两者不同的十六进制字符。</p>
 <div class="fields"><div class="fld" style="grid-column:1/-1"><label for="h1">文本 A</label><input id="h1" type="text" value="The red fox jumps over the blue dog"></div><div class="fld" style="grid-column:1/-1"><label for="h2">文本 B</label><input id="h2" type="text" value="The red fox jumps ouer the blue dog"></div></div>
 <div class="out" id="hout"></div></div>
 <h3>常见算法</h3>
 <div class="tbl"><table>
-<tr><th>算法</th><th>摘要长度</th><th>状态</th></tr>
+<tr><th>算法</th><th>摘要长度<span class="zhen">（digest length）</span></th><th>状态</th></tr>
 <tr><td>MD5</td><td>128 位</td><td>✗ 不安全，不要再用</td></tr>
-<tr><td>SHA-1</td><td>160 位</td><td>✗ 已发现碰撞攻击，不要再用</td></tr>
-<tr><td><b>SHA-2</b>（SHA-224/256/384/512）</td><td>名字里的数字就是长度</td><td>✓ 安全，最广泛使用（样题 Q4-27），比特币用 SHA-256</td></tr>
+<tr><td>SHA-1</td><td>160 位</td><td>✗ 已发现碰撞攻击<span class="zhen">（collision attack）</span>，不要再用</td></tr>
+<tr><td><b>SHA-2</b>（SHA-224/256/384/512）</td><td>名字里的数字就是长度</td><td>✓ 安全，最广泛使用（样题 Q4-27），比特币<span class="zhen">（Bitcoin）</span>用 SHA-256</td></tr>
 <tr><td>SHA-3</td><td>—</td><td>✓ 安全</td></tr>
 </table></div>
-<div class="teacher box" data-t="m4halg"><span class="bt">老师课上强调 · W7</span><ul><li>MD5、SHA-1 不安全，不应再用；SHA-256 用于比特币。</li><li>网站存的是密码的<b>哈希</b>。如果网站说能把原密码“找回”给你，说明它没用哈希，不应该用；正常只能<b>重置</b>（NTU 也一样）。</li></ul></div>
+<div class="teacher box" data-t="m4halg"><span class="bt">老师课上强调 · W7</span><ul><li>MD5、SHA-1 不安全，不应再用；SHA-256 用于比特币<span class="zhen">（Bitcoin）</span>。</li><li>网站存的是密码<span class="zhen">（password）</span>的<b>哈希<span class="zhen">（hash）</span></b>。如果网站说能把原密码<span class="zhen">（password）</span>“找回”给你，说明它没用哈希<span class="zhen">（hash）</span>，不应该用；正常只能<b>重置</b>（NTU 也一样）。</li></ul></div>
 
-<h3>哈希 ≠ 加密（Q&amp;A Q31）</h3>
+<h3>哈希<span class="zhen">（hash）</span> ≠ 加密（Q&amp;A Q31）</h3>
 <div class="tbl"><table>
-<tr><th></th><th>加密</th><th>哈希</th></tr>
-<tr><td>输出长度</td><td>和明文差不多，或更长</td><td>固定且短，与输入长度无关</td></tr>
-<tr><td>能还原吗</td><td>能（解密）</td><td><b>不能</b>（不能 de-hash）</td></tr>
-<tr><td>需要密钥吗</td><td>需要</td><td>不需要</td></tr>
-<tr><td>目的</td><td>机密性</td><td><b>完整性</b>（样题 Q4-26）</td></tr>
+<tr><th></th><th>加密<span class="zhen">（encryption）</span></th><th>哈希<span class="zhen">（hash）</span></th></tr>
+<tr><td>输出长度</td><td>和明文<span class="zhen">（plaintext）</span>差不多，或更长</td><td>固定且短，与输入长度无关</td></tr>
+<tr><td>能还原吗</td><td>能（解密<span class="zhen">（decryption）</span>）</td><td><b>不能</b>（不能 de-hash）</td></tr>
+<tr><td>需要密钥<span class="zhen">（key）</span>吗</td><td>需要</td><td>不需要</td></tr>
+<tr><td>目的</td><td>机密性<span class="zhen">（confidentiality）</span></td><td><b>完整性<span class="zhen">（integrity）</span></b>（样题 Q4-26）</td></tr>
 </table></div>
-<div class="check" data-a="0"><p class="cq">哈希函数的主要目的是？（样题 Q4-26）</p>
-<div class="opts"><button class="opt">数据完整性</button><button class="opt">认证</button><button class="opt">两者都是</button></div>
-<div class="cx"><p>哈希本身没有密钥，单独使用证明不了是谁发的，所以主要用于<b>完整性</b>。和私钥签名结合后才能提供认证，那是下一节的内容。</p></div></div>
-<div class="teacher box" data-t="m4hash"><span class="bt">老师课上强调 · W8</span><p>样题 Q4-26：哈希的主要目的？<b>只有 data integrity</b>，不提供 authentication，认证要靠数字签名。Q4-27：SHA 是<b>算法</b>，hash value 和 digest 都是输出。</p></div>
+<div class="check" data-a="0"><p class="cq">哈希函数<span class="zhen">（hash function）</span>的主要目的是？（样题 Q4-26）</p>
+<div class="opts"><button class="opt">数据完整性<span class="zhen">（data integrity）</span></button><button class="opt">认证<span class="zhen">（authentication）</span></button><button class="opt">两者都是</button></div>
+<div class="cx"><p>哈希<span class="zhen">（hash）</span>本身没有密钥<span class="zhen">（key）</span>，单独使用证明不了是谁发的，所以主要用于<b>完整性<span class="zhen">（integrity）</span></b>。和私钥<span class="zhen">（private key）</span>签名<span class="zhen">（signature）</span>结合后才能提供认证<span class="zhen">（authentication）</span>，那是下一节的内容。</p></div></div>
+<div class="teacher box" data-t="m4hash"><span class="bt">老师课上强调 · W8</span><p>样题 Q4-26：哈希<span class="zhen">（hash）</span>的主要目的？<b>只有 data integrity</b>，不提供 authentication，认证要靠数字签名<span class="zhen">（digital signature）</span>。Q4-27：SHA 是<b>算法</b>，hash value 和 digest 都是输出。</p></div>
 
 </section>
 
 <!-- 11 -->
 <section class="sec" id="sig">
-<h2><span class="n">11</span>数字签名：证明“这是我发的，而且没被改过”</h2>
-<p>手写签名容易伪造，靠和真迹比对来验证；<b>数字签名</b>很难伪造，用公开的算法验证（P4-103）。它就是把公钥加密“反过来用”：发送方用<b>自己的私钥</b>处理消息的<b>哈希</b>（样题 Q4-28、Q4-31）。</p>
+<h2><span class="n">11</span>数字签名<span class="zhen">（digital signature）</span>：证明“这是我发的，而且没被改过”</h2>
+<p>手写签名<span class="zhen">（handwritten signature）</span>容易伪造<span class="zhen">（forgery）</span>，靠和真迹比对来验证；<b>数字签名<span class="zhen">（digital signature）</span></b>很难伪造<span class="zhen">（forgery）</span>，用公开的算法验证（P4-103）。它就是把公钥加密<span class="zhen">（public-key encryption）</span>“反过来用”：发送方用<b>自己的私钥<span class="zhen">（private key）</span></b>处理消息的<b>哈希<span class="zhen">（hash）</span></b>（样题 Q4-28、Q4-31）。</p>
 <figure>
 <svg viewBox="0 0 680 280" role="img" aria-label="数字签名的签名与验证流程">
   <defs><marker id="m4g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="ah-n"/></marker></defs>
@@ -468,72 +619,72 @@
 </svg>
 <figcaption>数字签名（P4-105、P4-112；Q&amp;A Q32）。</figcaption>
 </figure>
-<h3>签名提供什么、不提供什么</h3>
+<h3>签名<span class="zhen">（signature）</span>提供什么、不提供什么</h3>
 <ul>
-<li>✓ <b>完整性</b>：消息改一个字，哈希就对不上；</li>
-<li>✓ <b>认证</b>：只有 Bob 有私钥，能用他的公钥解开，就证明是他签的；</li>
-<li>✓ <b>不可否认</b>：Bob 事后不能说“不是我”；</li>
-<li>✗ <b>不提供机密性</b>：消息本身是明文发送的。如果还需要保密，就再用 Alice 的公钥加密整条消息，这就是课件 P4-113 的“with message protection”。</li>
+<li>✓ <b>完整性<span class="zhen">（integrity）</span></b>：消息改一个字，哈希<span class="zhen">（hash）</span>就对不上；</li>
+<li>✓ <b>认证<span class="zhen">（authentication）</span></b>：只有 Bob 有私钥<span class="zhen">（private key）</span>，能用他的公钥<span class="zhen">（public key）</span>解开，就证明是他签的；</li>
+<li>✓ <b>不可否认<span class="zhen">（non-repudiation）</span></b>：Bob 事后不能说“不是我”；</li>
+<li>✗ <b>不提供机密性<span class="zhen">（confidentiality）</span></b>：消息本身是明文<span class="zhen">（plaintext）</span>发送的。如果还需要保密，就再用 Alice 的公钥加密<span class="zhen">（public-key encryption）</span>整条消息，这就是课件 P4-113 的“with message protection”。</li>
 </ul>
-<p>样题 Q4-29：签名能保证 integrity 和 source，选 <b>Both</b>；Q4-30：哈希值<b>相等</b>说明没有被篡改。</p>
-<h3>RSA 签名小例子（P4-117）</h3>
-<p>沿用 n = 55，e = 3，d = 27。签名 M = 51：S = 51<sup>27</sup> mod 55 = <b>6</b>（用私钥 d）。验证：6<sup>3</sup> mod 55 = 216 mod 55 = <b>51</b> = M ✓（用公钥 e）。和加密正好反过来。</p>
-<div class="check" data-a="1"><p class="cq">发送方给哈希做数字签名，用的是哪把钥匙？</p>
-<div class="opts"><button class="opt">发送方的公钥</button><button class="opt">发送方的私钥</button><button class="opt">接收方的公钥</button></div>
-<div class="cx"><p>签名用自己的私钥，验签用对方的公钥。</p></div></div>
-<div class="teacher box" data-t="m4sig"><span class="bt">老师课上强调 · W7</span><p>期末手算签名<b>不用哈希</b>（哈希需要电脑）：签名 S = M<sup>d</sup> mod n（用私钥），验证 S<sup>e</sup> mod n = M（用公钥），和 RSA 加密正好相反。课上的例子：p=5, q=11, e=3, d=27, M=51 → S = 6，验证 6<sup>3</sup> mod 55 = 51 ✓。</p></div>
+<p>样题 Q4-29：签名<span class="zhen">（signature）</span>能保证 integrity 和 source，选 <b>Both</b>；Q4-30：哈希值<span class="zhen">（hash value）</span><b>相等</b>说明没有被篡改<span class="zhen">（tampering）</span>。</p>
+<h3>RSA 签名<span class="zhen">（signature）</span>小例子（P4-117）</h3>
+<p>沿用 n = 55，e = 3，d = 27。签名<span class="zhen">（signature）</span> M = 51：S = 51<sup>27</sup> mod 55 = <b>6</b>（用私钥<span class="zhen">（private key）</span> d）。验证：6<sup>3</sup> mod 55 = 216 mod 55 = <b>51</b> = M ✓（用公钥<span class="zhen">（public key）</span> e）。和加密<span class="zhen">（encryption）</span>正好反过来。</p>
+<div class="check" data-a="1"><p class="cq">发送方给哈希<span class="zhen">（hash）</span>做数字签名<span class="zhen">（digital signature）</span>，用的是哪把钥匙？</p>
+<div class="opts"><button class="opt">发送方的公钥<span class="zhen">（public key）</span></button><button class="opt">发送方的私钥<span class="zhen">（private key）</span></button><button class="opt">接收方的公钥<span class="zhen">（public key）</span></button></div>
+<div class="cx"><p>签名<span class="zhen">（signature）</span>用自己的私钥<span class="zhen">（private key）</span>，验签<span class="zhen">（signature verification）</span>用对方的公钥<span class="zhen">（public key）</span>。</p></div></div>
+<div class="teacher box" data-t="m4sig"><span class="bt">老师课上强调 · W7</span><p>期末手算签名<span class="zhen">（signature）</span><b>不用哈希<span class="zhen">（hash）</span></b>（哈希<span class="zhen">（hash）</span>需要电脑）：签名<span class="zhen">（signature）</span> S = M<sup>d</sup> mod n（用私钥<span class="zhen">（private key）</span>），验证 S<sup>e</sup> mod n = M（用公钥<span class="zhen">（public key）</span>），和 RSA 加密<span class="zhen">（encryption）</span>正好相反。课上的例子：p=5, q=11, e=3, d=27, M=51 → S = 6，验证 6<sup>3</sup> mod 55 = 51 ✓。</p></div>
 
 </section>
 
 <!-- 12 -->
 <section class="sec" id="cert">
-<h2><span class="n">12</span>数字证书与 CA：怎么确定这把公钥真是 Bob 的</h2>
-<p>还有一个漏洞：Alice 怎么知道手里的“Bob 公钥”真的是 Bob 的？如果 Eve 冒充 Bob 发来<b>她自己的公钥</b>，Alice 用它去验证 Eve 伪造的签名，当然“验证通过”（P4-118：不能用发送方自己提供的公钥）。这正是公钥密码的核心难题：<b>证明一把公钥确实属于某人</b>（P4-47）。</p>
-<div class="analogy box"><span class="bt">类比</span><p>陌生人说“我是张三”，你不信；他拿出政府签发的<b>身份证</b>，你就信了，因为你信任政府。数字证书就是公钥的“身份证”，<b>CA（证书颁发机构）</b>就是“发证的政府”。</p></div>
-<p><b>Digital certificate</b>：由 CA 签发并<b>数字签名</b>的电子文件，把<b>用户名字和他的公钥绑定</b>在一起（样题 Q4-25）。它的作用是<b>认证公钥</b>（样题 Q4-32），私钥永远不会出现在证书里。</p>
-<h3>X.509 证书里有什么（P4-120、P4-121）</h3>
+<h2><span class="n">12</span>数字证书<span class="zhen">（digital certificate）</span>与 CA：怎么确定这把公钥<span class="zhen">（public key）</span>真是 Bob 的</h2>
+<p>还有一个漏洞<span class="zhen">（vulnerability）</span>：Alice 怎么知道手里的“Bob 公钥<span class="zhen">（public key）</span>”真的是 Bob 的？如果 Eve 冒充<span class="zhen">（masquerading）</span> Bob 发来<b>她自己的公钥<span class="zhen">（public key）</span></b>，Alice 用它去验证 Eve 伪造<span class="zhen">（forgery）</span>的签名<span class="zhen">（signature）</span>，当然“验证通过”（P4-118：不能用发送方自己提供的公钥<span class="zhen">（public key）</span>）。这正是公钥密码<span class="zhen">（public-key cryptography）</span>的核心难题：<b>证明一把公钥<span class="zhen">（public key）</span>确实属于某人</b>（P4-47）。</p>
+<div class="analogy box"><span class="bt">类比</span><p>陌生人说“我是张三”，你不信；他拿出政府签发的<b>身份证</b>，你就信了，因为你信任政府。数字证书<span class="zhen">（digital certificate）</span>就是公钥<span class="zhen">（public key）</span>的“身份证”，<b>CA（证书颁发机构）</b>就是“发证的政府”。</p></div>
+<p><b>Digital certificate</b>：由 CA 签发并<b>数字签名<span class="zhen">（digital signature）</span></b>的电子文件，把<b>用户名字和他的公钥<span class="zhen">（public key）</span>绑定</b>在一起（样题 Q4-25）。它的作用是<b>认证<span class="zhen">（authentication）</span>公钥<span class="zhen">（public key）</span></b>（样题 Q4-32），私钥<span class="zhen">（private key）</span>永远不会出现在证书<span class="zhen">（certificate）</span>里。</p>
+<h3>X.509 证书<span class="zhen">（certificate）</span>里有什么（P4-120、P4-121）</h3>
 <div class="tbl"><table>
 <tr><th>字段</th><th>含义</th></tr>
 <tr><td>Version</td><td>X.509 版本（大多是 v3）</td></tr>
 <tr><td>Issuer</td><td>签发的 CA 的名字</td></tr>
-<tr><td>Serial number</td><td>唯一序列号，用来查询是否被吊销</td></tr>
-<tr><td><b>Subject</b></td><td>证书属于谁（真实主体，true party）</td></tr>
+<tr><td>Serial number</td><td>唯一序列号，用来查询是否被吊销<span class="zhen">（revocation）</span></td></tr>
+<tr><td><b>Subject</b></td><td>证书<span class="zhen">（certificate）</span>属于谁（真实主体，true party）</td></tr>
 <tr><td><b>Public key</b></td><td>主体的公钥</td></tr>
-<tr><td>Public key algorithm</td><td>主体签名用的算法</td></tr>
-<tr><td><b>Digital signature</b></td><td><b>CA 用自己的私钥</b>对证书的签名，用来检查证书是否被篡改</td></tr>
+<tr><td>Public key algorithm</td><td>主体签名<span class="zhen">（signature）</span>用的算法</td></tr>
+<tr><td><b>Digital signature</b></td><td><b>CA 用自己的私钥<span class="zhen">（private key）</span></b>对证书<span class="zhen">（certificate）</span>的签名<span class="zhen">（signature）</span>，用来检查证书<span class="zhen">（certificate）</span>是否被篡改<span class="zhen">（tampering）</span></td></tr>
 <tr><td>Signature algorithm</td><td>CA 签名用的算法</td></tr>
 </table></div>
-<h3>验证证书的三件事（P4-122；Q&amp;A Q33，必背）</h3>
+<h3>验证证书<span class="zhen">（certificate）</span>的三件事（P4-122；Q&amp;A Q33，必背）</h3>
 <ol>
-<li><b>签名</b>：用 CA 众所周知的公钥验证证书上的签名，通过说明证书是真的、没被改过；</li>
-<li><b>有效期</b>：当前时间在证书的有效期内吗？过期的要拒绝；</li>
-<li><b>吊销</b>：有效期内 CA 也可能吊销证书。看证书字段是看不出来的，<b>必须向 CA 查询</b>，例如用 <b>OCSP</b>：把序列号发给 CA，CA 回答 good、revoked 或 unknown。</li>
+<li><b>签名<span class="zhen">（signature）</span></b>：用 CA 众所周知的公钥<span class="zhen">（public key）</span>验证证书<span class="zhen">（certificate）</span>上的签名<span class="zhen">（signature）</span>，通过说明证书<span class="zhen">（certificate）</span>是真的、没被改过；</li>
+<li><b>有效期<span class="zhen">（validity period）</span></b>：当前时间在证书<span class="zhen">（certificate）</span>的有效期<span class="zhen">（validity period）</span>内吗？过期的要拒绝；</li>
+<li><b>吊销<span class="zhen">（revocation）</span></b>：有效期<span class="zhen">（validity period）</span>内 CA 也可能吊销<span class="zhen">（revocation）</span>证书<span class="zhen">（certificate）</span>。看证书<span class="zhen">（certificate）</span>字段是看不出来的，<b>必须向 CA 查询</b>，例如用 <b>OCSP</b>：把序列号<span class="zhen">（serial number）</span>发给 CA，CA 回答 good、revoked 或 unknown。</li>
 </ol>
-<div class="pitfall box"><span class="bt">现实的坑</span><p>很多国家的 CA <b>没有监管</b>，用户也能<b>自己生成证书</b>，所以公钥仍然可能被冒充（Q&amp;A Q28）。只接受<b>有信誉的 CA</b> 签发的证书。新加坡常见的 CA：Verisign、GlobalSign、Netrust。模块 6 的 Equifax 案例里，一张过期 10 个月的证书导致数据外泄没被发现。</p></div>
-<div class="check" data-a="3"><p class="cq">验证数字证书时，<b>不需要</b>检查哪一项？</p>
-<div class="opts"><button class="opt">CA 的签名</button><button class="opt">有效期</button><button class="opt">是否被吊销</button><button class="opt">主体的私钥</button></div>
-<div class="cx"><p>私钥从不出现在证书里，也无从检查。三件事：签名、期限、吊销。</p></div></div>
-<div class="teacher box" data-t="m4cert"><span class="bt">老师课上强调 · W8</span><p>“<b>这道题以前考过</b>”：怎样验证证书有效？① 用 CA 的公钥验证 CA 签名，确认是可信的 CA；② 是否在有效期内；③ 是否被吊销。三项都通过，浏览器才接受。证书已经在客户手里，CA 收不回来，只能把它的<b>序列号</b>作废，这就是吊销（revocation）。</p></div>
+<div class="pitfall box"><span class="bt">现实的坑</span><p>很多国家的 CA <b>没有监管</b>，用户也能<b>自己生成证书<span class="zhen">（certificate）</span></b>，所以公钥<span class="zhen">（public key）</span>仍然可能被冒充（Q&amp;A Q28）。只接受<b>有信誉的 CA</b> 签发的证书<span class="zhen">（certificate）</span>。新加坡常见的 CA：Verisign、GlobalSign、Netrust。模块 6 的 Equifax 案例里，一张过期 10 个月的证书<span class="zhen">（certificate）</span>导致数据外泄<span class="zhen">（data exfiltration）</span>没被发现。</p></div>
+<div class="check" data-a="3"><p class="cq">验证数字证书<span class="zhen">（digital certificate）</span>时，<b>不需要</b>检查哪一项？</p>
+<div class="opts"><button class="opt">CA 的签名<span class="zhen">（signature）</span></button><button class="opt">有效期<span class="zhen">（validity period）</span></button><button class="opt">是否被吊销<span class="zhen">（revocation）</span></button><button class="opt">主体的私钥<span class="zhen">（private key）</span></button></div>
+<div class="cx"><p>私钥<span class="zhen">（private key）</span>从不出现在证书<span class="zhen">（certificate）</span>里，也无从检查。三件事：签名<span class="zhen">（signature）</span>、期限、吊销<span class="zhen">（revocation）</span>。</p></div></div>
+<div class="teacher box" data-t="m4cert"><span class="bt">老师课上强调 · W8</span><p>“<b>这道题以前考过</b>”：怎样验证证书<span class="zhen">（certificate）</span>有效？① 用 CA 的公钥<span class="zhen">（public key）</span>验证 CA 签名<span class="zhen">（signature）</span>，确认是可信的 CA；② 是否在有效期<span class="zhen">（validity period）</span>内；③ 是否被吊销<span class="zhen">（revocation）</span>。三项都通过，浏览器<span class="zhen">（browser）</span>才接受。证书<span class="zhen">（certificate）</span>已经在客户手里，CA 收不回来，只能把它的<b>序列号<span class="zhen">（serial number）</span></b>作废，这就是吊销（revocation）。</p></div>
 
 </section>
 
 <!-- 13 -->
 <section class="sec" id="sum">
 <h2><span class="n">13</span>未来挑战与本章小结</h2>
-<p>课件 P4-125 列出的挑战：密钥管理（生成、存储、分发）；<b>量子计算</b>（Shor 算法能破解 RSA 和 ECC）；同态加密（直接在密文上计算）；为 IoT 设计的轻量级密码；安全与性能的权衡；淘汰过时算法（DES、MD5、SHA-1）。</p>
+<p>课件 P4-125 列出的挑战：密钥管理<span class="zhen">（key management）</span>（生成、存储、分发）；<b>量子计算</b>（Shor 算法能破解 RSA 和 ECC）；同态加密<span class="zhen">（homomorphic encryption）</span>（直接在密文<span class="zhen">（ciphertext）</span>上计算）；为 IoT 设计的轻量级密码<span class="zhen">（lightweight cryptography）</span>；安全与性能的权衡；淘汰过时算法（DES、MD5、SHA-1）。</p>
 <div class="key box"><span class="bt">一页纸总结</span><ul>
-<li>明文 → 密文是<b>加密</b>；安全靠<b>密钥</b>而不是靠算法保密；每多 1 位密钥，难度翻倍。</li>
-<li>对称：一把钥匙，<b>快</b>，难在<b>密钥分发</b>。Block（DES、AES）vs Stream（RC4）；ECB 各块独立，CBC 链式。</li>
-<li><b>DES 64 / 56 / 16</b>，1998 年 56 小时被破；2DES 有中间相遇攻击；3DES 是过渡；<b>AES 128 / (128, 192, 256) / (10, 12, 14)</b>。</li>
-<li>公钥：<b>保密用接收方公钥，签名用发送方私钥</b>；更安全是错误说法，它解决的是分发问题。</li>
-<li><b>DH</b>：只交换密钥，基于离散对数；Y = a<sup>X</sup> mod q，K = Y<sub>对方</sub><sup>X<sub>自己</sub></sup> mod q。</li>
-<li><b>RSA</b>：n = pq，φ = (p−1)(q−1)，e 与 φ 互素，d = (kφ + 1) / e；C = M<sup>e</sup> mod n，M = C<sup>d</sup> mod n；基于大数分解；p、q、φ 必须保密。</li>
-<li>ECC 用更短的钥匙；等效强度：AES-128 ≈ ECC-256 ≈ RSA-3072。<b>混合系统</b>：公钥送钥匙，对称加数据。</li>
-<li>哈希：固定长度、单向、抗碰撞、雪崩效应；用于<b>完整性</b>；MD5 和 SHA-1 已淘汰。</li>
-<li>签名 = 私钥处理哈希 → 完整性 + 认证 + 不可否认，<b>没有机密性</b>；验签：比较两个摘要。</li>
-<li>证书把名字和公钥绑定，由 <b>CA 的私钥</b>签名；验证三件事：<b>签名、期限、吊销（OCSP）</b>。</li>
+<li>明文<span class="zhen">（plaintext）</span> → 密文<span class="zhen">（ciphertext）</span>是<b>加密<span class="zhen">（encryption）</span></b>；安全靠<b>密钥<span class="zhen">（key）</span></b>而不是靠算法保密；每多 1 位密钥<span class="zhen">（key）</span>，难度翻倍。</li>
+<li>对称<span class="zhen">（symmetric）</span>：一把钥匙，<b>快</b>，难在<b>密钥分发<span class="zhen">（key distribution）</span></b>。Block（DES、AES）vs Stream（RC4）；ECB 各块独立，CBC 链式。</li>
+<li><b>DES 64 / 56 / 16</b>，1998 年 56 小时被破；2DES 有中间相遇攻击<span class="zhen">（meet-in-the-middle attack）</span>；3DES 是过渡；<b>AES 128 / (128, 192, 256) / (10, 12, 14)</b>。</li>
+<li>公钥<span class="zhen">（public key）</span>：<b>保密用接收方公钥<span class="zhen">（public key）</span>，签名<span class="zhen">（signature）</span>用发送方私钥<span class="zhen">（private key）</span></b>；更安全是错误说法，它解决的是分发问题。</li>
+<li><b>DH</b>：只交换密钥<span class="zhen">（key）</span>，基于离散对数<span class="zhen">（discrete logarithm）</span>；Y = a<sup>X</sup> mod q，K = Y<sub>对方</sub><sup>X<sub>自己</sub></sup> mod q。</li>
+<li><b>RSA</b>：n = pq，φ = (p−1)(q−1)，e 与 φ 互素<span class="zhen">（relatively prime）</span>，d = (kφ + 1) / e；C = M<sup>e</sup> mod n，M = C<sup>d</sup> mod n；基于大数分解<span class="zhen">（integer factorization）</span>；p、q、φ 必须保密。</li>
+<li>ECC 用更短的钥匙；等效强度<span class="zhen">（equivalent strength）</span>：AES-128 ≈ ECC-256 ≈ RSA-3072。<b>混合系统<span class="zhen">（hybrid system）</span></b>：公钥<span class="zhen">（public key）</span>送钥匙，对称<span class="zhen">（symmetric）</span>加数据。</li>
+<li>哈希<span class="zhen">（hash）</span>：固定长度、单向<span class="zhen">（one-way）</span>、抗碰撞<span class="zhen">（collision resistance）</span>、雪崩效应<span class="zhen">（avalanche effect）</span>；用于<b>完整性<span class="zhen">（integrity）</span></b>；MD5 和 SHA-1 已淘汰。</li>
+<li>签名<span class="zhen">（signature）</span> = 私钥<span class="zhen">（private key）</span>处理哈希<span class="zhen">（hash）</span> → 完整性<span class="zhen">（integrity）</span> + 认证<span class="zhen">（authentication）</span> + 不可否认<span class="zhen">（non-repudiation）</span>，<b>没有机密性<span class="zhen">（confidentiality）</span></b>；验签<span class="zhen">（signature verification）</span>：比较两个摘要<span class="zhen">（digest）</span>。</li>
+<li>证书<span class="zhen">（certificate）</span>把名字和公钥<span class="zhen">（public key）</span>绑定，由 <b>CA 的私钥<span class="zhen">（private key）</span></b>签名<span class="zhen">（signature）</span>；验证三件事：<b>签名<span class="zhen">（signature）</span>、期限、吊销（OCSP）</b>。</li>
 </ul></div>
-<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 4（35 题）</b>、刷题本 P4 的 26 道自编题，以及 Q&amp;A Q21–Q33。<a href="practice.html#exam">刷题本的期末专项</a>按考试规格（素数 ≤ 19）出 DH、RSA、签名大题，能核对答案，附满分答题模板；期末前每种至少做 5 道。</p></div>
+<div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 4（35 题）</b>、刷题本 P4 的 26 道自编题，以及 Q&amp;A Q21–Q33。<a href="practice.html#exam">刷题本的期末专项</a>按考试规格（素数<span class="zhen">（prime number）</span> ≤ 19）出 DH、RSA、签名<span class="zhen">（signature）</span>大题，能核对答案，附满分答题模板<span class="zhen">（template）</span>；期末前每种至少做 5 道。</p></div>
 <p><button class="btn" data-done></button> <button class="btn" data-reset-quiz>重做本页小测</button></p>
 <nav class="pager"><a href="m3.html"><span>← 上一模块</span><b>3 · 策略与生物识别</b></a><a class="next" href="m5.html"><span>下一模块 →</span><b>5 · Web 安全与防火墙</b></a></nav>
 </section>

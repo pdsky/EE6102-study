@@ -20,87 +20,87 @@
 <p class="eyebrow">EE6102 · 上课录音整理</p>
 <h1 class="title">老师上课重点</h1>
 <p class="lede">根据老师 W2–W8 七次上课的录音整理：考试怎么安排、期末哪些计算题必考、quiz 里哪些题老师点过名，以及老师自己的说法和课件不一样的地方。小字 <span class="ref">W6</span> 表示出自第 6 周的录音。</p>
-<div class="exam box"><span class="bt">配套练习</span><p><a href="practice.html#exam"><b>期末专项 DH / RSA</b></a>：按考试规格（素数 ≤ 19）出 DH、RSA、签名大题，可以核对答案，附满分答题模板。<a href="practice.html#practice">刷题本</a>里标着「老师强调」的选择题，就是下面这些点；在练习页的筛选里选“老师强调”，可以只做这些题。</p></div>
+<div class="exam box"><span class="bt">配套练习</span><p><a href="practice.html#exam"><b>期末专项 DH / RSA</b></a>：按考试规格（素数<span class="zhen">（prime number）</span> ≤ 19）出 DH、RSA、签名<span class="zhen">（signature）</span>大题，可以核对答案，附满分答题模板<span class="zhen">（template）</span>。<a href="practice.html#practice">刷题本</a>里标着「老师强调」的选择题，就是下面这些点；在练习页的筛选里选“老师强调”，可以只做这些题。</p></div>
 <h2>考试安排（老师课上宣布）</h2>
 <ul>
 <li><b>你是 Group A：Quiz 在 10 月 30 日（周五），具体时间和教室待确认。</b>老师 W2 课上宣布的是 Group B 的安排：10 月 26 日（周一）10:40，在上课的 LT；原定 11 月 1 日（周日）取消，因为 NTU 规定周末不能考；Group A 另外安排。<span class="ref">W2</span></li>
 <li>Quiz：30 分钟，每人从题库随机抽题（左右前后的人题目都不同）。单选，不倒扣，<b>点了就不能回退</b>。电脑装 LockDown Browser；可带一张空白纸，但要先给监考看。<span class="ref">W2、W3</span></li>
-<li>Quiz 范围是 <b>Part 1–5</b>，<b>Part 6 区块链不考</b>。只考 slides，不考视频和统计数字。<b>P4 题最多</b>，P2 也会有。<span class="ref">W8</span></li>
+<li>Quiz 范围是 <b>Part 1–5</b>，<b>Part 6 区块链<span class="zhen">（blockchain）</span>不考</b>。只考 slides，不考视频和统计数字。<b>P4 题最多</b>，P2 也会有。<span class="ref">W8</span></li>
 <li>样题不会原样出现，会改写、换选项顺序。真题<b>比样题简单</b>，样题里的“绕”是故意的。老师说提前交卷的人错得最多，30 分钟足够，慢慢做。<span class="ref">W3、W5、W8</span></li>
 <li>期末：<b>约 80% 是计算题</b>，每题都有计算。只能带 NTU 批准的科学计算器（没有 mod 键），不能带纸和电子设备，要带实体证件（如护照）。<span class="ref">W2</span></li>
 <li>第 12 周复习课会告诉大家考哪些题、怎样答才能拿满分；考前 2–3 天会有 Zoom 答疑。<span class="ref">W2、W6</span></li>
 </ul>
 <h2>期末计算题清单（每题约 15 分）</h2>
 <div class="tbl"><table><tr><th>题型</th><th>老师怎么说</th><th>去哪练</th></tr>
-<tr><td>暴力破解时间</td><td>“最容易拿的 15 分”，但很多人算错单位；÷ 31,536,000 换算成年；有 bots 再除</td><td><a href="practice.html#calc">刷题本 · 计算题</a></td></tr>
-<tr><td>DoS 包数</td><td>和暴力破解合计约 30 分；包大小与网速的关系</td><td><a href="practice.html#calc">刷题本 · 计算题</a></td></tr>
-<tr><td>风险分 / 密码合规</td><td>“如果考 compliance，每题都有计算”</td><td><a href="practice.html#calc">刷题本 · 计算题</a></td></tr>
-<tr><td><b>Diffie-Hellman</b></td><td>“really easy 15 marks”；简述原理 + 算公钥和共享密钥</td><td><a href="practice.html#exam"><b>刷题本 · 期末专项</b></a></td></tr>
-<tr><td><b>RSA</b></td><td>“至少 15 分”；为什么 e ≠ 2 + 选 e + 求 d + 加密解密</td><td><a href="practice.html#exam"><b>刷题本 · 期末专项</b></a></td></tr>
-<tr><td><b>RSA 数字签名</b></td><td>不用哈希：S = M<sup>d</sup> mod n，验证 S<sup>e</sup> mod n</td><td><a href="practice.html#exam"><b>刷题本 · 期末专项</b></a></td></tr>
+<tr><td>暴力破解时间<span class="zhen">（brute-force time）</span></td><td>“最容易拿的 15 分”，但很多人算错单位；÷ 31,536,000 换算成年；有 bots 再除</td><td>计算题 → 暴力破解<span class="zhen">（brute force）</span></td></tr>
+<tr><td>DoS 包数</td><td>和暴力破解<span class="zhen">（brute force）</span>合计约 30 分；包大小<span class="zhen">（packet size）</span>与网速的关系</td><td><a href="practice.html#calc">刷题本 · 计算题</a></td></tr>
+<tr><td>风险分<span class="zhen">（risk score）</span> / 密码合规<span class="zhen">（password compliance）</span></td><td>“如果考 compliance，每题都有计算”</td><td>计算题 → 风险分<span class="zhen">（risk score）</span></td></tr>
+<tr><td><b>Diffie-Hellman</b></td><td>“really easy 15 marks”；简述原理 + 算公钥<span class="zhen">（public key）</span>和共享密钥<span class="zhen">（shared key）</span></td><td><a href="practice.html#exam"><b>刷题本 · 期末专项</b></a></td></tr>
+<tr><td><b>RSA</b></td><td>“至少 15 分”；为什么 e ≠ 2 + 选 e + 求 d + 加密<span class="zhen">（encryption）</span>解密<span class="zhen">（decryption）</span></td><td><a href="practice.html#exam"><b>刷题本 · 期末专项</b></a></td></tr>
+<tr><td><b>RSA 数字签名<span class="zhen">（digital signature）</span></b></td><td>不用哈希<span class="zhen">（hash）</span>：S = M<sup>d</sup> mod n，验证 S<sup>e</sup> mod n</td><td><a href="practice.html#exam"><b>刷题本 · 期末专项</b></a></td></tr>
 </table></div>
 <h2>考试数字和手算规则</h2>
 <ul>
-<li><b>数字都小于 20，最大素数是 19</b>（老师在 W6、W7 重复了很多遍，说“到复习时你们还会发邮件问计算器为什么算不了大数”）。</li>
+<li><b>数字都小于 20，最大素数<span class="zhen">（large prime）</span>是 19</b>（老师在 W6、W7 重复了很多遍，说“到复习时你们还会发邮件问计算器为什么算不了大数”）。</li>
 <li>计算器没有 mod 键，用除法法：320 mod 9 → 320 ÷ 9 = 35.55…；35 × 9 = 315；320 − 315 = <b>5</b>。</li>
 <li><b>公式考试不给，必须背：</b>
   <ul>
   <li>DH：Y = g<sup>x</sup> mod p；K = (对方的 Y)<sup>自己的 x</sup> mod p</li>
   <li>RSA：n = pq；φ = (p−1)(q−1)；e·d mod φ = 1；C = M<sup>e</sup> mod n；M = C<sup>d</sup> mod n</li>
-  <li>签名：S = M<sup>d</sup> mod n；验证：S<sup>e</sup> mod n = M（与加密相反：私钥签，公钥验）</li>
+  <li>签名<span class="zhen">（signature）</span>：S = M<sup>d</sup> mod n；验证：S<sup>e</sup> mod n = M（与加密<span class="zhen">（encryption）</span>相反：私钥<span class="zhen">（private key）</span>签，公钥<span class="zhen">（public key）</span>验）</li>
   </ul></li>
-<li>老师说过的扣分点：答案对但没按题目要求写步骤，15 分题只给约 5 分（“我和朋友答案一样，为什么他 A 我 C？”）。每一步都写：公式 → 代入 → 结果，最后验算（解密回原文 / 双方密钥相等）。</li>
+<li>老师说过的扣分点：答案对但没按题目要求写步骤，15 分题只给约 5 分（“我和朋友答案一样，为什么他 A 我 C？”）。每一步都写：公式 → 代入 → 结果，最后验算（解密<span class="zhen">（decryption）</span>回原文 / 双方密钥<span class="zhen">（key）</span>相等）。</li>
 </ul>
 <h2>DH 必背（W6）</h2>
-<ol><li>公开选定素数 p 和生成元 g（题目会给）</li><li>双方各自选私密数（题目会给）</li><li>A 算公钥 Y<sub>A</sub> = g<sup>a</sup> mod p</li><li>B 算公钥 Y<sub>B</sub> = g<sup>b</sup> mod p</li><li>交换公钥</li><li>各自算共享密钥：K<sub>A</sub> = Y<sub>B</sub><sup>a</sup> mod p，K<sub>B</sub> = Y<sub>A</sub><sup>b</sup> mod p，两者相等</li></ol>
-<p>可能的追问：私密数泄露会怎样？（攻击者能算出 K，毫无安全性）数字太小会怎样？（会被试出来，实际至少 2048 位）DH 能加密吗？（不能，只交换密钥，之后用 AES 加密）安全基础是什么？（离散对数难题）</p>
+<ol><li>公开选定素数<span class="zhen">（prime number）</span> p 和生成元<span class="zhen">（generator）</span> g（题目会给）</li><li>双方各自选私密数<span class="zhen">（private value）</span>（题目会给）</li><li>A 算公钥<span class="zhen">（public key）</span> Y<sub>A</sub> = g<sup>a</sup> mod p</li><li>B 算公钥<span class="zhen">（public key）</span> Y<sub>B</sub> = g<sup>b</sup> mod p</li><li>交换公钥<span class="zhen">（public key）</span></li><li>各自算共享密钥<span class="zhen">（shared key）</span>：K<sub>A</sub> = Y<sub>B</sub><sup>a</sup> mod p，K<sub>B</sub> = Y<sub>A</sub><sup>b</sup> mod p，两者相等</li></ol>
+<p>可能的追问：私密数<span class="zhen">（private value）</span>泄露<span class="zhen">（leak）</span>会怎样？（攻击者<span class="zhen">（attacker）</span>能算出 K，毫无安全性）数字太小会怎样？（会被试出来，实际至少 2048 位）DH 能加密<span class="zhen">（encryption）</span>吗？（不能，只交换密钥<span class="zhen">（key）</span>，之后用 AES 加密<span class="zhen">（encryption）</span>）安全基础是什么？（离散对数难题<span class="zhen">（discrete logarithm problem）</span>）</p>
 <h2>RSA 必背（W7）</h2>
-<ul><li>安全基础：大数分解难题。</li>
-<li>选 e 的<b>三个条件</b>：① 1 &lt; e &lt; φ；② e 是素数；③ e 与 p−1、q−1 没有公因子。</li>
-<li><b>为什么 e 不能是 2</b>（往年考题）：除 2 外的素数都是奇数，减 1 后是偶数，2 一定是公因子，不满足第 ③ 条。</li>
+<ul><li>安全基础：大数分解难题<span class="zhen">（integer factorization problem）</span>。</li>
+<li>选 e 的<b>三个条件</b>：① 1 &lt; e &lt; φ；② e 是素数<span class="zhen">（prime number）</span>；③ e 与 p−1、q−1 没有公因子<span class="zhen">（common factor）</span>。</li>
+<li><b>为什么 e 不能是 2</b>（往年考题）：除 2 外的素数<span class="zhen">（prime number）</span>都是奇数，减 1 后是偶数，2 一定是公因子<span class="zhen">（common factor）</span>，不满足第 ③ 条。</li>
 <li>求 d 的 k 法：d = (kφ + 1)/e，k = 1, 2, 3… 直到整除。老师建议考试就用这个方法。</li>
-<li>老师课上的练习题：p=5, q=11 自选密钥；p=17, q=19, e=5, M=25；p=13, q=23, e=7。</li></ul>
+<li>老师课上的练习题：p=5, q=11 自选密钥<span class="zhen">（key）</span>；p=17, q=19, e=5, M=25；p=13, q=23, e=7。</li></ul>
 <h2>Quiz 高频陷阱（老师点名）</h2>
 <ul>
 <li>CIA 题有约 20 个版本、约 80% 人做错：注意 Access / Consideration 这类拼写陷阱。<span class="ref">W3</span></li>
-<li>virus 要宿主，worm 不要；人冒充叫 masquerading，服务器/IP 伪造叫 spoofing。<span class="ref">W2、W3</span></li>
-<li>没认证不能授权。<span class="ref">W5</span></li>
-<li>DES = Data Encryption Standard；<b>DES 密钥 56 位</b>（不是 64 位）；AES 分组 128 位，128/192/256 位密钥分别对应 10/12/14 轮。<span class="ref">W6</span></li>
-<li>“公钥更安全因为有两把钥匙”是错的；没有 unbreakable，也没有 certified encryption；新算法可以用但要谨慎。<span class="ref">W8</span></li>
-<li>哈希只提供完整性，不提供认证；证书只认证公钥；SHA 是算法，digest 和 hash value 是输出。<span class="ref">W8</span></li>
-<li>验证证书看三件事（“这题以前考过”）：可信 CA（验 CA 签名）、有效期内、未被吊销（查序列号）。<span class="ref">W8</span></li>
+<li>virus 要宿主，worm 不要；人冒充叫 masquerading，服务器<span class="zhen">（server）</span>/IP 伪造<span class="zhen">（forgery）</span>叫 spoofing。<span class="ref">W2、W3</span></li>
+<li>没认证<span class="zhen">（authentication）</span>不能授权<span class="zhen">（authorization）</span>。<span class="ref">W5</span></li>
+<li>DES = Data Encryption Standard；<b>DES 密钥<span class="zhen">（key）</span> 56 位</b>（不是 64 位）；AES 分组 128 位，128/192/256 位密钥<span class="zhen">（key）</span>分别对应 10/12/14 轮。<span class="ref">W6</span></li>
+<li>“公钥<span class="zhen">（public key）</span>更安全因为有两把钥匙”是错的；没有 unbreakable，也没有 certified encryption；新算法可以用但要谨慎。<span class="ref">W8</span></li>
+<li>哈希<span class="zhen">（hash）</span>只提供完整性<span class="zhen">（integrity）</span>，不提供认证<span class="zhen">（authentication）</span>；证书<span class="zhen">（certificate）</span>只认证<span class="zhen">（authentication）</span>公钥<span class="zhen">（public key）</span>；SHA 是算法，digest 和 hash value 是输出。<span class="ref">W8</span></li>
+<li>验证证书<span class="zhen">（certificate）</span>看三件事（“这题以前考过”）：可信 CA（验 CA 签名<span class="zhen">（signature）</span>）、有效期<span class="zhen">（validity period）</span>内、未被吊销<span class="zhen">（revocation）</span>（查序列号<span class="zhen">（serial number）</span>）。<span class="ref">W8</span></li>
 </ul>
 <h2>Part 1–3 老师口径</h2>
 <ul>
-<li>gray hat：发现漏洞告诉所有者，但会索要钱。<span class="ref">W3</span></li>
-<li>top-down 总是有效，bottom-up 不行；DLM 第 1–3 层是非技术层（约 75%）；zero trust 下连总裁的设备也要认证。<span class="ref">W4</span></li>
-<li>identification 是一对多，verification 是一对一；FRR 是 Type I，FAR 是 Type II；3D 人脸约在 90° 内有效。生物识别要 100% 匹配才能取代密码，所以现在只能增强。<span class="ref">W5</span></li>
-<li>密码学能提供保密性、完整性、认证和不可否认；<b>不能提供可用性和隐私</b>（机密性 ≠ 隐私）。对称加密适合加密自己的硬盘，公钥加密适合通信，TLS 是两者混合。<span class="ref">W5</span></li>
+<li>gray hat：发现漏洞<span class="zhen">（vulnerability）</span>告诉所有者，但会索要钱。<span class="ref">W3</span></li>
+<li>top-down 总是有效，bottom-up 不行；DLM 第 1–3 层是非技术层（约 75%）；zero trust 下连总裁的设备也要认证<span class="zhen">（authentication）</span>。<span class="ref">W4</span></li>
+<li>identification 是一对多<span class="zhen">（one-to-many）</span>，verification 是一对一<span class="zhen">（one-to-one）</span>；FRR 是 Type I，FAR 是 Type II；3D 人脸<span class="zhen">（face）</span>约在 90° 内有效。生物识别<span class="zhen">（biometrics）</span>要 100% 匹配才能取代密码<span class="zhen">（password）</span>，所以现在只能增强。<span class="ref">W5</span></li>
+<li>密码学<span class="zhen">（cryptography）</span>能提供保密性<span class="zhen">（confidentiality）</span>、完整性<span class="zhen">（integrity）</span>、认证<span class="zhen">（authentication）</span>和不可否认<span class="zhen">（non-repudiation）</span>；<b>不能提供可用性<span class="zhen">（availability）</span>和隐私<span class="zhen">（privacy）</span></b>（机密性<span class="zhen">（confidentiality）</span> ≠ 隐私<span class="zhen">（privacy）</span>）。对称加密<span class="zhen">（symmetric encryption）</span>适合加密<span class="zhen">（encryption）</span>自己的硬盘，公钥加密<span class="zhen">（public-key encryption）</span>适合通信，TLS 是两者混合。<span class="ref">W5</span></li>
 </ul>
 <h2>TLS / Web 安全（W8）</h2>
 <ul>
-<li>HTTP 用 80 端口；HTTPS = HTTP + TLS，用 443 端口。只认证服务器，客户端几乎不认证（太慢、不友好）。</li>
+<li>HTTP 用 80 端口<span class="zhen">（port）</span>；HTTPS = HTTP + TLS，用 443 端口<span class="zhen">（port）</span>。只认证服务器<span class="zhen">（authentication server）</span>，客户端<span class="zhen">（client）</span>几乎不认证<span class="zhen">（no authentication）</span>（太慢、不友好）。</li>
 <li>SSL 由 Netscape 在 1994 年推出（ElGamal 主导），SSL 3.0 在 1996 年；1999 年 IETF 改名 TLS 1.0；1.1 在 2006 年、1.2 在 2008 年、<b>1.3 在 2018 年 3 月</b>。SSL 3.0 在 2015 年禁用，TLS 1.0/1.1 在 2020 年禁用（因疫情没强制执行）。</li>
-<li>公钥至少 2048 位；会话密钥 128 位足够，低于 128 位不安全。</li>
-<li><b>TLS 1.3 去掉 RSA 密钥交换</b>：服务器私钥长期不变，被破后历史通信都能解开（前向保密问题），所以改用临时 DH（EDH），每次会话都换参数。RSA 仍可用于签名。</li>
-<li>TLS 1.3 算法套件从 37 个减到 5 个（不安全的去掉了，管理员也不容易配错），握手更快。</li>
-<li>Record：分片 → 压缩 → MAC → 加密 → 加头。证书问题由 Alert 报出。Handshake 最复杂。</li>
+<li>公钥<span class="zhen">（public key）</span>至少 2048 位；会话密钥<span class="zhen">（session key）</span> 128 位足够，低于 128 位不安全。</li>
+<li><b>TLS 1.3 去掉 RSA 密钥交换<span class="zhen">（key exchange）</span></b>：服务器<span class="zhen">（server）</span>私钥<span class="zhen">（private key）</span>长期不变，被破后历史通信都能解开（前向保密<span class="zhen">（forward secrecy）</span>问题），所以改用临时 DH（EDH），每次会话<span class="zhen">（session）</span>都换参数。RSA 仍可用于签名<span class="zhen">（signature）</span>。</li>
+<li>TLS 1.3 算法套件<span class="zhen">（cipher suite）</span>从 37 个减到 5 个（不安全的去掉了，管理员<span class="zhen">（administrator）</span>也不容易配错），握手<span class="zhen">（handshake）</span>更快。</li>
+<li>Record：分片<span class="zhen">（fragmentation）</span> → 压缩 → MAC → 加密<span class="zhen">（encryption）</span> → 加头。证书<span class="zhen">（certificate）</span>问题由 Alert 报出。Handshake 最复杂。</li>
 </ul>
 <h2>老师课上的口误 / 课件错误</h2>
 <ul>
 <li>DH 例 p=29、g=2、a=5、b=13：课件写 K = 26，<b>正确是 Y<sub>B</sub> = 14、K = 19</b>。</li>
-<li>W8 把 TLS 1.3 说成“TLS 3.1”；W7 说 SHA-1 是“168 位”，实际是 160 位；W4 风险例子把 4×3×5 说成“16”，实际是 60。</li>
-<li>老师要求 RSA 的 e“必须是素数”，比标准说法（gcd(e, φ) = 1）更严格，考试按老师的写。</li>
+<li>W8 把 TLS 1.3 说成“TLS 3.1”；W7 说 SHA-1 是“168 位”，实际是 160 位；W4 风险<span class="zhen">（risk）</span>例子把 4×3×5 说成“16”，实际是 60。</li>
+<li>老师要求 RSA 的 e“必须是素数<span class="zhen">（prime number）</span>”，比标准说法（gcd(e, φ) = 1）更严格，考试按老师的写。</li>
 </ul>
 <h2>每次录音讲了什么</h2>
 <div class="tbl"><table><tr><th>录音</th><th>讲了什么</th><th>对应模块</th></tr>
-<tr><td>W2</td><td>考试安排变更；恶意软件、钓鱼、密码攻击；<b>暴力破解计算</b>；DDoS 与<b>包数计算</b></td><td><a href="m1.html">模块 1</a></td></tr>
-<tr><td>W3</td><td>DNS 攻击、内部威胁、加密劫持、黑客分类；<b>P1 样题逐题讲解</b>；工业 4.0 开头</td><td><a href="m1.html">模块 1</a>、<a href="m2.html">2</a></td></tr>
-<tr><td>W4</td><td>社会工程、合规与<b>风险计算</b>、P2 样题；安全策略、top-down、DLM、零信任</td><td><a href="m2.html">模块 2</a>、<a href="m3.html">3</a></td></tr>
-<tr><td>W5</td><td>生物识别、FAR/FRR、<b>P3 样题</b>；密码学入门（能做什么、不能做什么）</td><td><a href="m3.html">模块 3</a>、<a href="m4.html">4</a></td></tr>
-<tr><td>W6</td><td>DES / 3DES / AES；公钥密码；<b>Diffie-Hellman 手算（15 分）</b></td><td><a href="m4.html">模块 4</a></td></tr>
-<tr><td>W7</td><td><b>RSA 手算（15 分）</b>、ElGamal 与 ECC、混合系统、哈希、<b>数字签名</b></td><td><a href="m4.html">模块 4</a></td></tr>
-<tr><td>W8</td><td>数字证书与 CA、<b>P4 样题逐题讲解</b>；HTTPS、SSL/TLS 历史、TLS 1.3 与前向保密</td><td><a href="m4.html">模块 4</a>、<a href="m5.html">5</a></td></tr>
+<tr><td>W2</td><td>考试安排变更；恶意软件<span class="zhen">（malware）</span>、钓鱼<span class="zhen">（phishing）</span>、密码攻击<span class="zhen">（password attack）</span>；<b>暴力破解<span class="zhen">（brute force）</span>计算</b>；DDoS 与<b>包数计算</b></td><td><a href="m1.html">模块 1</a></td></tr>
+<tr><td>W3</td><td>DNS 攻击、内部威胁<span class="zhen">（insider threat）</span>、加密劫持<span class="zhen">（cryptojacking）</span>、黑客分类<span class="zhen">（hacker classification）</span>；<b>P1 样题逐题讲解</b>；工业 4.0<span class="zhen">（Industry 4.0）</span> 开头</td><td><a href="m1.html">模块 1</a>、<a href="m2.html">2</a></td></tr>
+<tr><td>W4</td><td>社会工程<span class="zhen">（social engineering）</span>、合规<span class="zhen">（compliance）</span>与<b>风险计算<span class="zhen">（risk calculation）</span></b>、P2 样题；安全策略<span class="zhen">（security policy）</span>、top-down、DLM、零信任<span class="zhen">（zero trust）</span></td><td><a href="m2.html">模块 2</a>、<a href="m3.html">3</a></td></tr>
+<tr><td>W5</td><td>生物识别<span class="zhen">（biometrics）</span>、FAR/FRR、<b>P3 样题</b>；密码学<span class="zhen">（cryptography）</span>入门（能做什么、不能做什么）</td><td><a href="m3.html">模块 3</a>、<a href="m4.html">4</a></td></tr>
+<tr><td>W6</td><td>DES / 3DES / AES；公钥密码<span class="zhen">（public-key cryptography）</span>；<b>Diffie-Hellman 手算（15 分）</b></td><td><a href="m4.html">模块 4</a></td></tr>
+<tr><td>W7</td><td><b>RSA 手算（15 分）</b>、ElGamal 与 ECC、混合系统<span class="zhen">（hybrid system）</span>、哈希<span class="zhen">（hash）</span>、<b>数字签名<span class="zhen">（digital signature）</span></b></td><td><a href="m4.html">模块 4</a></td></tr>
+<tr><td>W8</td><td>数字证书<span class="zhen">（digital certificate）</span>与 CA、<b>P4 样题逐题讲解</b>；HTTPS、SSL/TLS 历史、TLS 1.3 与前向保密<span class="zhen">（forward secrecy）</span></td><td><a href="m4.html">模块 4</a>、<a href="m5.html">5</a></td></tr>
 </table></div>
 <p style="font-size:13px;color:var(--muted);margin-top:30px">依据上课录音的自动转写整理，个别数字可能有听写误差；与课件冲突的地方，上面已经单独列出。</p>
 </main>

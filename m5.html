@@ -24,46 +24,46 @@
 <aside class="toc" aria-label="本页目录"><p class="tt">本模块目录</p><ol></ol><div class="prog"><span class="pct"></span><div class="bar"><i></i></div></div></aside>
 <main class="lesson">
 <p class="eyebrow">Module 05 · 对应课件 sld5</p>
-<h1 class="title">Web 安全、防火墙与入侵检测：把密码学用到网络上</h1>
+<h1 class="title">Web 安全、防火墙<span class="zhen">（firewall）</span>与入侵检测<span class="zhen">（intrusion detection）</span>：把密码学<span class="zhen">（cryptography）</span>用到网络上</h1>
 <p class="sub-en">Web Security (SSL, TLS, SET) · Firewalls · Intrusion Detection</p>
 <div class="meta"><span>约 60 分钟</span><span>11 道小测</span><span>2 个动手实验</span><span>Quiz 样题 Part 5 · 18 题</span></div>
-<p class="lede">模块 4 学了加密、签名、证书、混合系统这些“零件”，这一章看它们怎么组装成你每天都在用的 <b>HTTPS</b>。后半章讲网络的“门卫”<b>防火墙</b>和“监控摄像头”<b>入侵检测系统</b>。建议先学完模块 4 再来。</p>
+<p class="lede">模块 4 学了加密<span class="zhen">（encryption）</span>、签名<span class="zhen">（signature）</span>、证书<span class="zhen">（certificate）</span>、混合系统<span class="zhen">（hybrid system）</span>这些“零件”，这一章看它们怎么组装成你每天都在用的 <b>HTTPS</b>。后半章讲网络的“门卫”<b>防火墙<span class="zhen">（firewall）</span></b>和“监控摄像头”<b>入侵检测系统<span class="zhen">（intrusion detection system (IDS)）</span></b>。建议先学完模块 4 再来。</p>
 <div class="goals"><h3>学完这一章，你应该能：</h3><ul>
-<li>说出 HTTP 为什么不安全，HTTPS 加了什么（端口 80 vs 443）；</li>
-<li>画出 SSL/TLS 的协议分层，说出 Record、Handshake、Alert、Change Cipher Spec 各管什么；</li>
-<li>按顺序讲出一次 TLS 握手，并说清 TLS 1.3 为什么去掉了 RSA 密钥交换（前向保密）；</li>
+<li>说出 HTTP 为什么不安全，HTTPS 加了什么（端口<span class="zhen">（port）</span> 80 vs 443）；</li>
+<li>画出 SSL/TLS 的协议分层<span class="zhen">（protocol layering）</span>，说出 Record、Handshake、Alert、Change Cipher Spec 各管什么；</li>
+<li>按顺序讲出一次 TLS 握手<span class="zhen">（handshake）</span>，并说清 TLS 1.3 为什么去掉了 RSA 密钥交换<span class="zhen">（key exchange）</span>（前向保密<span class="zhen">（forward secrecy）</span>）；</li>
 <li>比较 SSL 和 SET；</li>
-<li>区分包过滤、状态检测（SPI）、代理防火墙，手算规则匹配和防火墙吞吐量；</li>
-<li>认出四种防火墙架构，尤其是带 DMZ 的 screened subnet；</li>
-<li>区分 HIDS 和 NIDS、特征检测和异常检测、IDS 和 IPS。</li></ul></div>
+<li>区分包过滤<span class="zhen">（packet filtering）</span>、状态检测（SPI）、代理防火墙<span class="zhen">（proxy firewall）</span>，手算规则匹配<span class="zhen">（rule matching）</span>和防火墙吞吐量<span class="zhen">（firewall throughput）</span>；</li>
+<li>认出四种防火墙架构<span class="zhen">（firewall architecture）</span>，尤其是带 DMZ 的 screened subnet；</li>
+<li>区分 HIDS 和 NIDS、特征检测<span class="zhen">（signature-based detection）</span>和异常检测<span class="zhen">（anomaly detection）</span>、IDS 和 IPS。</li></ul></div>
 
-<div class="teacher box" data-t="m5top"><span class="bt">老师课上强调 · 录音 W8</span><ul><li>Quiz 范围到 Part 5 为止（P6 不考）。</li><li>老师重点讲了：HTTPS 端口、为什么不认证客户端、SSL/TLS 版本时间线、<b>TLS 1.3 为什么去掉 RSA 密钥交换</b>（前向保密，改用临时 DH）。</li></ul></div>
+<div class="teacher box" data-t="m5top"><span class="bt">老师课上强调 · 录音 W8</span><ul><li>Quiz 范围到 Part 5 为止（P6 不考）。</li><li>老师重点讲了：HTTPS 端口<span class="zhen">（port）</span>、为什么不认证<span class="zhen">（no authentication）</span>客户端<span class="zhen">（client）</span>、SSL/TLS 版本时间线、<b>TLS 1.3 为什么去掉 RSA 密钥交换<span class="zhen">（key exchange）</span></b>（前向保密<span class="zhen">（forward secrecy）</span>，改用临时 DH）。</li></ul></div>
 <section class="sec" id="http">
 <h2><span class="n">1</span>HTTP 为什么不安全，HTTPS 加了什么</h2>
-<p>你在浏览器里打开一个网页，浏览器（客户端）用 <b>HTTP</b> 协议向服务器发请求，服务器返回网页。HTTP 是一问一答式的<b>请求-响应</b>模型，而且<b>无状态</b>：每个请求都是独立的，网站靠 <b>cookie</b> 记住你是谁（所以模块 1 说 cookie 记录太多信息时会变成“间谍”）。常见请求方法：GET 取数据，POST 提交数据，PUT 更新，DELETE 删除，HEAD 只取头部。</p>
-<p>问题在于：<b>HTTP 是明文的</b>。课件 P5-3 列出了它面临的威胁，正好对上 CIA 和认证：</p>
+<p>你在浏览器<span class="zhen">（browser）</span>里打开一个网页，浏览器<span class="zhen">（browser）</span>（客户端<span class="zhen">（client）</span>）用 <b>HTTP</b> 协议<span class="zhen">（protocol）</span>向服务器<span class="zhen">（server）</span>发请求，服务器<span class="zhen">（server）</span>返回网页。HTTP 是一问一答式的<b>请求-响应<span class="zhen">（request-response）</span></b>模型，而且<b>无状态<span class="zhen">（stateless）</span></b>：每个请求都是独立的，网站靠 <b>cookie</b> 记住你是谁（所以模块 1 说 cookie 记录太多信息时会变成“间谍<span class="zhen">（espionage）</span>”）。常见请求方法：GET 取数据，POST 提交数据，PUT 更新，DELETE 删除，HEAD 只取头部。</p>
+<p>问题在于：<b>HTTP 是明文<span class="zhen">（plaintext）</span>的</b>。课件 P5-3 列出了它面临的威胁<span class="zhen">（threat）</span>，正好对上 CIA 和认证<span class="zhen">（authentication）</span>：</p>
 <div class="tbl"><table>
-<tr><th>威胁</th><th>具体表现</th></tr>
+<tr><th>威胁<span class="zhen">（threat）</span></th><th>具体表现</th></tr>
 <tr><td>Integrity 完整性</td><td>数据在传输途中被修改、插入内容</td></tr>
-<tr><td>Confidentiality 机密性</td><td>网络上被窃听；服务器上的数据被偷</td></tr>
-<tr><td>Authentication 认证</td><td>冒充网站、伪造数据</td></tr>
-<tr><td>Denial of service</td><td>Web 服务器被黑、被打瘫</td></tr>
+<tr><td>Confidentiality 机密性</td><td>网络上被窃听<span class="zhen">（eavesdropping）</span>；服务器<span class="zhen">（server）</span>上的数据被偷</td></tr>
+<tr><td>Authentication 认证</td><td>冒充<span class="zhen">（masquerading）</span>网站、伪造<span class="zhen">（forgery）</span>数据</td></tr>
+<tr><td>Denial of service</td><td>Web 服务器<span class="zhen">（server）</span>被黑、被打瘫</td></tr>
 </table></div>
 <h3>HTTPS = HTTP + TLS</h3>
 <div class="tbl"><table>
 <tr><th></th><th>HTTP</th><th>HTTPS</th></tr>
-<tr><td>端口</td><td><b>80</b></td><td><b>443</b></td></tr>
-<tr><td>加密</td><td>无，明文</td><td>TLS/SSL 加密</td></tr>
-<tr><td>认证</td><td>无</td><td>验证服务器身份（证书）</td></tr>
-<tr><td>完整性</td><td>数据可被修改</td><td>数据不能被篡改</td></tr>
-<tr><td>速度</td><td>略快</td><td>略慢（要先做 TLS 握手）</td></tr>
+<tr><td>端口<span class="zhen">（port）</span></td><td><b>80</b></td><td><b>443</b></td></tr>
+<tr><td>加密<span class="zhen">（encryption）</span></td><td>无，明文<span class="zhen">（plaintext）</span></td><td>TLS/SSL 加密<span class="zhen">（encryption）</span></td></tr>
+<tr><td>认证<span class="zhen">（authentication）</span></td><td>无</td><td>验证服务器<span class="zhen">（server）</span>身份（证书<span class="zhen">（certificate）</span>）</td></tr>
+<tr><td>完整性<span class="zhen">（integrity）</span></td><td>数据可被修改</td><td>数据不能被篡改<span class="zhen">（tampering）</span></td></tr>
+<tr><td>速度</td><td>略快</td><td>略慢（要先做 TLS 握手<span class="zhen">（handshake）</span>）</td></tr>
 </table></div>
 <div class="analogy box"><span class="bt">类比</span><p>HTTP 像寄明信片：邮递员、分拣员谁都能看，甚至能改上面的字。HTTPS 像把信装进上锁的保险袋，而且袋子上有收件方的防伪印章。</p></div>
-<p>课件 P5-6 说：如果你今天网购过、叫过 Grab、用过 WhatsApp 或 Zoom、刷过 YouTube、查过邮件，或者见过地址栏里的小锁，你就已经用过 SSL/TLS 了。网页和邮件是 99% 成功入侵的关键入口，所以 Web 安全格外重要。</p>
-<div class="check" data-a="1"><p class="cq">HTTPS 默认使用哪个端口？</p>
+<p>课件 P5-6 说：如果你今天网购过、叫过 Grab、用过 WhatsApp 或 Zoom、刷过 YouTube、查过邮件，或者见过地址栏里的小锁，你就已经用过 SSL/TLS 了。网页和邮件是 99% 成功入侵<span class="zhen">（intrusion）</span>的关键入口，所以 Web 安全格外重要。</p>
+<div class="check" data-a="1"><p class="cq">HTTPS 默认使用哪个端口<span class="zhen">（port）</span>？</p>
 <div class="opts"><button class="opt">80</button><button class="opt">443</button><button class="opt">22</button></div>
 <div class="cx"><p>HTTP 用 80，HTTPS 用 443（22 是 SSH）。</p></div></div>
-<div class="teacher box" data-t="m5https"><span class="bt">老师课上强调 · W8</span><p>HTTP 用 80 端口、不加密；HTTPS 用 <b>443</b> 端口。按协议客户端也可以认证，但几乎从不这样做：每个用户都要买证书，速度慢、不好用。所以只有<b>服务器</b>必须有证书。</p></div>
+<div class="teacher box" data-t="m5https"><span class="bt">老师课上强调 · W8</span><p>HTTP 用 80 端口<span class="zhen">（port）</span>、不加密<span class="zhen">（without encryption）</span>；HTTPS 用 <b>443</b> 端口<span class="zhen">（port）</span>。按协议<span class="zhen">（protocol）</span>客户端<span class="zhen">（client）</span>也可以认证<span class="zhen">（authentication）</span>，但几乎从不这样做：每个用户都要买证书<span class="zhen">（certificate）</span>，速度慢、不好用。所以只有<b>服务器<span class="zhen">（server）</span></b>必须有证书<span class="zhen">（certificate）</span>。</p></div>
 
 </section>
 
@@ -73,19 +73,19 @@
 <div class="tbl"><table>
 <tr><th>时间</th><th>事件</th></tr>
 <tr><td>1994</td><td>Netscape 内部设计 SSL；SSLv1 在发布会上就被观众当场破解</td></tr>
-<tr><td>1994–95</td><td>SSLv2 随 Navigator 发布，但有中间人攻击漏洞</td></tr>
-<tr><td>1996</td><td>SSLv3，Netscape 和密码学家 Paul Kocher 设计，公开征求意见</td></tr>
+<tr><td>1994–95</td><td>SSLv2 随 Navigator 发布，但有中间人攻击<span class="zhen">（man-in-the-middle attack (MITM)）</span>漏洞<span class="zhen">（vulnerability）</span></td></tr>
+<tr><td>1996</td><td>SSLv3，Netscape 和密码学家<span class="zhen">（cryptographer）</span> Paul Kocher 设计，公开征求意见</td></tr>
 <tr><td>1999</td><td>IETF 接手，把 SSL 3.0 改名为 <b>TLS 1.0</b>（可以看作 SSL 3.1）</td></tr>
 <tr><td>2006 / 2008</td><td>TLS 1.1；TLS 1.2（支持 AES、SHA-256，至今仍广泛使用）</td></tr>
 <tr><td>2015</td><td>SSL 3.0 被禁用（POODLE 攻击），SSL 正式淘汰</td></tr>
-<tr><td>2018</td><td><b>TLS 1.3</b> 定稿：握手更快、前向保密、去掉弱算法</td></tr>
+<tr><td>2018</td><td><b>TLS 1.3</b> 定稿：握手<span class="zhen">（handshake）</span>更快、前向保密<span class="zhen">（forward secrecy）</span>、去掉弱算法<span class="zhen">（weak algorithm）</span></td></tr>
 <tr><td>2020</td><td>TLS 1.0 和 1.1 被弃用</td></tr>
 </table></div>
 <p>很多人还习惯说“SSL”，但现在实际用的都是 TLS。</p>
 <div class="teacher box" data-t="m5hist"><span class="bt">老师课上强调 · W8</span><ul><li>SSL 由 Netscape 在 1994 年推出（ElGamal 主导），SSL 3.0 在 1996 年；1999 年交给 IETF，改名 TLS 1.0；TLS 1.1 在 2006 年、1.2 在 2008 年、<b>1.3 在 2018 年 3 月</b>。</li><li>SSL 3.0 在 2015 年禁用，<b>TLS 1.0/1.1 在 2020 年禁用</b>。原计划 2020 年底全部改用 1.3，但因疫情没有强制执行。</li><li>老师用 SSL Labs 演示：微信、Facebook、Google 还开着 1.0/1.1，评分 B（为了用户量和广告收入）；Microsoft、NTU 关掉了，评分 A+。</li></ul></div>
 
 <h3>SSL 的目标</h3>
-<p>机密性和完整性（靠加密），以及认证（用数字证书认证服务器，认证客户端的情况很少见）。它内置在所有主流浏览器和服务器里，开箱即用（样题 Q5-5：True）。</p>
+<p>机密性<span class="zhen">（confidentiality）</span>和完整性<span class="zhen">（integrity）</span>（靠加密<span class="zhen">（encryption）</span>），以及认证<span class="zhen">（authentication）</span>（用数字证书<span class="zhen">（digital certificate）</span>认证服务器<span class="zhen">（authentication server）</span>，认证<span class="zhen">（authentication）</span>客户端<span class="zhen">（client）</span>的情况很少见）。它内置在所有主流浏览器<span class="zhen">（browser）</span>和服务器<span class="zhen">（server）</span>里，开箱即用（样题 Q5-5：True）。</p>
 <h3>两层协议（P5-12）</h3>
 <figure>
 <svg viewBox="0 0 640 250" role="img" aria-label="SSL/TLS 协议分层">
@@ -97,291 +97,291 @@
   <rect x="40" y="148" width="560" height="38" rx="8" class="box-s"/><text x="320" y="172" text-anchor="middle" font-size="13">TCP</text>
   <rect x="40" y="196" width="560" height="38" rx="8" class="box-s"/><text x="320" y="220" text-anchor="middle" font-size="13">IP</text>
 </svg>
-<figcaption>SSL/TLS 夹在 HTTP 和 TCP 之间：上层三个子协议，下层是记录协议。</figcaption>
+<figcaption>SSL/TLS 夹在 HTTP 和 TCP 之间：上层三个子协议<span class="zhen">（sub-protocol）</span>，下层是记录协议<span class="zhen">（record protocol）</span>。</figcaption>
 </figure>
 <ul>
-<li><b>Session（会话）</b>：客户端和服务器之间的一种关联，由握手协议建立，定义了一组安全参数，<b>可以被多个连接共享</b>；</li>
-<li><b>Connection（连接）</b>：一条端到端的可靠安全通道，每个连接都属于某个会话。</li>
+<li><b>Session（会话）</b>：客户端<span class="zhen">（client）</span>和服务器<span class="zhen">（server）</span>之间的一种关联，由握手协议<span class="zhen">（handshake protocol）</span>建立，定义了一组安全参数<span class="zhen">（security parameters）</span>，<b>可以被多个连接共享</b>；</li>
+<li><b>Connection（连接）</b>：一条端到端的可靠安全通道<span class="zhen">（secure channel）</span>，每个连接都属于某个会话<span class="zhen">（session）</span>。</li>
 </ul>
-<h3>Record 协议怎么处理数据（P5-14）</h3>
-<div class="out"><span class="eq">应用数据 → ① Fragment 分片 → ② Compress 压缩 → ③ Add MAC 加消息认证码 → ④ Encrypt 加密 → ⑤ 加 SSL 记录头</span></div>
-<p>MAC 保证<b>完整性</b>，加密保证<b>机密性</b>（样题 Q5-3：记录协议提供 message integrity 和 <b>confidentiality</b>）。为什么先压缩再加密？因为密文看起来是随机的，压缩不了。</p>
-<h3>另外两个小协议</h3>
+<h3>Record 协议<span class="zhen">（protocol）</span>怎么处理数据（P5-14）</h3>
+<div class="out"><span class="eq">应用数据<span class="zhen">（application data）</span> → ① Fragment 分片<span class="zhen">（fragmentation）</span> → ② Compress 压缩 → ③ Add MAC 加消息认证码 → ④ Encrypt 加密<span class="zhen">（encryption）</span> → ⑤ 加 SSL 记录头<span class="zhen">（record header）</span></span></div>
+<p>MAC 保证<b>完整性<span class="zhen">（integrity）</span></b>，加密<span class="zhen">（encryption）</span>保证<b>机密性<span class="zhen">（confidentiality）</span></b>（样题 Q5-3：记录协议<span class="zhen">（record protocol）</span>提供 message integrity 和 <b>confidentiality</b>）。为什么先压缩再加密<span class="zhen">（encryption）</span>？因为密文<span class="zhen">（ciphertext）</span>看起来是随机的，压缩不了。</p>
+<h3>另外两个小协议<span class="zhen">（protocol）</span></h3>
 <ul>
-<li><b>Change Cipher Spec</b>：非常简单，只做一件事：把“待定”（pending）的参数切换成“当前”（current），也就是正式启用协商好的加密套件；</li>
-<li><b>Alert</b>：向对方发送告警（样题 Q5-4），每条 2 字节：一个字节表示 fatal 或 warning，一个字节是告警代码，比如 bad record MAC、handshake failure、bad certificate、certificate expired、certificate revoked。</li>
+<li><b>Change Cipher Spec</b>：非常简单，只做一件事：把“待定”（pending）的参数切换成“当前”（current），也就是正式启用协商好的加密套件<span class="zhen">（cipher suite）</span>；</li>
+<li><b>Alert</b>：向对方发送告警（样题 Q5-4），每条 2 字节<span class="zhen">（byte）</span>：一个字节<span class="zhen">（byte）</span>表示 fatal 或 warning，一个字节<span class="zhen">（byte）</span>是告警代码<span class="zhen">（alert code）</span>，比如 bad record MAC、handshake failure、bad certificate、certificate expired、certificate revoked。</li>
 </ul>
-<div class="teacher box" data-t="m5alert"><span class="bt">老师课上强调 · W8</span><p>证书出问题（过期、被吊销、未知 CA、不支持的证书）时由 <b>Alert 协议</b>报警，还包括坏的 MAC、解压失败、握手失败等。四个子协议里最复杂的是 Handshake。</p></div>
+<div class="teacher box" data-t="m5alert"><span class="bt">老师课上强调 · W8</span><p>证书<span class="zhen">（certificate）</span>出问题（过期、被吊销<span class="zhen">（revocation）</span>、未知 CA、不支持的证书<span class="zhen">（certificate）</span>）时由 <b>Alert 协议<span class="zhen">（protocol）</span></b>报警，还包括坏的 MAC、解压失败<span class="zhen">（decompression failure）</span>、握手失败<span class="zhen">（handshake failure）</span>等。四个子协议<span class="zhen">（sub-protocol）</span>里最复杂的是 Handshake。</p></div>
 
 <h3>密钥长度（P5-11）</h3>
-<p>SSL/TLS 用两种密钥：<b>公私钥</b>建议 2048 位（512 位弱，1024 位也能被破解）；<b>会话密钥</b>每次连接时生成，一般 40–256 位，<b>低于 128 位就不安全</b>。如果浏览器支持 256 位而服务器只支持 128 位，连接按 128 位建立。会话密钥可以比公钥短，因为它被破解只影响一次会话，而且能减轻服务器负担。</p>
-<div class="check" data-a="0"><p class="cq">SSL 记录协议为连接提供的两项服务是消息完整性和什么？（样题 Q5-3）</p>
+<p>SSL/TLS 用两种密钥<span class="zhen">（key）</span>：<b>公私钥<span class="zhen">（public-private key pair）</span></b>建议 2048 位（512 位弱，1024 位也能被破解）；<b>会话密钥<span class="zhen">（session key）</span></b>每次连接时生成，一般 40–256 位，<b>低于 128 位就不安全</b>。如果浏览器<span class="zhen">（browser）</span>支持 256 位而服务器<span class="zhen">（server）</span>只支持 128 位，连接按 128 位建立。会话密钥<span class="zhen">（session key）</span>可以比公钥<span class="zhen">（public key）</span>短，因为它被破解只影响一次会话<span class="zhen">（session）</span>，而且能减轻服务器<span class="zhen">（server）</span>负担。</p>
+<div class="check" data-a="0"><p class="cq">SSL 记录协议<span class="zhen">（record protocol）</span>为连接提供的两项服务是消息完整性<span class="zhen">（message integrity）</span>和什么？（样题 Q5-3）</p>
 <div class="opts"><button class="opt">Confidentiality</button><button class="opt">Availability</button><button class="opt">Authentication</button></div>
-<div class="cx"><p>记录协议负责“加 MAC（完整性）+ 加密（机密性）”。认证是握手协议做的事。</p></div></div>
-<div class="teacher box" data-t="m5key"><span class="bt">老师课上强调 · W8</span><p>公钥（RSA/DH）：512 位很弱，1024 位能被破，<b>至少 2048 位</b>。会话密钥：<b>128 位</b>就够了，低于 128 位不安全，浏览器最高支持 256 位。</p></div>
+<div class="cx"><p>记录协议<span class="zhen">（record protocol）</span>负责“加 MAC（完整性<span class="zhen">（integrity）</span>）+ 加密<span class="zhen">（encryption）</span>（机密性<span class="zhen">（confidentiality）</span>）”。认证<span class="zhen">（authentication）</span>是握手协议<span class="zhen">（handshake protocol）</span>做的事。</p></div></div>
+<div class="teacher box" data-t="m5key"><span class="bt">老师课上强调 · W8</span><p>公钥（RSA/DH）：512 位很弱，1024 位能被破，<b>至少 2048 位</b>。会话密钥<span class="zhen">（session key）</span>：<b>128 位</b>就够了，低于 128 位不安全，浏览器<span class="zhen">（browser）</span>最高支持 256 位。</p></div>
 
 </section>
 
 <section class="sec" id="hs">
-<h2><span class="n">3</span>一次 TLS 握手：最复杂的部分</h2>
-<p><b>握手协议是 SSL/TLS 最复杂的部分</b>（样题 Q5-1）。它要完成三件事：双方互相认证、协商加密和 MAC 算法、协商出密钥。其实就是模块 4 的<b>混合系统</b>在真实世界里的样子。</p>
-<div class="stepper"><div class="sh"><span>经典 TLS 握手（RSA 密钥交换，P5-17）</span><span class="ctr"></span></div>
-<div class="st"><p><b>① ClientHello（客户端 → 服务器）</b></p><p>“你好，我想建立安全连接。我支持这些算法组合：……”这份算法组合的列表就是 <b>cipher suite（密码套件）</b>（样题 Q5-2）。一个套件包括：密钥交换算法 + 加密算法 + 哈希/MAC 算法，例如 RSA + AES-128 + SHA-256。</p></div>
-<div class="st"><p><b>② ServerHello（服务器 → 客户端）</b></p><p>“好的，我们就用这个套件。”服务器从客户端的列表里<b>选一个</b>。</p></div>
-<div class="st"><p><b>③ Certificate（服务器 → 客户端）</b></p><p>服务器发来自己的<b>数字证书</b>，里面有它的公钥。客户端按模块 4 的三步验证证书：CA 签名、有效期、吊销状态。</p></div>
+<h2><span class="n">3</span>一次 TLS 握手<span class="zhen">（handshake）</span>：最复杂的部分</h2>
+<p><b>握手协议<span class="zhen">（handshake protocol）</span>是 SSL/TLS 最复杂的部分</b>（样题 Q5-1）。它要完成三件事：双方互相认证<span class="zhen">（authentication）</span>、协商加密<span class="zhen">（encryption）</span>和 MAC 算法、协商出密钥<span class="zhen">（key）</span>。其实就是模块 4 的<b>混合系统<span class="zhen">（hybrid system）</span></b>在真实世界里的样子。</p>
+<div class="stepper"><div class="sh"><span>经典 TLS 握手（RSA 密钥交换<span class="zhen">（key exchange）</span>，P5-17）</span><span class="ctr"></span></div>
+<div class="st"><p><b>① ClientHello（客户端 → 服务器<span class="zhen">（server）</span>）</b></p><p>“你好，我想建立安全连接。我支持这些算法组合：……”这份算法组合的列表就是 <b>cipher suite（密码套件）</b>（样题 Q5-2）。一个套件包括：密钥交换算法<span class="zhen">（key exchange algorithm）</span> + 加密算法<span class="zhen">（encryption algorithm）</span> + 哈希<span class="zhen">（hash）</span>/MAC 算法，例如 RSA + AES-128 + SHA-256。</p></div>
+<div class="st"><p><b>② ServerHello（服务器 → 客户端<span class="zhen">（client）</span>）</b></p><p>“好的，我们就用这个套件。”服务器<span class="zhen">（server）</span>从客户端<span class="zhen">（client）</span>的列表里<b>选一个</b>。</p></div>
+<div class="st"><p><b>③ Certificate（服务器<span class="zhen">（server）</span> → 客户端<span class="zhen">（client）</span>）</b></p><p>服务器<span class="zhen">（server）</span>发来自己的<b>数字证书<span class="zhen">（digital certificate）</span></b>，里面有它的公钥<span class="zhen">（public key）</span>。客户端<span class="zhen">（client）</span>按模块 4 的三步验证证书<span class="zhen">（certificate）</span>：CA 签名<span class="zhen">（signature）</span>、有效期<span class="zhen">（validity period）</span>、吊销状态<span class="zhen">（revocation status）</span>。</p></div>
 <div class="st"><p><b>④ ServerHelloDone</b></p><p>“我这边说完了。”</p></div>
-<div class="st"><p><b>⑤ ClientKeyExchange（客户端 → 服务器）</b></p><p>客户端<b>随机生成一把对称会话密钥</b>，用<b>服务器的公钥</b>加密后发过去。服务器用自己的私钥解开，现在双方都有了同一把会话密钥，Eve 没有。</p></div>
-<div class="st"><p><b>⑥ ChangeCipherSpec</b></p><p>客户端把选定的加密套件从“待定”切换为“启用”。</p></div>
-<div class="st"><p><b>⑦ Finished</b></p><p>客户端表示握手结束。从此进入正常通信阶段，<b>所有数据都用对称会话密钥加密</b>，由记录协议负责。</p></div>
+<div class="st"><p><b>⑤ ClientKeyExchange（客户端 → 服务器<span class="zhen">（server）</span>）</b></p><p>客户端<b>随机生成一把对称会话密钥<span class="zhen">（symmetric session key）</span></b>，用<b>服务器<span class="zhen">（server）</span>的公钥<span class="zhen">（public key）</span></b>加密<span class="zhen">（encryption）</span>后发过去。服务器<span class="zhen">（server）</span>用自己的私钥<span class="zhen">（private key）</span>解开，现在双方都有了同一把会话密钥<span class="zhen">（session key）</span>，Eve 没有。</p></div>
+<div class="st"><p><b>⑥ ChangeCipherSpec</b></p><p>客户端<span class="zhen">（client）</span>把选定的加密套件<span class="zhen">（cipher suite）</span>从“待定”切换为“启用”。</p></div>
+<div class="st"><p><b>⑦ Finished</b></p><p>客户端<span class="zhen">（client）</span>表示握手<span class="zhen">（handshake）</span>结束。从此进入正常通信阶段，<b>所有数据都用对称会话密钥<span class="zhen">（symmetric session key）</span>加密<span class="zhen">（encryption）</span></b>，由记录协议<span class="zhen">（record protocol）</span>负责。</p></div>
 <div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
-<div class="key box"><span class="bt">把模块 4 串起来</span><p>证书（认证服务器）+ 公钥加密（安全地送出会话密钥）+ 对称加密（快速加密数据）+ MAC/哈希（完整性）。一次握手把整章密码学都用上了。</p></div>
-<h3>深入一步：密钥是怎么一步步算出来的</h3>
-<p>上面第 ⑤ 步说“客户端生成会话密钥”，严格来说过程是这样的：</p>
+<div class="key box"><span class="bt">把模块 4 串起来</span><p>证书<span class="zhen">（certificate）</span>（认证服务器<span class="zhen">（authentication server）</span>）+ 公钥加密<span class="zhen">（public-key encryption）</span>（安全地送出会话密钥<span class="zhen">（session key）</span>）+ 对称加密<span class="zhen">（symmetric encryption）</span>（快速加密<span class="zhen">（encryption）</span>数据）+ MAC/哈希<span class="zhen">（hash）</span>（完整性<span class="zhen">（integrity）</span>）。一次握手<span class="zhen">（handshake）</span>把整章密码学<span class="zhen">（cryptography）</span>都用上了。</p></div>
+<h3>深入一步：密钥<span class="zhen">（key）</span>是怎么一步步算出来的</h3>
+<p>上面第 ⑤ 步说“客户端<span class="zhen">（client）</span>生成会话密钥<span class="zhen">（session key）</span>”，严格来说过程是这样的：</p>
 <ol>
-<li>ClientHello 和 ServerHello 里，双方各自带了一个<b>随机数</b>（Client Random、Server Random），明文传输；</li>
-<li>客户端生成一个 <b>pre-master secret（预主密钥）</b>，用服务器公钥加密后发出，只有服务器能解开；</li>
+<li>ClientHello 和 ServerHello 里，双方各自带了一个<b>随机数</b>（Client Random、Server Random），明文<span class="zhen">（plaintext）</span>传输；</li>
+<li>客户端<span class="zhen">（client）</span>生成一个 <b>pre-master secret（预主密钥）</b>，用服务器<span class="zhen">（server）</span>公钥加密<span class="zhen">（public-key encryption）</span>后发出，只有服务器<span class="zhen">（server）</span>能解开；</li>
 <li>双方用同一个公式算出 <b>master secret（主密钥）</b> = 函数(pre-master secret, Client Random, Server Random)；</li>
-<li>再从主密钥里切分出 4 把具体的钥匙：</li>
+<li>再从主密钥<span class="zhen">（master secret）</span>里切分出 4 把具体的钥匙：</li>
 </ol>
 <div class="tbl"><table>
 <tr><th>钥匙</th><th>用途</th></tr>
-<tr><td>客户端 → 服务器的加密密钥</td><td>Record 加密（机密性）</td></tr>
-<tr><td>服务器 → 客户端的加密密钥</td><td>Record 加密</td></tr>
-<tr><td>客户端 → 服务器的 <b>MAC 密钥</b></td><td>Record 加 MAC（完整性）</td></tr>
-<tr><td>服务器 → 客户端的 <b>MAC 密钥</b></td><td>Record 加 MAC</td></tr>
+<tr><td>客户端<span class="zhen">（client）</span> → 服务器<span class="zhen">（server）</span>的加密密钥<span class="zhen">（encryption key）</span></td><td>Record 加密<span class="zhen">（encryption）</span>（机密性<span class="zhen">（confidentiality）</span>）</td></tr>
+<tr><td>服务器<span class="zhen">（server）</span> → 客户端<span class="zhen">（client）</span>的加密密钥<span class="zhen">（encryption key）</span></td><td>Record 加密<span class="zhen">（encryption）</span></td></tr>
+<tr><td>客户端<span class="zhen">（client）</span> → 服务器<span class="zhen">（server）</span>的 <b>MAC 密钥<span class="zhen">（key）</span></b></td><td>Record 加 MAC（完整性<span class="zhen">（integrity）</span>）</td></tr>
+<tr><td>服务器<span class="zhen">（server）</span> → 客户端<span class="zhen">（client）</span>的 <b>MAC 密钥<span class="zhen">（key）</span></b></td><td>Record 加 MAC</td></tr>
 </table></div>
-<h3>Finished 消息：检查握手有没有被动过手脚</h3>
-<p>第 ⑦ 步的 Finished 不只是说“我完了”。客户端把<b>到目前为止双方交换的所有握手消息</b>放在一起，用主密钥算出一个校验值（本质上是一个 MAC），加密后发出。服务器自己也算一遍：一致，说明每一步都没被中间人篡改（比如没人偷偷把 cipher suite 换成更弱的）；不一致，就发 Alert（handshake failure），中断连接。服务器随后也回一组 ChangeCipherSpec + Finished。</p>
+<h3>Finished 消息：检查握手<span class="zhen">（handshake）</span>有没有被动过手脚</h3>
+<p>第 ⑦ 步的 Finished 不只是说“我完了”。客户端<span class="zhen">（client）</span>把<b>到目前为止双方交换的所有握手<span class="zhen">（handshake）</span>消息</b>放在一起，用主密钥<span class="zhen">（master secret）</span>算出一个校验值<span class="zhen">（check value）</span>（本质上是一个 MAC），加密<span class="zhen">（encryption）</span>后发出。服务器<span class="zhen">（server）</span>自己也算一遍：一致，说明每一步都没被中间人<span class="zhen">（man-in-the-middle）</span>篡改<span class="zhen">（tampering）</span>（比如没人偷偷把 cipher suite 换成更弱的）；不一致，就发 Alert（handshake failure），中断连接。服务器<span class="zhen">（server）</span>随后也回一组 ChangeCipherSpec + Finished。</p>
 <h3>MAC 到底在哪个部分</h3>
 <p>MAC 不属于某一个单独的步骤，它贯穿整个过程：</p>
 <div class="tbl"><table>
 <tr><th>阶段</th><th>MAC 的角色</th></tr>
-<tr><td>Handshake ① ②</td><td><b>选定 MAC 算法</b>：cipher suite 里的最后一段，例如 <code>TLS_RSA_WITH_AES_128_CBC_<b>SHA256</b></code>（依次是密钥交换、加密算法、MAC/哈希算法）</td></tr>
-<tr><td>Handshake ⑤</td><td><b>生成 MAC 密钥</b>：从主密钥推导出来</td></tr>
-<tr><td>Handshake ⑦ Finished</td><td>用 MAC 式的校验值<b>保护握手过程本身</b></td></tr>
-<tr><td><b>Record 协议</b>（之后每一条数据）</td><td><b>真正使用 MAC</b>：分片 → 压缩 → <b>加 MAC</b> → 加密 → 加记录头</td></tr>
+<tr><td>Handshake ① ②</td><td><b>选定 MAC 算法</b>：cipher suite 里的最后一段，例如 <code>TLS_RSA_WITH_AES_128_CBC_<b>SHA256</b></code>（依次是密钥交换<span class="zhen">（key exchange）</span>、加密算法<span class="zhen">（encryption algorithm）</span>、MAC/哈希算法<span class="zhen">（hash algorithm）</span>）</td></tr>
+<tr><td>Handshake ⑤</td><td><b>生成 MAC 密钥<span class="zhen">（key）</span></b>：从主密钥<span class="zhen">（master secret）</span>推导出来</td></tr>
+<tr><td>Handshake ⑦ Finished</td><td>用 MAC 式的校验值<span class="zhen">（check value）</span><b>保护握手<span class="zhen">（handshake）</span>过程本身</b></td></tr>
+<tr><td><b>Record 协议<span class="zhen">（protocol）</span></b>（之后每一条数据）</td><td><b>真正使用 MAC</b>：分片<span class="zhen">（fragmentation）</span> → 压缩 → <b>加 MAC</b> → 加密<span class="zhen">（encryption）</span> → 加记录头<span class="zhen">（record header）</span></td></tr>
 </table></div>
-<div class="key box"><span class="bt">一句话</span><p><b>握手负责“定好用哪种 MAC、生成 MAC 密钥”，Record 负责“给每条数据加上 MAC”。</b>所以样题 Q5-3 说 Record 协议提供的是 integrity（靠 MAC）和 confidentiality（靠加密）；authentication 是握手负责的（验证证书）。</p></div>
-<h3>为什么用 MAC，而不是普通哈希</h3>
-<p>普通哈希谁都能算：Eve 改了数据，可以顺手重算一个新哈希附上，接收方发现不了。<b>MAC 是带密钥的哈希</b>：必须知道 MAC 密钥才能算出正确的值，而这把密钥是握手时双方私下推导的，Eve 不知道，所以她改了数据也伪造不出正确的 MAC。</p>
-<div class="analogy box"><span class="bt">类比</span><p>普通哈希像谁都能盖的普通印章；MAC 像只有你们两人才有的私章。</p></div>
-<div class="pitfall box"><span class="bt">TLS 1.3 的变化（只考概念）</span><p>TLS 1.3 不再用 RSA 加密 pre-master secret，改用 ephemeral DH（见下一节）；MAC 和加密合并成一体（AEAD，例如 AES-GCM），完整性仍然有，只是不再单独做“加 MAC”这一步。考试按课件的 TLS 1.2 流程回答即可。</p></div>
-<div class="check" data-a="2"><p class="cq">TLS 中，给每条应用数据加上 MAC 的是哪个协议？</p>
+<div class="key box"><span class="bt">一句话</span><p><b>握手<span class="zhen">（handshake）</span>负责“定好用哪种 MAC、生成 MAC 密钥<span class="zhen">（key）</span>”，Record 负责“给每条数据加上 MAC”。</b>所以样题 Q5-3 说 Record 协议<span class="zhen">（protocol）</span>提供的是 integrity（靠 MAC）和 confidentiality（靠加密<span class="zhen">（encryption）</span>）；authentication 是握手<span class="zhen">（handshake）</span>负责的（验证证书<span class="zhen">（certificate）</span>）。</p></div>
+<h3>为什么用 MAC，而不是普通哈希<span class="zhen">（hash）</span></h3>
+<p>普通哈希<span class="zhen">（hash）</span>谁都能算：Eve 改了数据，可以顺手重算一个新哈希<span class="zhen">（hash）</span>附上，接收方发现不了。<b>MAC 是带密钥的哈希<span class="zhen">（keyed hash）</span></b>：必须知道 MAC 密钥<span class="zhen">（key）</span>才能算出正确的值，而这把密钥<span class="zhen">（key）</span>是握手<span class="zhen">（handshake）</span>时双方私下推导的，Eve 不知道，所以她改了数据也伪造<span class="zhen">（forgery）</span>不出正确的 MAC。</p>
+<div class="analogy box"><span class="bt">类比</span><p>普通哈希<span class="zhen">（hash）</span>像谁都能盖的普通印章；MAC 像只有你们两人才有的私章。</p></div>
+<div class="pitfall box"><span class="bt">TLS 1.3 的变化（只考概念）</span><p>TLS 1.3 不再用 RSA 加密<span class="zhen">（encryption）</span> pre-master secret，改用 ephemeral DH（见下一节）；MAC 和加密<span class="zhen">（encryption）</span>合并成一体（AEAD，例如 AES-GCM），完整性<span class="zhen">（integrity）</span>仍然有，只是不再单独做“加 MAC”这一步。考试按课件的 TLS 1.2 流程回答即可。</p></div>
+<div class="check" data-a="2"><p class="cq">TLS 中，给每条应用数据<span class="zhen">（application data）</span>加上 MAC 的是哪个协议<span class="zhen">（protocol）</span>？</p>
 <div class="opts"><button class="opt">Handshake</button><button class="opt">Alert</button><button class="opt">Record</button><button class="opt">Change Cipher Spec</button></div>
-<div class="cx"><p>握手只负责选定 MAC 算法、生成 MAC 密钥；真正给每条数据加 MAC 的是 Record 协议。</p></div></div>
-<div class="check" data-a="2"><p class="cq">客户端在 ClientHello 里列出的“自己支持的密码算法组合”叫什么？</p>
+<div class="cx"><p>握手<span class="zhen">（handshake）</span>只负责选定 MAC 算法、生成 MAC 密钥<span class="zhen">（key）</span>；真正给每条数据加 MAC 的是 Record 协议<span class="zhen">（protocol）</span>。</p></div></div>
+<div class="check" data-a="2"><p class="cq">客户端在 ClientHello 里列出的“自己支持的密码算法<span class="zhen">（cipher）</span>组合”叫什么？</p>
 <div class="opts"><button class="opt">Session ID</button><button class="opt">Compression method</button><button class="opt">Cipher suite</button></div>
 <div class="cx"><p>Cipher suite（样题 Q5-2）。服务器在 ServerHello 里从中选一个。</p></div></div>
 </section>
 
 <section class="sec" id="tls13">
-<h2><span class="n">4</span>TLS 1.3：为什么去掉了 RSA 密钥交换</h2>
-<p>TLS 有两种交换密钥的方式（P5-18～P5-20）：</p>
+<h2><span class="n">4</span>TLS 1.3：为什么去掉了 RSA 密钥交换<span class="zhen">（key exchange）</span></h2>
+<p>TLS 有两种交换密钥<span class="zhen">（key）</span>的方式（P5-18～P5-20）：</p>
 <ol>
-<li><b>RSA 密钥交换</b>：上一节那种，客户端决定会话密钥，用服务器公钥加密后发出；</li>
-<li><b>Diffie-Hellman 密钥协商</b>：双方各自生成密钥对，交换公开部分，各自算出同一个值（pre-master secret）。服务器用数字签名保证交换没被篡改。如果每次连接都换一对<b>新的</b>密钥，就叫 <b>ephemeral（临时的）DH</b>。</li>
+<li><b>RSA 密钥交换<span class="zhen">（key exchange）</span></b>：上一节那种，客户端<span class="zhen">（client）</span>决定会话密钥<span class="zhen">（session key）</span>，用服务器<span class="zhen">（server）</span>公钥加密<span class="zhen">（public-key encryption）</span>后发出；</li>
+<li><b>Diffie-Hellman 密钥协商<span class="zhen">（key agreement）</span></b>：双方各自生成密钥对<span class="zhen">（key pair）</span>，交换公开部分，各自算出同一个值（pre-master secret）。服务器<span class="zhen">（server）</span>用数字签名<span class="zhen">（digital signature）</span>保证交换没被篡改<span class="zhen">（tampering）</span>。如果每次连接都换一对<b>新的</b>密钥<span class="zhen">（key）</span>，就叫 <b>ephemeral（临时的）DH</b>。</li>
 </ol>
-<h3>RSA 方式的致命问题：没有前向保密</h3>
-<div class="story box"><span class="bt">一个故事</span><p>Eve 没法破解你和银行的通信，于是她<b>先全部录下来存着</b>。三年后，银行服务器被黑，RSA 私钥泄露。Eve 拿出三年前的录音，用这把私钥解开当年加密的会话密钥，<b>你过去三年的所有通信全部被解密</b>。</p></div>
-<p>这就是课件说的 “RSA mode … is <b>not forward secret</b>”。<b>前向保密（Forward Secrecy / PFS）</b>的意思是：即使长期私钥日后泄露，<b>过去</b>的会话也依然安全。ephemeral DH 能做到这一点，因为每次会话的密钥都是临时生成、用完就扔的，私钥泄露也推不出当年的会话密钥。</p>
-<p>所以 <b>TLS 1.3 去掉了 RSA 密钥交换，只保留 ephemeral Diffie-Hellman</b>。RSA 仍可以在 TLS 1.3 里用于<b>签名</b>（另外两种签名算法是 ECDSA 和 EdDSA）。</p>
-<div class="teacher box" data-t="m5fs"><span class="bt">老师课上强调 · W8</span><p>老师的讲法：RSA 密钥交换下，服务器的私钥长期不变，几十亿用户共用同一把。攻击者先把密文录下来，有朝一日破了这把私钥，所有历史通信都能解开。固定参数的 DH 也有同样的问题，所以 TLS 1.3 用<b>临时（ephemeral）DH</b>：每次会话都重新选数字，最坏情况也只泄露一个客户的一次会话。RSA 仍可用于签名。</p></div>
+<h3>RSA 方式的致命问题：没有前向保密<span class="zhen">（forward secrecy）</span></h3>
+<div class="story box"><span class="bt">一个故事</span><p>Eve 没法破解你和银行的通信，于是她<b>先全部录下来存着</b>。三年后，银行服务器<span class="zhen">（server）</span>被黑，RSA 私钥泄露<span class="zhen">（private key exposure）</span>。Eve 拿出三年前的录音，用这把私钥<span class="zhen">（private key）</span>解开当年加密<span class="zhen">（encryption）</span>的会话密钥<span class="zhen">（session key）</span>，<b>你过去三年的所有通信全部被解密<span class="zhen">（decryption）</span></b>。</p></div>
+<p>这就是课件说的 “RSA mode … is <b>not forward secret</b>”。<b>前向保密（Forward Secrecy / PFS）</b>的意思是：即使长期私钥<span class="zhen">（long-term private key）</span>日后泄露<span class="zhen">（leak）</span>，<b>过去</b>的会话<span class="zhen">（session）</span>也依然安全。ephemeral DH 能做到这一点，因为每次会话<span class="zhen">（session）</span>的密钥<span class="zhen">（key）</span>都是临时生成、用完就扔的，私钥泄露<span class="zhen">（private key exposure）</span>也推不出当年的会话密钥<span class="zhen">（session key）</span>。</p>
+<p>所以 <b>TLS 1.3 去掉了 RSA 密钥交换<span class="zhen">（key exchange）</span>，只保留 ephemeral Diffie-Hellman</b>。RSA 仍可以在 TLS 1.3 里用于<b>签名<span class="zhen">（signature）</span></b>（另外两种签名算法<span class="zhen">（signature algorithm）</span>是 ECDSA 和 EdDSA）。</p>
+<div class="teacher box" data-t="m5fs"><span class="bt">老师课上强调 · W8</span><p>老师的讲法：RSA 密钥交换<span class="zhen">（key exchange）</span>下，服务器<span class="zhen">（server）</span>的私钥<span class="zhen">（private key）</span>长期不变，几十亿用户共用同一把。攻击者<span class="zhen">（attacker）</span>先把密文<span class="zhen">（ciphertext）</span>录下来，有朝一日破了这把私钥<span class="zhen">（private key）</span>，所有历史通信都能解开。固定参数的 DH 也有同样的问题，所以 TLS 1.3 用<b>临时（ephemeral）DH</b>：每次会话<span class="zhen">（session）</span>都重新选数字，最坏情况也只泄露<span class="zhen">（leak）</span>一个客户的一次会话<span class="zhen">（session）</span>。RSA 仍可用于签名<span class="zhen">（signature）</span>。</p></div>
 
 <h3>TLS 1.3 的其他改进（P5-21、P5-26、P5-27）</h3>
 <ul>
-<li>支持的密码套件从 37 个减到 5 个，客户端可以直接猜对方用哪种，并提前发出自己的密钥份额；</li>
-<li><b>握手往返从 2 次减到 1 次</b>（1-RTT），更快；</li>
-<li>去掉了已知有漏洞的旧算法：<b>DES、3DES、MD5、RC4、SHA-1</b>、RSA 密钥交换；</li>
+<li>支持的密码套件<span class="zhen">（cipher suite）</span>从 37 个减到 5 个，客户端<span class="zhen">（client）</span>可以直接猜对方用哪种，并提前发出自己的密钥份额<span class="zhen">（key share）</span>；</li>
+<li><b>握手<span class="zhen">（handshake）</span>往返从 2 次减到 1 次</b>（1-RTT），更快；</li>
+<li>去掉了已知有漏洞<span class="zhen">（vulnerability）</span>的旧算法：<b>DES、3DES、MD5、RC4、SHA-1</b>、RSA 密钥交换<span class="zhen">（key exchange）</span>；</li>
 <li>更强的加密（AES、ChaCha20）；</li>
-<li>协议更简单，管理员<b>更不容易配置出错</b>，而这正是 TLS 1.2 的主要问题；</li>
-<li>取消了对 SSL 的向后兼容。</li>
+<li>协议<span class="zhen">（protocol）</span>更简单，管理员<span class="zhen">（administrator）</span><b>更不容易配置出错</b>，而这正是 TLS 1.2 的主要问题；</li>
+<li>取消了对 SSL 的向后兼容<span class="zhen">（backward compatibility）</span>。</li>
 </ul>
-<div class="teacher box" data-t="m5imp"><span class="bt">老师课上强调 · W8</span><p>算法套件从 37 个减到 <b>5 个</b>，去掉了 DES、3DES、SHA-1、MD5。研究显示服务器出问题多半是管理员配错算法，选项少了就不容易配错。握手更短更快，回访同一服务器还能复用参数。</p></div>
+<div class="teacher box" data-t="m5imp"><span class="bt">老师课上强调 · W8</span><p>算法套件<span class="zhen">（cipher suite）</span>从 37 个减到 <b>5 个</b>，去掉了 DES、3DES、SHA-1、MD5。研究显示服务器<span class="zhen">（server）</span>出问题多半是管理员<span class="zhen">（administrator）</span>配错算法，选项少了就不容易配错。握手<span class="zhen">（handshake）</span>更短更快，回访同一服务器<span class="zhen">（server）</span>还能复用参数。</p></div>
 
 <h3>常见攻击与最佳实践（P5-28、P5-29）</h3>
 <div class="tbl"><table>
 <tr><th>攻击</th><th>说明</th><th>对策</th></tr>
-<tr><td>MITM</td><td>中间人截获通信</td><td>用 HTTPS，验证证书</td></tr>
+<tr><td>MITM</td><td>中间人<span class="zhen">（man-in-the-middle）</span>截获通信</td><td>用 HTTPS，验证证书<span class="zhen">（certificate）</span></td></tr>
 <tr><td>Downgrade</td><td>逼双方降级到旧的、不安全的版本</td><td>禁用 TLS 1.0/1.1，强制 1.2 或 1.3</td></tr>
 <tr><td>BEAST</td><td>利用 TLS 1.0 的弱点</td><td>升级到 1.2 或 1.3</td></tr>
-<tr><td>POODLE</td><td>SSL 3.0 漏洞</td><td>禁用 SSL 3.0</td></tr>
-<tr><td>Heartbleed</td><td>OpenSSL 漏洞，会泄露内存</td><td>给 OpenSSL 打补丁</td></tr>
-<tr><td>DROWN</td><td>利用配置不当的服务器上的 SSLv2</td><td>禁用 SSLv2 和弱密码套件</td></tr>
+<tr><td>POODLE</td><td>SSL 3.0 漏洞<span class="zhen">（vulnerability）</span></td><td>禁用 SSL 3.0</td></tr>
+<tr><td>Heartbleed</td><td>OpenSSL 漏洞<span class="zhen">（vulnerability）</span>，会泄露<span class="zhen">（leak）</span>内存</td><td>给 OpenSSL 打补丁<span class="zhen">（patching）</span></td></tr>
+<tr><td>DROWN</td><td>利用配置不当的服务器<span class="zhen">（server）</span>上的 SSLv2</td><td>禁用 SSLv2 和弱密码套件<span class="zhen">（weak cipher suite）</span></td></tr>
 </table></div>
-<p>服务器端：只用 TLS 1.2/1.3、强密码套件、开启 PFS、开启 HSTS（强制 HTTPS）、用 OCSP Stapling 检查证书、及时更新 OpenSSL。客户端：验证证书、用证书固定（certificate pinning）防中间人、在浏览器里禁用弱协议。另外要选<b>有信誉的 CA</b>，保管好私钥。</p>
-<div class="check" data-a="1"><p class="cq">TLS 1.3 为什么去掉了 RSA 密钥交换？</p>
-<div class="opts"><button class="opt">RSA 太快了</button><button class="opt">它没有前向保密：私钥日后泄露，录下的旧会话都能被解密</button><button class="opt">浏览器不支持 RSA</button></div>
-<div class="cx"><p>RSA 在 TLS 1.3 里仍可用于<b>签名</b>，被去掉的只是“用 RSA 加密会话密钥”这种交换方式。</p></div></div>
-<h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：TLS 1.3 密钥交换与握手 <span class="ref">P5-18～P5-29、P5-39</span></h3>
+<p>服务器<span class="zhen">（server）</span>端：只用 TLS 1.2/1.3、强密码套件<span class="zhen">（strong cipher suite）</span>、开启 PFS、开启 HSTS（强制 HTTPS）、用 OCSP Stapling 检查证书<span class="zhen">（certificate）</span>、及时更新 OpenSSL。客户端<span class="zhen">（client）</span>：验证证书、用证书固定（certificate pinning）防中间人<span class="zhen">（man-in-the-middle）</span>、在浏览器<span class="zhen">（browser）</span>里禁用弱协议<span class="zhen">（weak protocol）</span>。另外要选<b>有信誉的 CA</b>，保管好私钥<span class="zhen">（private key）</span>。</p>
+<div class="check" data-a="1"><p class="cq">TLS 1.3 为什么去掉了 RSA 密钥交换<span class="zhen">（key exchange）</span>？</p>
+<div class="opts"><button class="opt">RSA 太快了</button><button class="opt">它没有前向保密<span class="zhen">（forward secrecy）</span>：私钥<span class="zhen">（private key）</span>日后泄露<span class="zhen">（leak）</span>，录下的旧会话<span class="zhen">（session）</span>都能被解密<span class="zhen">（decryption）</span></button><button class="opt">浏览器<span class="zhen">（browser）</span>不支持 RSA</button></div>
+<div class="cx"><p>RSA 在 TLS 1.3 里仍可用于<b>签名<span class="zhen">（signature）</span></b>，被去掉的只是“用 RSA 加密<span class="zhen">（encryption）</span>会话密钥<span class="zhen">（session key）</span>”这种交换方式。</p></div></div>
+<h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：TLS 1.3 密钥交换<span class="zhen">（key exchange）</span>与握手<span class="zhen">（handshake）</span> <span class="ref">P5-18～P5-29、P5-39</span></h3>
 
 <h4>RSA 密钥交换（P5-18）</h4>
-<p>TLS 是一个<b>混合密码系统</b>：先用公钥密码让双方安全地拿到同一把密钥，再用这把密钥加密数据。在 RSA 密钥交换里，<b>共享秘密由客户端决定</b>：客户端从服务器证书里取出公钥，用它加密共享秘密后发给服务器。</p>
+<p>TLS 是一个<b>混合密码系统<span class="zhen">（hybrid cryptosystem）</span></b>：先用公钥密码<span class="zhen">（public-key cryptography）</span>让双方安全地拿到同一把密钥<span class="zhen">（key）</span>，再用这把密钥<span class="zhen">（key）</span>加密<span class="zhen">（encryption）</span>数据。在 RSA 密钥交换<span class="zhen">（key exchange）</span>里，<b>共享秘密<span class="zhen">（shared secret）</span>由客户端<span class="zhen">（client）</span>决定</b>：客户端<span class="zhen">（client）</span>从服务器<span class="zhen">（server）</span>证书<span class="zhen">（certificate）</span>里取出公钥<span class="zhen">（public key）</span>，用它加密<span class="zhen">（encryption）</span>共享秘密<span class="zhen">（shared secret）</span>后发给服务器<span class="zhen">（server）</span>。</p>
 <h4>Diffie-Hellman 密钥协商（P5-19）</h4>
 <ol>
-<li>客户端和服务器<b>各自生成一对公私钥</b>（基于公开的素数和生成元）；</li>
+<li>客户端<span class="zhen">（client）</span>和服务器<span class="zhen">（server）</span><b>各自生成一对公私钥<span class="zhen">（public-private key pair）</span></b>（基于公开的素数<span class="zhen">（prime number）</span>和生成元<span class="zhen">（generator）</span>）；</li>
 <li>把自己的<b>公开份额（key share）</b>发给对方；</li>
-<li>每一方用“对方的公开份额 + 自己的私钥”算出<b>同一个值</b>，这就是 pre-master secret（和模块 4 的 DH 计算完全一样）；</li>
-<li>服务器对这次交换做<b>数字签名</b>，证明交换没被篡改；</li>
-<li>如果每次连接都换一对新密钥，就叫 <b>ephemeral（临时）DH</b>。</li>
+<li>每一方用“对方的公开份额 + 自己的私钥<span class="zhen">（private key）</span>”算出<b>同一个值</b>，这就是 pre-master secret（和模块 4 的 DH 计算完全一样）；</li>
+<li>服务器<span class="zhen">（server）</span>对这次交换做<b>数字签名<span class="zhen">（digital signature）</span></b>，证明交换没被篡改<span class="zhen">（tampering）</span>；</li>
+<li>如果每次连接都换一对新密钥<span class="zhen">（key）</span>，就叫 <b>ephemeral（临时）DH</b>。</li>
 </ol>
-<h4>TLS 1.3 的握手只要三步（P5-21）</h4>
-<div class="stepper"><div class="sh"><span>TLS 1.3 握手（1-RTT）</span><span class="ctr"></span></div>
-<div class="st"><p><b>① Client Hello</b>：TLS 1.3 把支持的密码套件从 <b>37 个减到 5 个</b>，客户端可以直接<b>猜</b>服务器会用哪种密钥协商方式，并在第一条消息里就附上自己的 <b>key share</b>，不用像 1.2 那样先等服务器回话。</p></div>
-<div class="st"><p><b>② Server Hello</b>：服务器回复 Server Hello，同时发来<b>证书</b>和<b>自己的 key share</b>。此时服务器已经能算出会话密钥，最后发出 <b>server Finished</b>。</p></div>
-<div class="st"><p><b>③ Client Finished</b>：客户端验证证书，用两份 key share 算出自己的那份会话密钥，然后发出 <b>Finished</b>。握手完成，只用了<b>一个往返</b>。</p><p>密钥用 <b>Ephemeral Diffie-Hellman（EDH / DHE）</b>生成；允许的签名算法有三种：<b>RSA（只用于签名）、ECDSA、EdDSA</b>。</p></div>
+<h4>TLS 1.3 的握手<span class="zhen">（handshake）</span>只要三步（P5-21）</h4>
+<div class="stepper"><div class="sh"><span>TLS 1.3 握手<span class="zhen">（handshake）</span>（1-RTT）</span><span class="ctr"></span></div>
+<div class="st"><p><b>① Client Hello</b>：TLS 1.3 把支持的密码套件<span class="zhen">（cipher suite）</span>从 <b>37 个减到 5 个</b>，客户端<span class="zhen">（client）</span>可以直接<b>猜</b>服务器<span class="zhen">（server）</span>会用哪种密钥协商<span class="zhen">（key agreement）</span>方式，并在第一条消息里就附上自己的 <b>key share</b>，不用像 1.2 那样先等服务器<span class="zhen">（server）</span>回话。</p></div>
+<div class="st"><p><b>② Server Hello</b>：服务器回复 Server Hello，同时发来<b>证书<span class="zhen">（certificate）</span></b>和<b>自己的 key share</b>。此时服务器已经能算出会话密钥<span class="zhen">（session key）</span>，最后发出 <b>server Finished</b>。</p></div>
+<div class="st"><p><b>③ Client Finished</b>：客户端验证证书<span class="zhen">（certificate）</span>，用两份 key share 算出自己的那份会话密钥<span class="zhen">（session key）</span>，然后发出 <b>Finished</b>。握手<span class="zhen">（handshake）</span>完成，只用了<b>一个往返</b>。</p><p>密钥<span class="zhen">（key）</span>用 <b>Ephemeral Diffie-Hellman（EDH / DHE）</b>生成；允许的签名算法<span class="zhen">（signature algorithm）</span>有三种：<b>RSA（只用于签名<span class="zhen">（signature）</span>）、ECDSA、EdDSA</b>。</p></div>
 <div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
 <div class="tbl"><table>
 <tr><th></th><th>TLS 1.2</th><th>TLS 1.3</th></tr>
-<tr><td>握手往返</td><td>2 次（2-RTT）</td><td><b>1 次（1-RTT）</b></td></tr>
-<tr><td>密码套件</td><td>37 个</td><td>5 个</td></tr>
-<tr><td>密钥交换</td><td>RSA 或 DH</td><td><b>只有 ephemeral DH</b></td></tr>
-<tr><td>前向保密</td><td>用 RSA 交换时没有</td><td><b>总是有</b></td></tr>
-<tr><td>主要风险</td><td>配置不当会留下漏洞</td><td>协议简化，管理员更难配错</td></tr>
+<tr><td>握手<span class="zhen">（handshake）</span>往返</td><td>2 次（2-RTT）</td><td><b>1 次（1-RTT）</b></td></tr>
+<tr><td>密码套件<span class="zhen">（cipher suite）</span></td><td>37 个</td><td>5 个</td></tr>
+<tr><td>密钥交换<span class="zhen">（key exchange）</span></td><td>RSA 或 DH</td><td><b>只有 ephemeral DH</b></td></tr>
+<tr><td>前向保密<span class="zhen">（forward secrecy）</span></td><td>用 RSA 交换时没有</td><td><b>总是有</b></td></tr>
+<tr><td>主要风险<span class="zhen">（risk）</span></td><td>配置不当会留下漏洞<span class="zhen">（vulnerability）</span></td><td>协议<span class="zhen">（protocol）</span>简化，管理员<span class="zhen">（administrator）</span>更难配错</td></tr>
 </table></div>
 <h4>为什么 TLS 1.3 更安全（P5-26）</h4>
-<p>TLS 1.2 只要<b>配置正确</b>就是安全的，问题是很多网站配置错了。1.3 直接<b>删掉了有已知漏洞的旧功能</b>：3DES、DES、MD5、RC4、SHA-1 等。协议简单了，管理员犯错的机会就少了。</p>
+<p>TLS 1.2 只要<b>配置正确</b>就是安全的，问题是很多网站配置错了。1.3 直接<b>删掉了有已知漏洞<span class="zhen">（vulnerability）</span>的旧功能</b>：3DES、DES、MD5、RC4、SHA-1 等。协议<span class="zhen">（protocol）</span>简单了，管理员<span class="zhen">（administrator）</span>犯错的机会就少了。</p>
 <h4>各版本现状汇总（P5-27）</h4>
 <div class="tbl"><table>
 <tr><th>版本</th><th>状态</th><th>要点</th></tr>
-<tr><td>SSL 2.0</td><td>已淘汰</td><td>加密很弱</td></tr>
+<tr><td>SSL 2.0</td><td>已淘汰</td><td>加密<span class="zhen">（encryption）</span>很弱</td></tr>
 <tr><td>SSL 3.0</td><td>已弃用</td><td>受 <b>POODLE</b> 攻击</td></tr>
-<tr><td>TLS 1.0</td><td>已弃用</td><td>易受<b>降级攻击</b></td></tr>
+<tr><td>TLS 1.0</td><td>已弃用</td><td>易受<b>降级攻击<span class="zhen">（downgrade attack）</span></b></td></tr>
 <tr><td>TLS 1.1</td><td>已弃用</td><td>改进过，但已过时</td></tr>
 <tr><td><b>TLS 1.2</b></td><td>安全</td><td>支持 AES-GCM、SHA-256</td></tr>
-<tr><td><b>TLS 1.3</b></td><td><b>最安全</b></td><td>去掉弱算法、握手更快、加密更强</td></tr>
+<tr><td><b>TLS 1.3</b></td><td><b>最安全</b></td><td>去掉弱算法<span class="zhen">（weak algorithm）</span>、握手<span class="zhen">（handshake）</span>更快、加密<span class="zhen">（encryption）</span>更强</td></tr>
 </table></div>
-<p>TLS 1.3 的四项改进：① 去掉过时算法（RSA 密钥交换、SHA-1）；② 握手往返从 2 次减到 1 次；③ <b>完美前向保密（PFS）</b>：即使某把密钥泄露，过去的通信仍然安全；④ 更强的加密（ChaCha20、AES）。</p>
+<p>TLS 1.3 的四项改进：① 去掉过时算法（RSA 密钥交换<span class="zhen">（key exchange）</span>、SHA-1）；② 握手<span class="zhen">（handshake）</span>往返从 2 次减到 1 次；③ <b>完美前向保密（PFS）</b>：即使某把密钥<span class="zhen">（key）</span>泄露<span class="zhen">（leak）</span>，过去的通信仍然安全；④ 更强的加密（ChaCha20、AES）。</p>
 <h4>SSL/TLS 最佳实践（P5-29、P5-39）</h4>
 <div class="tbl"><table>
-<tr><th>服务器端</th><th>客户端</th></tr>
-<tr><td>只用 TLS 1.2 或 1.3，禁用旧版本<br>使用强密码套件（AES、ChaCha20）<br>开启 PFS<br>开启 <b>HSTS</b>（HTTP Strict Transport Security，强制浏览器只用 HTTPS）<br>用 <b>OCSP Stapling</b> 检查证书是否有效<br>定期更新 OpenSSL 和 TLS 库</td><td>连接前验证证书<br>用<b>证书固定（certificate pinning）</b>防中间人<br>在浏览器里禁用弱协议和弱密码套件</td></tr>
+<tr><th>服务器<span class="zhen">（server）</span>端</th><th>客户端<span class="zhen">（client）</span></th></tr>
+<tr><td>只用 TLS 1.2 或 1.3，禁用旧版本<br>使用强密码套件（AES、ChaCha20）<br>开启 PFS<br>开启 <b>HSTS</b>（HTTP Strict Transport Security，强制浏览器<span class="zhen">（browser）</span>只用 HTTPS）<br>用 <b>OCSP Stapling</b> 检查证书<span class="zhen">（certificate）</span>是否有效<br>定期更新 OpenSSL 和 TLS 库</td><td>连接前验证证书<br>用<b>证书固定（certificate pinning）</b>防中间人<span class="zhen">（man-in-the-middle）</span><br>在浏览器<span class="zhen">（browser）</span>里禁用弱协议<span class="zhen">（weak protocol）</span>和弱密码套件<span class="zhen">（weak cipher suite）</span></td></tr>
 </table></div>
-<p>课件 P5-39 再补三条：<b>选可靠的 CA</b>（证书只和签发它的 CA 一样可信）；<b>保护好私钥</b>（公钥可以广泛分发，私钥要尽可能安全地保管）；<b>使用 TLS 1.3</b>（TLS 1.2 目前用得最多，但 1.3 通过 ephemeral DH 为所有会话提供前向保密，更快也更安全）。</p>
-<p>课件 P5-29 的结论：<b>应该用 TLS 而不是 SSL；TLS 1.3 最安全；证书保证认证和数据安全；定期安全更新必不可少。</b></p>
+<p>课件 P5-39 再补三条：<b>选可靠的 CA</b>（证书<span class="zhen">（certificate）</span>只和签发它的 CA 一样可信）；<b>保护好私钥<span class="zhen">（private key）</span></b>（公钥<span class="zhen">（public key）</span>可以广泛分发，私钥<span class="zhen">（private key）</span>要尽可能安全地保管）；<b>使用 TLS 1.3</b>（TLS 1.2 目前用得最多，但 1.3 通过 ephemeral DH 为所有会话<span class="zhen">（session）</span>提供前向保密<span class="zhen">（forward secrecy）</span>，更快也更安全）。</p>
+<p>课件 P5-29 的结论：<b>应该用 TLS 而不是 SSL；TLS 1.3 最安全；证书<span class="zhen">（certificate）</span>保证认证<span class="zhen">（authentication）</span>和数据安全；定期安全更新必不可少。</b></p>
 </section>
 
 <section class="sec" id="set">
 <h2><span class="n">5</span>SSL 的局限与 SET</h2>
 <h3>SSL/TLS 做不到什么（P5-30）</h3>
 <ul>
-<li>会拖慢服务器；只保护<b>传输中</b>的数据，不保护数据库里的数据；</li>
-<li>不能认证电脑前<b>真正操作的人</b>，不能认证网店老板，不能认证真正的消费者；</li>
-<li><b>不能防止有人用偷来的信用卡网购</b>；</li>
-<li>证书要花钱；它是<b>两方</b>协议。</li>
+<li>会拖慢服务器<span class="zhen">（server）</span>；只保护<b>传输中</b>的数据，不保护数据库<span class="zhen">（database）</span>里的数据；</li>
+<li>不能认证<span class="zhen">（authentication）</span>电脑前<b>真正操作的人</b>，不能认证<span class="zhen">（authentication）</span>网店老板，不能认证<span class="zhen">（authentication）</span>真正的消费者；</li>
+<li><b>不能防止有人用偷来的信用卡<span class="zhen">（credit card）</span>网购</b>；</li>
+<li>证书<span class="zhen">（certificate）</span>要花钱；它是<b>两方</b>协议<span class="zhen">（protocol）</span>。</li>
 </ul>
-<h3>SET：专门为刷卡支付设计的协议</h3>
-<p>1996 年，MasterCard、Visa、Microsoft、IBM、Netscape 等一起设计了 <b>SET（Secure Electronic Transaction）</b>，专门保护在开放网络上的银行卡支付。它不是一个支付系统，而是一套安全协议和格式。</p>
+<h3>SET：专门为刷卡支付<span class="zhen">（card payment）</span>设计的协议<span class="zhen">（protocol）</span></h3>
+<p>1996 年，MasterCard、Visa、Microsoft、IBM、Netscape 等一起设计了 <b>SET（Secure Electronic Transaction）</b>，专门保护在开放网络上的银行卡支付<span class="zhen">（card payment）</span>。它不是一个支付系统，而是一套安全协议<span class="zhen">（protocol）</span>和格式。</p>
 <div class="tbl"><table>
 <tr><th></th><th>SSL/TLS</th><th>SET</th></tr>
-<tr><td>目的</td><td>加密交换数据</td><td>电商支付</td></tr>
-<tr><td>参与方</td><td><b>两方</b>（浏览器和服务器）</td><td><b>多方</b>：持卡人、商家、银行、支付网关</td></tr>
-<tr><td>认证</td><td>主要认证服务器，不太强</td><td><b>所有参与方</b>都有数字证书，认证很强</td></tr>
-<tr><td>加密对象</td><td>信道</td><td>消息</td></tr>
-<tr><td>商家欺诈风险</td><td>有，客户把卡号交给了商家</td><td>小，商家<b>看不到</b>卡号，卡号交给支付网关</td></tr>
-<tr><td>客户欺诈风险</td><td>有，客户事后可以拒付</td><td>小，客户要对支付指令<b>数字签名</b>，不能抵赖</td></tr>
-<tr><td>出了问题谁负责</td><td>商家</td><td>支付网关</td></tr>
-<tr><td>实际使用</td><td><b>非常广泛</b></td><td><b>几乎没人用</b>，因为银行、商家、客户都要装专门的软件</td></tr>
+<tr><td>目的</td><td>加密<span class="zhen">（encryption）</span>交换数据</td><td>电商支付<span class="zhen">（e-commerce payment）</span></td></tr>
+<tr><td>参与方</td><td><b>两方</b>（浏览器<span class="zhen">（browser）</span>和服务器<span class="zhen">（server）</span>）</td><td><b>多方</b>：持卡人<span class="zhen">（cardholder）</span>、商家<span class="zhen">（merchant）</span>、银行、支付网关<span class="zhen">（payment gateway）</span></td></tr>
+<tr><td>认证<span class="zhen">（authentication）</span></td><td>主要认证服务器<span class="zhen">（authentication server）</span>，不太强</td><td><b>所有参与方</b>都有数字证书<span class="zhen">（digital certificate）</span>，认证<span class="zhen">（authentication）</span>很强</td></tr>
+<tr><td>加密<span class="zhen">（encryption）</span>对象</td><td>信道<span class="zhen">（channel）</span></td><td>消息</td></tr>
+<tr><td>商家欺诈<span class="zhen">（merchant fraud）</span>风险<span class="zhen">（risk）</span></td><td>有，客户把卡号交给了商家<span class="zhen">（merchant）</span></td><td>小，商家<span class="zhen">（merchant）</span><b>看不到</b>卡号，卡号交给支付网关<span class="zhen">（payment gateway）</span></td></tr>
+<tr><td>客户欺诈<span class="zhen">（customer fraud）</span>风险<span class="zhen">（risk）</span></td><td>有，客户事后可以拒付<span class="zhen">（chargeback）</span></td><td>小，客户要对支付指令<span class="zhen">（payment instruction）</span><b>数字签名<span class="zhen">（digital signature）</span></b>，不能抵赖<span class="zhen">（repudiation）</span></td></tr>
+<tr><td>出了问题谁负责</td><td>商家<span class="zhen">（merchant）</span></td><td>支付网关<span class="zhen">（payment gateway）</span></td></tr>
+<tr><td>实际使用</td><td><b>非常广泛</b></td><td><b>几乎没人用</b>，因为银行、商家<span class="zhen">（merchant）</span>、客户都要装专门的软件</td></tr>
 </table></div>
-<p>SET 用到的密码学：对称加密保证机密性，RSA 公钥做授权，哈希保证完整性。课件的几个问答：SET 会取代 SSL 吗？<b>不会</b>，两者除了都用密码学和证书，没有技术上的相似之处。SSL 对电商够用吗？<b>不够，但没有别的选择</b>。SSL 下商家知道客户是谁吗？<b>不知道</b>。</p>
+<p>SET 用到的密码学<span class="zhen">（cryptography）</span>：对称加密<span class="zhen">（symmetric encryption）</span>保证机密性<span class="zhen">（confidentiality）</span>，RSA 公钥<span class="zhen">（public key）</span>做授权<span class="zhen">（authorization）</span>，哈希<span class="zhen">（hash）</span>保证完整性<span class="zhen">（integrity）</span>。课件的几个问答：SET 会取代 SSL 吗？<b>不会</b>，两者除了都用密码学<span class="zhen">（cryptography）</span>和证书<span class="zhen">（certificate）</span>，没有技术上的相似之处。SSL 对电商<span class="zhen">（e-commerce）</span>够用吗？<b>不够，但没有别的选择</b>。SSL 下商家<span class="zhen">（merchant）</span>知道客户是谁吗？<b>不知道</b>。</p>
 <div class="check" data-a="1"><p class="cq">关于 SET 和 SSL，哪项正确？</p>
-<div class="opts"><button class="opt">SET 和 SSL 一样是两方协议</button><button class="opt">SET 用证书认证所有参与方，商家看不到客户的卡号</button><button class="opt">SET 是今天最流行的电商协议</button></div>
-<div class="cx"><p>SSL 才是两方协议；SET 几乎没人用。</p></div></div>
+<div class="opts"><button class="opt">SET 和 SSL 一样是两方协议<span class="zhen">（two-party protocol）</span></button><button class="opt">SET 用证书<span class="zhen">（certificate）</span>认证<span class="zhen">（authentication）</span>所有参与方，商家<span class="zhen">（merchant）</span>看不到客户的卡号</button><button class="opt">SET 是今天最流行的电商<span class="zhen">（e-commerce）</span>协议<span class="zhen">（protocol）</span></button></div>
+<div class="cx"><p>SSL 才是两方协议<span class="zhen">（two-party protocol）</span>；SET 几乎没人用。</p></div></div>
 <h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：SET 的组成与交易流程 <span class="ref">P5-31～P5-38</span></h3>
 
 <h4>SET 的几个关键点（P5-31、P5-33）</h4>
 <ul>
-<li>SET 为卡支付中的<b>所有参与者</b>建模：持卡人、商家、银行，以及它们之间的信任关系和数字签名的法律含义；</li>
-<li>为交易中的<b>每一方</b>提供密码学身份认证，也就是多方安全（multiparty security）；</li>
-<li>加密的是<b>消息</b>，而不是信道；</li>
-<li>每个持卡人都会被发一个数字签名，它加上会说 SET 协议的软件，就组成了 <b>SET 电子钱包</b>；</li>
-<li>SET 的消息和传统银行网络多年来使用的消息基本一样，SET 只是让它们能在不安全的开放互联网上传输；</li>
-<li>SSL 只在<b>两台电脑之间</b>建立安全连接，SET 则定义了银行、商家、持卡人之间<b>所有必要的通信</b>；</li>
-<li>对商家：持卡人事后不能说“不是我买的”，银行有证据；对持卡人：能确认商家是合法的。</li>
+<li>SET 为卡支付<span class="zhen">（card payment）</span>中的<b>所有参与者</b>建模：持卡人<span class="zhen">（cardholder）</span>、商家<span class="zhen">（merchant）</span>、银行，以及它们之间的信任关系和数字签名<span class="zhen">（digital signature）</span>的法律含义；</li>
+<li>为交易中的<b>每一方</b>提供密码学<span class="zhen">（cryptography）</span>身份认证<span class="zhen">（authentication）</span>，也就是多方安全（multiparty security）；</li>
+<li>加密<span class="zhen">（encryption）</span>的是<b>消息</b>，而不是信道<span class="zhen">（channel）</span>；</li>
+<li>每个持卡人<span class="zhen">（cardholder）</span>都会被发一个数字签名<span class="zhen">（digital signature）</span>，它加上会说 SET 协议<span class="zhen">（protocol）</span>的软件，就组成了 <b>SET 电子钱包<span class="zhen">（electronic wallet）</span></b>；</li>
+<li>SET 的消息和传统银行网络多年来使用的消息基本一样，SET 只是让它们能在不安全的开放互联网<span class="zhen">（Internet）</span>上传输；</li>
+<li>SSL 只在<b>两台电脑之间</b>建立安全连接，SET 则定义了银行、商家<span class="zhen">（merchant）</span>、持卡人<span class="zhen">（cardholder）</span>之间<b>所有必要的通信</b>；</li>
+<li>对商家<span class="zhen">（merchant）</span>：持卡人<span class="zhen">（cardholder）</span>事后不能说“不是我买的”，银行有证据；对持卡人<span class="zhen">（cardholder）</span>：能确认商家<span class="zhen">（merchant）</span>是合法的。</li>
 </ul>
 <h4>一笔 SET 交易的 10 步（P5-34）</h4>
 <ol>
 <li>客户开户；</li>
-<li>客户收到一张证书；</li>
-<li>商家也有自己的证书；</li>
+<li>客户收到一张证书<span class="zhen">（certificate）</span>；</li>
+<li>商家<span class="zhen">（merchant）</span>也有自己的证书<span class="zhen">（certificate）</span>；</li>
 <li>客户下单；</li>
-<li>验证商家身份；</li>
+<li>验证商家<span class="zhen">（merchant）</span>身份；</li>
 <li>发送订单和支付信息；</li>
-<li>商家请求支付授权；</li>
-<li>商家确认订单；</li>
-<li>商家提供商品或服务；</li>
-<li>商家请求付款。</li>
+<li>商家<span class="zhen">（merchant）</span>请求支付授权<span class="zhen">（payment authorization）</span>；</li>
+<li>商家<span class="zhen">（merchant）</span>确认订单；</li>
+<li>商家<span class="zhen">（merchant）</span>提供商品或服务；</li>
+<li>商家<span class="zhen">（merchant）</span>请求付款。</li>
 </ol>
 <h4>SET 用到的密码学（P5-33、P5-36）</h4>
 <div class="tbl"><table>
 <tr><th>目标</th><th>用什么</th></tr>
-<tr><td>机密性 Confidentiality</td><td>对称密钥加密</td></tr>
-<tr><td>授权 Authorization</td><td>公钥密码 RSA</td></tr>
-<tr><td>完整性 Integrity</td><td>哈希</td></tr>
-<tr><td>认证 Authentication</td><td>所有参与方都用数字证书认证</td></tr>
+<tr><td>机密性 Confidentiality</td><td>对称密钥加密<span class="zhen">（symmetric key encryption）</span></td></tr>
+<tr><td>授权 Authorization</td><td>公钥密码<span class="zhen">（public-key cryptography）</span> RSA</td></tr>
+<tr><td>完整性 Integrity</td><td>哈希<span class="zhen">（hash）</span></td></tr>
+<tr><td>认证 Authentication</td><td>所有参与方都用数字证书<span class="zhen">（digital certificate）</span>认证</td></tr>
 </table></div>
-<p><b>SET 的优点</b>：商家看不到客户的账户信息（保护金融隐私）；它是完整的刷卡支付系统，包括支付传输、确认和查询。<b>SET 的缺点</b>：银行网络、商家和消费者电脑上都必须装相应的软件，这也是它几乎没人用的原因。</p>
+<p><b>SET 的优点</b>：商家<span class="zhen">（merchant）</span>看不到客户的账户信息（保护金融隐私<span class="zhen">（financial privacy）</span>）；它是完整的刷卡支付<span class="zhen">（card payment）</span>系统，包括支付传输、确认和查询。<b>SET 的缺点</b>：银行网络、商家<span class="zhen">（merchant）</span>和消费者电脑上都必须装相应的软件，这也是它几乎没人用的原因。</p>
 <h4>SET vs SSL 的根本区别（P5-37）</h4>
-<p>SSL <b>不能提供不可抵赖性</b>，而且只做服务器端认证；SET 用数字证书<b>同时认证持卡人和商家</b>，所以付款很难被否认，商家也能确定收到的订单没被改过。</p>
+<p>SSL <b>不能提供不可抵赖性<span class="zhen">（non-repudiation）</span></b>，而且只做服务器<span class="zhen">（server）</span>端认证<span class="zhen">（authentication）</span>；SET 用数字证书<span class="zhen">（digital certificate）</span><b>同时认证<span class="zhen">（authentication）</span>持卡人<span class="zhen">（cardholder）</span>和商家<span class="zhen">（merchant）</span></b>，所以付款很难被否认，商家<span class="zhen">（merchant）</span>也能确定收到的订单没被改过。</p>
 </section>
 
 <section class="sec" id="fw">
-<h2><span class="n">6</span>防火墙基础：网络的门卫</h2>
-<p><b>Firewall</b> 是一种网络安全设备或软件，根据组织事先制定的安全策略，<b>监控和过滤进出网络的流量</b>。它是内部私有网络和公共互联网之间的那道墙，目的就是放行无害流量、挡住危险流量（样题 Q5-8）。</p>
+<h2><span class="n">6</span>防火墙<span class="zhen">（firewall）</span>基础：网络的门卫</h2>
+<p><b>Firewall</b> 是一种网络安全设备<span class="zhen">（network security device）</span>或软件，根据组织事先制定的安全策略<span class="zhen">（security policy）</span>，<b>监控和过滤进出网络的流量<span class="zhen">（traffic）</span></b>。它是内部私有网络和公共互联网<span class="zhen">（Internet）</span>之间的那道墙，目的就是放行无害流量<span class="zhen">（traffic）</span>、挡住危险流量<span class="zhen">（traffic）</span>（样题 Q5-8）。</p>
 <ul>
-<li>防火墙可以是单台计算机，也可以是<b>两台或更多系统协同</b>完成（样题 Q5-6：True）；</li>
-<li><b>硬件防火墙</b>：保护整个网络，部署在路由器层面，一般更贵、更难配置；</li>
-<li><b>软件防火墙</b>：保护单台电脑，便宜、易配置。</li>
+<li>防火墙<span class="zhen">（firewall）</span>可以是单台计算机，也可以是<b>两台或更多系统协同</b>完成（样题 Q5-6：True）；</li>
+<li><b>硬件防火墙<span class="zhen">（hardware firewall）</span></b>：保护整个网络，部署在路由器<span class="zhen">（router）</span>层面，一般更贵、更难配置；</li>
+<li><b>软件防火墙<span class="zhen">（software firewall）</span></b>：保护单台电脑，便宜、易配置。</li>
 </ul>
-<p>进入网络的流量叫 <b>ingress</b>，离开网络的叫 <b>egress</b>。课件有一句很重要的话：防火墙<b>只丢弃能被证明是攻击的包</b>，所以总有一些“看起来正常”的攻击包能溜进来，防火墙不是万能的。</p>
-<div class="analogy box"><span class="bt">类比：房子与房间（P5-51）</span><p>把 IP 地址想成房子，端口号想成房子里的房间。只有可信的人（源地址）能进这栋房子（目的地址），进来以后还要看身份决定能进哪些房间（目的端口）：主人哪个房间都能进，孩子和客人只能进某些房间。</p></div>
-<h3>动手：防火墙规则匹配（P5-52）</h3>
-<p>规则<b>从上到下</b>逐条检查，<b>第一条完全匹配的规则说了算</b>，后面的不再看。最后一条通常是 “Any Any Any → Deny”（默认拒绝）。</p>
-<div class="lab"><p class="lt">规则匹配器</p><p class="ld">规则表就是课件上的那三条。改一改数据包的源地址、目的地址和端口，看它命中哪一条。</p>
-<div class="tbl" style="margin:0 0 12px"><table class="rules" id="rtab"><tr><th>#</th><th>源 IP</th><th>目的 IP</th><th>端口</th><th>动作</th></tr></table></div>
-<div class="fields"><div class="fld"><label for="ps">数据包源 IP</label><input id="ps" type="text" value="192.168.1.30"></div><div class="fld"><label for="pd">目的 IP</label><input id="pd" type="text" value="10.0.0.5"></div><div class="fld"><label for="pp">目的端口</label><input id="pp" type="number" value="443"></div></div>
+<p>进入网络的流量<span class="zhen">（traffic）</span>叫 <b>ingress</b>，离开网络的叫 <b>egress</b>。课件有一句很重要的话：防火墙<span class="zhen">（firewall）</span><b>只丢弃能被证明是攻击的包</b>，所以总有一些“看起来正常”的攻击包<span class="zhen">（attack packet）</span>能溜进来，防火墙<span class="zhen">（firewall）</span>不是万能的。</p>
+<div class="analogy box"><span class="bt">类比：房子与房间（P5-51）</span><p>把 IP 地址<span class="zhen">（IP address）</span>想成房子，端口<span class="zhen">（port）</span>号想成房子里的房间。只有可信的人（源地址<span class="zhen">（source address）</span>）能进这栋房子（目的地址<span class="zhen">（destination address）</span>），进来以后还要看身份决定能进哪些房间（目的端口<span class="zhen">（destination port）</span>）：主人哪个房间都能进，孩子和客人只能进某些房间。</p></div>
+<h3>动手：防火墙<span class="zhen">（firewall）</span>规则匹配（P5-52）</h3>
+<p>规则<b>从上到下</b>逐条检查，<b>第一条完全匹配的规则说了算</b>，后面的不再看。最后一条通常是 “Any Any Any → Deny”（默认拒绝<span class="zhen">（default deny）</span>）。</p>
+<div class="lab"><p class="lt">规则匹配<span class="zhen">（rule matching）</span>器</p><p class="ld">规则表<span class="zhen">（rule table）</span>就是课件上的那三条。改一改数据包<span class="zhen">（packet）</span>的源地址<span class="zhen">（source address）</span>、目的地址<span class="zhen">（destination address）</span>和端口<span class="zhen">（port）</span>，看它命中哪一条。</p>
+<div class="tbl" style="margin:0 0 12px"><table class="rules" id="rtab"><tr><th>#</th><th>源 IP</th><th>目的 IP</th><th>端口<span class="zhen">（port）</span></th><th>动作</th></tr></table></div>
+<div class="fields"><div class="fld"><label for="ps">数据包<span class="zhen">（packet）</span>源 IP</label><input id="ps" type="text" value="192.168.1.30"></div><div class="fld"><label for="pd">目的 IP</label><input id="pd" type="text" value="10.0.0.5"></div><div class="fld"><label for="pp">目的端口<span class="zhen">（destination port）</span></label><input id="pp" type="number" value="443"></div></div>
 <div class="out" id="fwout"></div>
 <p class="ld" style="margin:10px 0 0">试试课件的三个例子：① 192.168.1.25 → 8.8.8.8 : 80（Allow，Rule 1）；② 172.16.5.10 → 10.0.0.5 : 22（Deny，Rule 2）；③ 192.168.1.30 → 10.0.0.5 : 443（Deny，Rule 3）。</p></div>
-<h3>IP 地址欺骗</h3>
-<p>入侵者从外部发送数据包，却把源地址填成<b>内部主机的地址</b>，冒充自己人，这叫 <b>IP address spoofing</b>（样题 Q5-10）。好在外部接口上不可能出现合法的“内部源地址”，包过滤防火墙很容易识别并丢弃这种包。</p>
+<h3>IP 地址<span class="zhen">（IP address）</span>欺骗<span class="zhen">（deception）</span></h3>
+<p>入侵者<span class="zhen">（intruder）</span>从外部发送数据包<span class="zhen">（packet）</span>，却把源地址<span class="zhen">（source address）</span>填成<b>内部主机<span class="zhen">（internal host）</span>的地址</b>，冒充<span class="zhen">（masquerading）</span>自己人，这叫 <b>IP address spoofing</b>（样题 Q5-10）。好在外部接口<span class="zhen">（external interface）</span>上不可能出现合法的“内部源地址<span class="zhen">（source address）</span>”，包过滤防火墙<span class="zhen">（packet filtering firewall）</span>很容易识别并丢弃这种包。</p>
 <h3>个人防火墙（P5-53）</h3>
-<p>保护<b>单台</b>联网电脑的软件（样题 Q5-11 把 personal 误印成了 personnel）。<b>能做</b>：阻止黑客访问电脑、保护个人信息、拦截弹窗和某些 cookie、决定哪些程序能上网。<b>不能做</b>：防邮件病毒（要靠杀毒软件）；装好以后就不管（规则和软件都需要定期更新）。</p>
-<h3>防火墙的优缺点（P5-54）</h3>
-<p>优点：阻止未授权访问、过滤流量、记录日志并告警。缺点：降低网络速度、配置复杂、<b>防不了内部人员</b>、能被隧道和加密流量<b>绕过</b>、挡不住社会工程和零日漏洞。所以样题 Q5-12“防火墙能防御绕过它的攻击”是 <b>False</b>。</p>
+<p>保护<b>单台</b>联网电脑的软件（样题 Q5-11 把 personal 误印成了 personnel）。<b>能做</b>：阻止黑客<span class="zhen">（hacker）</span>访问电脑、保护个人信息、拦截弹窗和某些 cookie、决定哪些程序能上网。<b>不能做</b>：防邮件病毒<span class="zhen">（virus）</span>（要靠杀毒软件<span class="zhen">（antivirus software）</span>）；装好以后就不管（规则和软件都需要定期更新）。</p>
+<h3>防火墙<span class="zhen">（firewall）</span>的优缺点（P5-54）</h3>
+<p>优点：阻止未授权访问<span class="zhen">（unauthorized access）</span>、过滤流量<span class="zhen">（traffic）</span>、记录日志<span class="zhen">（log）</span>并告警<span class="zhen">（alert）</span>。缺点：降低网络速度、配置复杂、<b>防不了内部人员<span class="zhen">（insider）</span></b>、能被隧道<span class="zhen">（tunneling）</span>和加密流量<span class="zhen">（encrypted traffic）</span><b>绕过</b>、挡不住社会工程<span class="zhen">（social engineering）</span>和零日漏洞<span class="zhen">（zero-day vulnerability）</span>。所以样题 Q5-12“防火墙<span class="zhen">（firewall）</span>能防御绕过它的攻击”是 <b>False</b>。</p>
 <div class="check" data-a="1"><p class="cq">“The firewall can protect against attacks that bypass the firewall.”</p>
 <div class="opts"><button class="opt">TRUE</button><button class="opt">FALSE</button></div>
-<div class="cx"><p>FALSE（样题 Q5-12）。流量不经过它，它就管不着：内鬼、U 盘、私接的热点都能绕过。</p></div></div>
-<h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：网络安全控制与防火墙工作方式 <span class="ref">P5-40～P5-54</span></h3>
+<div class="cx"><p>FALSE（样题 Q5-12）。流量<span class="zhen">（traffic）</span>不经过它，它就管不着：内鬼<span class="zhen">（insider）</span>、U 盘<span class="zhen">（USB drive）</span>、私接的热点<span class="zhen">（hotspot）</span>都能绕过。</p></div></div>
+<h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：网络安全控制<span class="zhen">（network security controls）</span>与防火墙<span class="zhen">（firewall）</span>工作方式 <span class="ref">P5-40～P5-54</span></h3>
 
 <h4>网络安全控制（P5-40）</h4>
-<p>网络是一组用有线或无线方式连起来的设备。<b>网络安全控制</b>指用来加强网络安全的各种措施：<b>访问控制、认证、授权、密码学、Web 安全、安全策略</b>等。防火墙是其中最常见的一种。</p>
-<h4>防火墙怎么挡住蠕虫和黑客（P5-45）</h4>
-<p>你向互联网请求东西时，防火墙会<b>假装是它自己发出的请求</b>，而不是你的电脑。互联网根本看不到你的电脑，蠕虫和黑客能探测、攻击的就只剩防火墙，而防火墙只是一个“笨盒子”（dumb box），没什么可以被利用的。</p>
-<h4>防火墙的基本运作（P5-47～P5-49）</h4>
+<p>网络是一组用有线或无线方式连起来的设备。<b>网络安全控制<span class="zhen">（network security controls）</span></b>指用来加强网络安全<span class="zhen">（cyber security）</span>的各种措施：<b>访问控制<span class="zhen">（access control）</span>、认证<span class="zhen">（authentication）</span>、授权<span class="zhen">（authorization）</span>、密码学<span class="zhen">（cryptography）</span>、Web 安全、安全策略<span class="zhen">（security policy）</span></b>等。防火墙<span class="zhen">（firewall）</span>是其中最常见的一种。</p>
+<h4>防火墙<span class="zhen">（firewall）</span>怎么挡住蠕虫<span class="zhen">（worm）</span>和黑客（P5-45）</h4>
+<p>你向互联网<span class="zhen">（Internet）</span>请求东西时，防火墙<span class="zhen">（firewall）</span>会<b>假装是它自己发出的请求</b>，而不是你的电脑。互联网<span class="zhen">（Internet）</span>根本看不到你的电脑，蠕虫<span class="zhen">（worm）</span>和黑客<span class="zhen">（hacker）</span>能探测、攻击的就只剩防火墙<span class="zhen">（firewall）</span>，而防火墙<span class="zhen">（firewall）</span>只是一个“笨盒子”（dumb box），没什么可以被利用的。</p>
+<h4>防火墙<span class="zhen">（firewall）</span>的基本运作（P5-47～P5-49）</h4>
 <ol>
-<li>合法主机发送正常的包，攻击者发送攻击包；</li>
+<li>合法主机发送正常的包，攻击者<span class="zhen">（attacker）</span>发送攻击包<span class="zhen">（attack packet）</span>；</li>
 <li>进入站点的叫 <b>ingress</b>（入站），离开站点的叫 <b>egress</b>（出站）；</li>
-<li>防火墙<b>丢弃并记录</b>能够证明是攻击的包；</li>
-<li>防火墙<b>只在能证明是攻击时才丢包</b>，所以有些“无法证明”的攻击包会穿过防火墙。</li>
+<li>防火墙<span class="zhen">（firewall）</span><b>丢弃并记录</b>能够证明是攻击的包；</li>
+<li>防火墙<span class="zhen">（firewall）</span><b>只在能证明是攻击时才丢包</b>，所以有些“无法证明”的攻击包<span class="zhen">（attack packet）</span>会穿过防火墙<span class="zhen">（firewall）</span>。</li>
 </ol>
-<h4>软件防火墙怎么工作（P5-44）</h4>
-<p>它检查到达防火墙任何一侧的每一个“包”（进入你电脑的，或从你电脑出去的），决定让它通过还是拦下。</p>
+<h4>软件防火墙<span class="zhen">（software firewall）</span>怎么工作（P5-44）</h4>
+<p>它检查到达防火墙<span class="zhen">（firewall）</span>任何一侧的每一个“包”（进入你电脑的，或从你电脑出去的），决定让它通过还是拦下。</p>
 <h4>防火墙策略（P5-50）</h4>
-<p>防火墙按一组预先定义的规则，即<b>防火墙策略（firewall policies）</b>，过滤进出的流量，以保护私有网络和单台机器免受互联网威胁。一边是可信的内网（trusted internal network），一边是不可信的互联网（un-trusted Internet）。</p>
+<p>防火墙按一组预先定义的规则，即<b>防火墙策略（firewall policies）</b>，过滤进出的流量<span class="zhen">（traffic）</span>，以保护私有网络和单台机器免受互联网<span class="zhen">（Internet）</span>威胁<span class="zhen">（threat）</span>。一边是可信的内网（trusted internal network），一边是不可信的互联网（un-trusted Internet）。</p>
 </section>
 
 <section class="sec" id="fwtypes">
-<h2><span class="n">7</span>防火墙的类型：看得越深越安全，也越慢</h2>
+<h2><span class="n">7</span>防火墙<span class="zhen">（firewall）</span>的类型：看得越深越安全，也越慢</h2>
 <div class="tbl"><table>
 <tr><th>类型</th><th>怎么工作</th><th>特点</th></tr>
-<tr><td><b>Packet filtering</b> 包过滤</td><td>逐个检查包头：源 IP、目的 IP、端口，按规则放行或丢弃（样题 Q5-9）</td><td>快、便宜；<b>无状态</b>，不记得之前的包，也不看更高层的内容（样题 Q5-7：True）</td></tr>
-<tr><td><b>Stateful inspection（SPI）</b> 状态检测</td><td>除了包头，还用<b>状态表</b>记录每条连接（IP、端口、序列号），只放行“内网主动发起的连接”的回包</td><td>比包过滤更安全，资源消耗更多；维护状态表可能被 DoS 拖垮；如今几乎所有边界防火墙都用它</td></tr>
-<tr><td><b>Proxy / Application gateway</b> 代理</td><td>作为中间人：用户向代理请求，代理检查请求合法后替你去取，再把结果返回</td><td>能看懂完整的应用协议，<b>最安全</b>，日志审计方便；但<b>最慢</b></td></tr>
-<tr><td><b>NGFW</b> 下一代防火墙</td><td>传统功能 + 入侵防御（IPS）+ 深度包检测（DPI）+ 应用识别</td><td>更先进，也更贵；“下一代”没有统一定义</td></tr>
+<tr><td><b>Packet filtering</b> 包过滤</td><td>逐个检查包头<span class="zhen">（packet header）</span>：源 IP、目的 IP、端口<span class="zhen">（port）</span>，按规则放行或丢弃（样题 Q5-9）</td><td>快、便宜；<b>无状态<span class="zhen">（stateless）</span></b>，不记得之前的包，也不看更高层的内容（样题 Q5-7：True）</td></tr>
+<tr><td><b>Stateful inspection（SPI）</b> 状态检测</td><td>除了包头<span class="zhen">（packet header）</span>，还用<b>状态表<span class="zhen">（state table）</span></b>记录每条连接（IP、端口<span class="zhen">（port）</span>、序列号<span class="zhen">（serial number）</span>），只放行“内网<span class="zhen">（internal network）</span>主动发起的连接”的回包</td><td>比包过滤<span class="zhen">（packet filtering）</span>更安全，资源消耗更多；维护状态表<span class="zhen">（state table）</span>可能被 DoS 拖垮；如今几乎所有边界防火墙<span class="zhen">（perimeter firewall）</span>都用它</td></tr>
+<tr><td><b>Proxy / Application gateway</b> 代理</td><td>作为中间人<span class="zhen">（man-in-the-middle）</span>：用户向代理<span class="zhen">（proxy）</span>请求，代理<span class="zhen">（proxy）</span>检查请求合法后替你去取，再把结果返回</td><td>能看懂完整的应用协议<span class="zhen">（protocol）</span>，<b>最安全</b>，日志审计<span class="zhen">（logging and auditing）</span>方便；但<b>最慢</b></td></tr>
+<tr><td><b>NGFW</b> 下一代防火墙</td><td>传统功能 + 入侵防御（IPS）+ 深度包检测（DPI）+ 应用识别<span class="zhen">（application identification）</span></td><td>更先进，也更贵；“下一代”没有统一定义</td></tr>
 <tr><td>Cloud firewall</td><td>部署在云上，保护远程用户（Firewall-as-a-Service）</td><td>弹性好，但依赖第三方</td></tr>
-<tr><td>WAF</td><td>专门保护 Web 应用</td><td>防 SQL 注入、XSS</td></tr>
+<tr><td>WAF</td><td>专门保护 Web 应用</td><td>防 SQL 注入<span class="zhen">（SQL injection）</span>、XSS</td></tr>
 </table></div>
-<p>包过滤又分三种：<b>static</b>（按固定规则匹配）、<b>dynamic</b>（能根据突发事件临时更新规则）、<b>stateful</b>（即 SPI）。</p>
-<div class="analogy box"><span class="bt">类比：小区门卫</span><ul style="margin:0"><li><b>包过滤</b>：只看车牌，名单上有就放行，不记得这辆车刚才有没有出去过；</li><li><b>SPI</b>：有一本登记簿，“这辆车是业主刚开出去的，现在回来，放行”；陌生车想主动进来就拦下；</li><li><b>代理</b>：外人一律不准进，你要什么，门卫替你出去拿回来，还会检查东西里面有没有问题。</li></ul></div>
+<p>包过滤<span class="zhen">（packet filtering）</span>又分三种：<b>static</b>（按固定规则匹配<span class="zhen">（rule matching）</span>）、<b>dynamic</b>（能根据突发事件临时更新规则）、<b>stateful</b>（即 SPI）。</p>
+<div class="analogy box"><span class="bt">类比：小区门卫</span><ul style="margin:0"><li><b>包过滤<span class="zhen">（packet filtering）</span></b>：只看车牌，名单上有就放行，不记得这辆车刚才有没有出去过；</li><li><b>SPI</b>：有一本登记簿，“这辆车是业主刚开出去的，现在回来，放行”；陌生车想主动进来就拦下；</li><li><b>代理<span class="zhen">（proxy）</span></b>：外人一律不准进，你要什么，门卫替你出去拿回来，还会检查东西里面有没有问题。</li></ul></div>
 <div class="tbl"><table>
 <tr><th>（数字越小越好）</th><th>安全性</th><th>性能</th></tr>
 <tr><td>Packet filter</td><td>3</td><td>1（最快）</td></tr>
@@ -389,38 +389,38 @@
 <tr><td>App gateway</td><td>1（最安全）</td><td>4（最慢）</td></tr>
 </table></div>
 <p class="ref" style="white-space:normal">课件 P5-68 的对比表</p>
-<h3>吞吐量计算（P5-76～P5-78）</h3>
-<p>和模块 1 的 Ping flood 是同一个公式：<b>所需包速率 = 带宽 ÷ (包大小 × 8)</b>，再和防火墙的处理能力比较。</p>
-<div class="lab"><p class="lt">防火墙吞吐量计算器</p>
-<div class="fields"><div class="fld"><label for="tl">链路速率 (Gbps)</label><input id="tl" type="number" value="1" step="any"></div><div class="fld"><label for="ts">平均包大小 (bytes)</label><input id="ts" type="number" value="1000"></div><div class="fld"><label for="tc">防火墙能力 (pps)</label><input id="tc" type="number" value="100000"></div></div>
+<h3>吞吐量<span class="zhen">（throughput）</span>计算（P5-76～P5-78）</h3>
+<p>和模块 1 的 Ping flood 是同一个公式：<b>所需包速率<span class="zhen">（packet rate）</span> = 带宽<span class="zhen">（bandwidth）</span> ÷ (包大小<span class="zhen">（packet size）</span> × 8)</b>，再和防火墙<span class="zhen">（firewall）</span>的处理能力比较。</p>
+<div class="lab"><p class="lt">防火墙吞吐量<span class="zhen">（firewall throughput）</span>计算器</p>
+<div class="fields"><div class="fld"><label for="tl">链路速率 (Gbps)</label><input id="tl" type="number" value="1" step="any"></div><div class="fld"><label for="ts">平均包大小 (bytes)</label><input id="ts" type="number" value="1000"></div><div class="fld"><label for="tc">防火墙<span class="zhen">（firewall）</span>能力 (pps)</label><input id="tc" type="number" value="100000"></div></div>
 <div class="out" id="tout"></div></div>
 <div class="check" data-a="0"><p class="cq">“A traditional packet filter makes filtering decisions on an individual packet basis and does not take into consideration any higher layer context.”</p>
 <div class="opts"><button class="opt">TRUE</button><button class="opt">FALSE</button></div>
-<div class="cx"><p>传统包过滤就是无状态、逐包判断（样题 Q5-7）。</p></div></div>
-<h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：每种防火墙的课件原文要点 <span class="ref">P5-55～P5-68</span></h3>
+<div class="cx"><p>传统包过滤<span class="zhen">（packet filtering）</span>就是无状态<span class="zhen">（stateless）</span>、逐包判断（样题 Q5-7）。</p></div></div>
+<h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：每种防火墙<span class="zhen">（firewall）</span>的课件原文要点 <span class="ref">P5-55～P5-68</span></h3>
 
 <h4>包过滤防火墙（P5-57）</h4>
 <p>成本低，对网络性能影响小。它有三种子类型：</p>
 <ul>
-<li><b>Static filtering（静态过滤）</b>：包符合规则就放行或丢弃；</li>
-<li><b>Dynamic filtering（动态过滤）</b>：能理解协议怎么工作，根据包头信息对突发事件作出反应，更新或新建规则；</li>
-<li><b>Stateful inspection（状态检测）</b>：用状态表跟踪内部和外部系统之间的每一条连接。</li>
+<li><b>Static filtering（静态过滤）</b>：包符合规<span class="zhen">（compliance）</span>则就放行或丢弃；</li>
+<li><b>Dynamic filtering（动态过滤）</b>：能理解协议<span class="zhen">（protocol）</span>怎么工作，根据包头<span class="zhen">（packet header）</span>信息对突发事件作出反应，更新或新建规则；</li>
+<li><b>Stateful inspection（状态检测）</b>：用状态表<span class="zhen">（state table）</span>跟踪内部和外部系统之间的每一条连接。</li>
 </ul>
 <h4>静态包过滤（P5-58）</h4>
 <ul>
-<li>最早的防火墙过滤机制；</li>
-<li><b>一次只看一个包，孤立地看</b>；只看部分网络层和传输层头部；</li>
-<li>所以很多攻击它挡不住，但<b>能挡住伪造 IP 地址的包</b>；</li>
-<li>如今不再作为边界防火墙的主要过滤机制，但可以作为主边界防火墙上的<b>辅助过滤</b>。</li>
+<li>最早的防火墙<span class="zhen">（firewall）</span>过滤机制；</li>
+<li><b>一次只看一个包，孤立地看</b>；只看部分网络层<span class="zhen">（network layer）</span>和传输层<span class="zhen">（transport layer）</span>头部；</li>
+<li>所以很多攻击它挡不住，但<b>能挡住伪造<span class="zhen">（forgery）</span> IP 地址<span class="zhen">（IP address）</span>的包</b>；</li>
+<li>如今不再作为边界防火墙<span class="zhen">（perimeter firewall）</span>的主要过滤机制，但可以作为主边界防火墙<span class="zhen">（primary perimeter firewall）</span>上的<b>辅助过滤<span class="zhen">（secondary filtering）</span></b>。</li>
 </ul>
 <h4>状态包检测 SPI（P5-59）</h4>
 <ul>
-<li>检查和包过滤一样的包信息，此外还<b>记录 TCP 连接的信息</b>；</li>
-<li>用<b>状态表</b>跟踪内部和外部系统之间建立的每一条连接，记录哪台机器在什么时候发了什么包；</li>
-<li>能判断一个包是不是属于<b>内网发起的合法会话</b>；</li>
-<li>状态表记录每条活动连接的 IP 地址、端口和<b>序列号</b>；</li>
-<li>因此只放行“作为内网发起连接的回复”的入站 TCP 包；</li>
-<li><b>主要缺点</b>：管理和核对状态表需要额外处理，可能让系统被 <b>DoS 攻击</b>拖垮。</li>
+<li>检查和包过滤<span class="zhen">（packet filtering）</span>一样的包信息，此外还<b>记录 TCP 连接的信息</b>；</li>
+<li>用<b>状态表<span class="zhen">（state table）</span></b>跟踪内部和外部系统之间建立的每一条连接，记录哪台机器在什么时候发了什么包；</li>
+<li>能判断一个包是不是属于<b>内网<span class="zhen">（internal network）</span>发起的合法会话<span class="zhen">（legitimate session）</span></b>；</li>
+<li>状态表<span class="zhen">（state table）</span>记录每条活动连接<span class="zhen">（active connection）</span>的 IP 地址<span class="zhen">（IP address）</span>、端口<span class="zhen">（port）</span>和<b>序列号<span class="zhen">（serial number）</span></b>；</li>
+<li>因此只放行“作为内网<span class="zhen">（internal network）</span>发起连接的回复”的入站<span class="zhen">（ingress）</span> TCP 包；</li>
+<li><b>主要缺点</b>：管理和核对状态表<span class="zhen">（state table）</span>需要额外处理，可能让系统被 <b>DoS 攻击</b>拖垮。</li>
 </ul>
 <h4>连接的状态（P5-60）</h4>
 <p>一条连接分为三个阶段：<b>建立（opening）→ 通信中（ongoing communication）→ 关闭（closing）</b>。不同阶段面临不同的攻击，所以 SPI 对不同状态使用不同的过滤规则。</p>
@@ -428,17 +428,17 @@
 <div class="tbl"><table>
 <tr><th>理由</th><th>课件原意</th></tr>
 <tr><td><b>Low cost 成本低</b></td><td>绝大多数包都不是“建立连接”的包，处理起来简单便宜；建立连接的包处理成本更高，但很少</td></tr>
-<tr><td><b>Safety 安全</b></td><td>除了应用层攻击，其他攻击通常过不了 SPI；需要时 SPI 还能叠加其他过滤方式</td></tr>
-<tr><td><b>Dominance 主导地位</b></td><td>安全性高加上成本低，使它极其流行，<b>如今几乎所有主边界防火墙都用 SPI</b></td></tr>
+<tr><td><b>Safety 安全</b></td><td>除了应用层攻击<span class="zhen">（application-layer attack）</span>，其他攻击通常过不了 SPI；需要时 SPI 还能叠加其他过滤方式</td></tr>
+<tr><td><b>Dominance 主导地位</b></td><td>安全性高加上成本低，使它极其流行，<b>如今几乎所有主边界防火墙<span class="zhen">（primary perimeter firewall）</span>都用 SPI</b></td></tr>
 </table></div>
-<h4>应用网关 / 代理服务器（P5-65）</h4>
+<h4>应用网关<span class="zhen">（application gateway）</span> / 代理服务器（P5-65）</h4>
 <ul>
-<li>通常装在一台<b>专用计算机</b>上，也叫代理服务器（proxy server）；</li>
-<li>它常被放在网络中不安全的区域（例如 <b>DMZ</b>），面对的风险更高；这样暴露在外的是代理服务器，而不是 Web 服务器；</li>
-<li>代理后面还可以再加过滤路由器；</li>
-<li>配置成 Web 代理的网关<b>不放行 FTP、Gopher、Telnet 等其他流量</b>；</li>
-<li>它能<b>完整理解协议</b>：用户向代理请求服务，代理验证请求合法后代为执行，再把结果返回给用户；</li>
-<li>比包过滤更安全：只需要审查少数几个允许的应用，而且<b>容易记录和审计</b>所有进入的流量。</li>
+<li>通常装在一台<b>专用计算机<span class="zhen">（dedicated computer）</span></b>上，也叫代理服务器（proxy server）；</li>
+<li>它常被放在网络中不安全的区域（例如 <b>DMZ</b>），面对的风险<span class="zhen">（risk）</span>更高；这样暴露在外的是代理服务器<span class="zhen">（proxy server）</span>，而不是 Web 服务器<span class="zhen">（server）</span>；</li>
+<li>代理<span class="zhen">（proxy）</span>后面还可以再加过滤路由器<span class="zhen">（filtering router）</span>；</li>
+<li>配置成 Web 代理<span class="zhen">（proxy）</span>的网关<span class="zhen">（gateway）</span><b>不放行 FTP、Gopher、Telnet 等其他流量<span class="zhen">（traffic）</span></b>；</li>
+<li>它能<b>完整理解协议<span class="zhen">（protocol）</span></b>：用户向代理<span class="zhen">（proxy）</span>请求服务，代理<span class="zhen">（proxy）</span>验证请求合法后代为执行，再把结果返回给用户；</li>
+<li>比包过滤<span class="zhen">（packet filtering）</span>更安全：只需要审查少数几个允许的应用，而且<b>容易记录和审计<span class="zhen">（audit）</span></b>所有进入的流量<span class="zhen">（traffic）</span>。</li>
 </ul>
 <h4>综合性能对比（P5-68）</h4>
 <div class="tbl"><table>
@@ -450,13 +450,13 @@
 </section>
 
 <section class="sec" id="arch">
-<h2><span class="n">8</span>防火墙架构：从单个路由器到 DMZ</h2>
+<h2><span class="n">8</span>防火墙架构<span class="zhen">（firewall architecture）</span>：从单个路由器<span class="zhen">（router）</span>到 DMZ</h2>
 <p>选哪种架构，取决于网络的目标、组织的实施能力和预算。课件介绍了四种（P5-69～P5-75）：</p>
 <ol>
-<li><b>Packet filtering router</b>：用连接互联网的路由器做包过滤，是第一代防火墙。缺点：缺少审计，也没有强认证；</li>
-<li><b>Screened host（单主机）</b>：路由器先预筛一遍，后面再接一台专门的防火墙（比如应用代理）。这台主机叫 <b>bastion host（堡垒主机）</b>或牺牲主机，会直接面对外部攻击，必须加固。它被攻破，整个防线就没了；</li>
-<li><b>Dual-homed host（双宿主机）</b>：防火墙有<b>两块网卡</b>，一块接互联网，一块接内网，还能做 NAT（内网用私有地址）。比 screened host 更安全，但仍是<b>单点故障</b>；</li>
-<li><b>Screened subnet（屏蔽子网，带 DMZ）</b>：用<b>两台</b>过滤路由器或防火墙，中间夹一块 <b>DMZ（非军事区）</b>，对外提供服务的 Web 服务器放在 DMZ 里。</li>
+<li><b>Packet filtering router</b>：用连接互联网<span class="zhen">（Internet）</span>的路由器做包过滤<span class="zhen">（packet filtering）</span>，是第一代防火墙<span class="zhen">（first-generation firewall）</span>。缺点：缺少审计<span class="zhen">（audit）</span>，也没有强认证<span class="zhen">（strong authentication）</span>；</li>
+<li><b>Screened host（单主机）</b>：路由器<span class="zhen">（router）</span>先预筛一遍，后面再接一台专门的防火墙<span class="zhen">（firewall）</span>（比如应用代理<span class="zhen">（application proxy）</span>）。这台主机叫 <b>bastion host（堡垒主机）</b>或牺牲主机<span class="zhen">（sacrificial host）</span>，会直接面对外部攻击，必须加固<span class="zhen">（hardening）</span>。它被攻破，整个防线就没了；</li>
+<li><b>Dual-homed host（双宿主机）</b>：防火墙<span class="zhen">（firewall）</span>有<b>两块网卡<span class="zhen">（network interface card (NIC)）</span></b>，一块接互联网<span class="zhen">（Internet）</span>，一块接内网<span class="zhen">（internal network）</span>，还能做 NAT（内网<span class="zhen">（internal network）</span>用私有地址<span class="zhen">（private address）</span>）。比 screened host 更安全，但仍是<b>单点故障<span class="zhen">（single point of failure）</span></b>；</li>
+<li><b>Screened subnet（屏蔽子网，带 DMZ）</b>：用<b>两台</b>过滤路由器<span class="zhen">（filtering router）</span>或防火墙<span class="zhen">（firewall）</span>，中间夹一块 <b>DMZ（非军事区）</b>，对外提供服务的 Web 服务器<span class="zhen">（server）</span>放在 DMZ 里。</li>
 </ol>
 <figure>
 <svg viewBox="0 0 680 220" role="img" aria-label="屏蔽子网防火墙架构：外部路由器、DMZ、内部路由器">
@@ -473,15 +473,15 @@
 </svg>
 <figcaption>Screened subnet：考试看到 DMZ 就选它（P5-74、P5-75）。</figcaption>
 </figure>
-<p>它的优点：入侵者要过<b>三层防御</b>；外部路由器只向互联网宣告 DMZ 的存在，<b>内网对互联网不可见</b>；内部路由器只向内网宣告 DMZ，所以<b>内网主机也无法直接建立通往互联网的路由</b>。</p>
-<h3>“边界已死”？防火墙还需要吗（P5-79～P5-82）</h3>
-<p>传统思路是“内网可信、外网不可信”，防火墙守在边界上。但云计算、远程办公和 BYOD、零信任、越来越多的加密流量、钓鱼和内鬼这类复杂威胁，让“固定边界”逐渐瓦解。课件的结论是：<b>边界没有消失，只是移动了</b>，从固定位置变成跟着用户、设备和数据走的、以身份为基础的边界。防火墙仍然重要，但不再是唯一防线，要和下一代防火墙、云防火墙、网络分段、零信任一起用。</p>
+<p>它的优点：入侵者<span class="zhen">（intruder）</span>要过<b>三层防御<span class="zhen">（three layers of defense）</span></b>；外部路由器<span class="zhen">（exterior router）</span>只向互联网<span class="zhen">（Internet）</span>宣告 DMZ 的存在，<b>内网<span class="zhen">（internal network）</span>对互联网<span class="zhen">（Internet）</span>不可见</b>；内部路由器<span class="zhen">（interior router）</span>只向内网<span class="zhen">（internal network）</span>宣告 DMZ，所以<b>内网<span class="zhen">（internal network）</span>主机也无法直接建立通往互联网<span class="zhen">（Internet）</span>的路由</b>。</p>
+<h3>“边界<span class="zhen">（perimeter）</span>已死”？防火墙<span class="zhen">（firewall）</span>还需要吗（P5-79～P5-82）</h3>
+<p>传统思路是“内网<span class="zhen">（internal network）</span>可信、外网<span class="zhen">（external network）</span>不可信”，防火墙<span class="zhen">（firewall）</span>守在边界<span class="zhen">（perimeter）</span>上。但云计算<span class="zhen">（cloud computing）</span>、远程办公<span class="zhen">（remote work）</span>和 BYOD、零信任<span class="zhen">（zero trust）</span>、越来越多的加密流量<span class="zhen">（encrypted traffic）</span>、钓鱼<span class="zhen">（phishing）</span>和内鬼<span class="zhen">（insider）</span>这类复杂威胁<span class="zhen">（sophisticated threat）</span>，让“固定边界<span class="zhen">（perimeter）</span>”逐渐瓦解。课件的结论是：<b>边界<span class="zhen">（perimeter）</span>没有消失，只是移动了</b>，从固定位置变成跟着用户、设备和数据走的、以身份为基础的边界<span class="zhen">（perimeter）</span>。防火墙<span class="zhen">（firewall）</span>仍然重要，但不再是唯一防线，要和下一代防火墙<span class="zhen">（next-generation firewall (NGFW)）</span>、云防火墙<span class="zhen">（cloud firewall）</span>、网络分段<span class="zhen">（network segmentation）</span>、零信任<span class="zhen">（zero trust）</span>一起用。</p>
 <h3>推荐做法（P5-84）</h3>
-<ul><li>允许内网流量出站；防火墙设备本身不能从公网直接访问；</li><li>SMTP 邮件通过配置好的邮件网关转发；<b>拒绝所有 ICMP</b>；阻止外部对内部服务器的 telnet；</li><li>对外提供 Web 服务时，用代理或 DMZ，不让 HTTP 流量直接进入内网。</li></ul>
-<p>永恒的权衡：<b>和外界沟通的程度 vs 安全级别</b>。安全规则一旦和业务冲突，安全往往会让步，因为组织宁可接受潜在风险，也不愿接受确定的业务中断。</p>
-<div class="check" data-a="3"><p class="cq">用两台过滤路由器、中间放置面向公众服务器的架构是？</p>
+<ul><li>允许内网<span class="zhen">（internal network）</span>流量<span class="zhen">（traffic）</span>出站<span class="zhen">（egress）</span>；防火墙<span class="zhen">（firewall）</span>设备本身不能从公网<span class="zhen">（public network）</span>直接访问；</li><li>SMTP 邮件通过配置好的邮件网关<span class="zhen">（mail gateway）</span>转发；<b>拒绝所有 ICMP</b>；阻止外部对内部服务器<span class="zhen">（server）</span>的 telnet；</li><li>对外提供 Web 服务时，用代理<span class="zhen">（proxy）</span>或 DMZ，不让 HTTP 流量<span class="zhen">（traffic）</span>直接进入内网<span class="zhen">（internal network）</span>。</li></ul>
+<p>永恒的权衡：<b>和外界沟通的程度 vs 安全级别</b>。安全规则一旦和业务冲突，安全往往会让步，因为组织宁可接受潜在风险<span class="zhen">（risk）</span>，也不愿接受确定的业务中断。</p>
+<div class="check" data-a="3"><p class="cq">用两台过滤路由器<span class="zhen">（filtering router）</span>、中间放置面向公众服务器<span class="zhen">（server）</span>的架构是？</p>
 <div class="opts"><button class="opt">Packet filtering router</button><button class="opt">Screened host</button><button class="opt">Dual-homed host</button><button class="opt">Screened subnet</button></div>
-<div class="cx"><p>两台路由器 + DMZ = screened subnet。</p></div></div>
+<div class="cx"><p>两台路由器<span class="zhen">（router）</span> + DMZ = screened subnet。</p></div></div>
 <h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：架构选择、配置与管理 <span class="ref">P5-69～P5-84</span></h3>
 
 <h4>选架构看三件事（P5-69）</h4>
@@ -489,134 +489,134 @@
 <h4>四种架构的课件要点</h4>
 <div class="tbl"><table>
 <tr><th>架构</th><th>课件要点</th></tr>
-<tr><td><b>Packet filtering router</b>（P5-69、P5-70）</td><td>大多数联网组织都有一台路由器作为通往互联网的接口，很多路由器可以配置成拒绝组织不允许的包。它是<b>第一代防火墙</b>。缺点：<b>缺少审计，也没有强认证</b></td></tr>
-<tr><td><b>Screened host</b>（P5-71、P5-72）</td><td>包过滤路由器<b>加上</b>一台独立的专用防火墙（例如应用代理）。路由器先预筛，减轻内部代理的负担。这台单独的主机叫 <b>bastion host（堡垒主机）</b>或 sacrificial host（牺牲主机），会成为外部攻击的目标，必须彻底加固。结构简单，但这台防火墙一旦被攻破就全线失守</td></tr>
-<tr><td><b>Dual-homed host</b>（P5-71、P5-73）</td><td>防火墙有<b>两块网卡</b>：一块连互联网，一块连内网。可以做 <b>NAT</b>：对外用公网 IP，内网用 NAT 分配的本地地址。比 screened host 更安全，但仍是<b>单点故障</b></td></tr>
-<tr><td><b>Screened subnet</b>（P5-74、P5-75）</td><td>用两台防火墙形成 DMZ，把面向公众的服务（如 Web 服务器）放在里面，在内部系统和互联网之间再加一层隔离。<b>三层防御</b>；外部路由器只向互联网宣告屏蔽子网，内网对互联网不可见；内部路由器只向内网宣告屏蔽子网，内网主机无法直接建立到互联网的路由</td></tr>
+<tr><td><b>Packet filtering router</b>（P5-69、P5-70）</td><td>大多数联网组织都有一台路由器作为通往互联网<span class="zhen">（Internet）</span>的接口，很多路由器<span class="zhen">（router）</span>可以配置成拒绝组织不允许的包。它是<b>第一代防火墙<span class="zhen">（first-generation firewall）</span></b>。缺点：<b>缺少审计<span class="zhen">（audit）</span>，也没有强认证<span class="zhen">（strong authentication）</span></b></td></tr>
+<tr><td><b>Screened host</b>（P5-71、P5-72）</td><td>包过滤路由器<span class="zhen">（packet filtering router）</span><b>加上</b>一台独立的专用防火墙<span class="zhen">（firewall）</span>（例如应用代理<span class="zhen">（application proxy）</span>）。路由器<span class="zhen">（router）</span>先预筛，减轻内部代理<span class="zhen">（proxy）</span>的负担。这台单独的主机叫 <b>bastion host（堡垒主机）</b>或 sacrificial host（牺牲主机），会成为外部攻击的目标，必须彻底加固<span class="zhen">（hardening）</span>。结构简单，但这台防火墙<span class="zhen">（firewall）</span>一旦被攻破就全线失守</td></tr>
+<tr><td><b>Dual-homed host</b>（P5-71、P5-73）</td><td>防火墙<span class="zhen">（firewall）</span>有<b>两块网卡<span class="zhen">（network interface card (NIC)）</span></b>：一块连互联网<span class="zhen">（Internet）</span>，一块连内网<span class="zhen">（internal network）</span>。可以做 <b>NAT</b>：对外用公网<span class="zhen">（public network）</span> IP，内网<span class="zhen">（internal network）</span>用 NAT 分配的本地地址<span class="zhen">（local address）</span>。比 screened host 更安全，但仍是<b>单点故障<span class="zhen">（single point of failure）</span></b></td></tr>
+<tr><td><b>Screened subnet</b>（P5-74、P5-75）</td><td>用两台防火墙<span class="zhen">（firewall）</span>形成 DMZ，把面向公众的服务（如 Web 服务器<span class="zhen">（server）</span>）放在里面，在内部系统和互联网<span class="zhen">（Internet）</span>之间再加一层隔离。<b>三层防御<span class="zhen">（three layers of defense）</span></b>；外部路由器<span class="zhen">（exterior router）</span>只向互联网<span class="zhen">（Internet）</span>宣告屏蔽子网<span class="zhen">（screened subnet）</span>，内网<span class="zhen">（internal network）</span>对互联网<span class="zhen">（Internet）</span>不可见；内部路由器<span class="zhen">（interior router）</span>只向内网<span class="zhen">（internal network）</span>宣告屏蔽子网<span class="zhen">（screened subnet）</span>，内网<span class="zhen">（internal network）</span>主机无法直接建立到互联网<span class="zhen">（Internet）</span>的路由</td></tr>
 </table></div>
-<p>课件 P5-74 的结论：防火墙对网络安全至关重要，但必须配合 IDS、终端防护等措施；组织应按安全需求、网络规模和预算选择防火墙类型和架构；<b>单靠防火墙不能防住所有威胁，需要分层的安全方法</b>。</p>
-<h4>“边界已死”的五个原因（P5-79、P5-80）</h4>
+<p>课件 P5-74 的结论：防火墙<span class="zhen">（firewall）</span>对网络安全<span class="zhen">（cyber security）</span>至关重要，但必须配合 IDS、终端防护<span class="zhen">（endpoint protection）</span>等措施；组织应按安全需求、网络规模和预算选择防火墙<span class="zhen">（firewall）</span>类型和架构；<b>单靠防火墙<span class="zhen">（firewall）</span>不能防住所有威胁<span class="zhen">（threat）</span>，需要分层的安全方法</b>。</p>
+<h4>“边界<span class="zhen">（perimeter）</span>已死”的五个原因（P5-79、P5-80）</h4>
 <ol>
-<li><b>云计算</b>：数据存放在 AWS、Azure、Google Cloud 等云环境里，员工从任何地方访问，绕开了传统防火墙；</li>
-<li><b>远程办公与 BYOD</b>：员工用个人设备和家庭网络访问公司数据，传统防火墙无法对远程用户执行策略；</li>
-<li><b>零信任模型</b>：“永不信任，总是验证”取代了基于边界的信任；访问权限基于身份、上下文和最小权限，而不是网络位置；</li>
-<li><b>加密流量增加</b>：很多攻击本身就用加密，防火墙难以检查；攻击者用 SSL/TLS 隧道绕过传统防火墙；</li>
-<li><b>更复杂的威胁</b>：恶意软件和黑客通过钓鱼、内部人员、被盗凭证进入网络内部，基于边界的防火墙就失效了。</li>
+<li><b>云计算<span class="zhen">（cloud computing）</span></b>：数据存放在 AWS、Azure、Google Cloud 等云环境里，员工从任何地方访问，绕开了传统防火墙<span class="zhen">（firewall）</span>；</li>
+<li><b>远程办公<span class="zhen">（remote work）</span>与 BYOD</b>：员工用个人设备和家庭网络访问公司数据，传统防火墙<span class="zhen">（firewall）</span>无法对远程用户执行策略<span class="zhen">（policy）</span>；</li>
+<li><b>零信任模型<span class="zhen">（zero trust model）</span></b>：“永不信任，总是验证”取代了基于边界<span class="zhen">（perimeter）</span>的信任；访问权限<span class="zhen">（access rights）</span>基于身份、上下文和最小权限<span class="zhen">（least privilege）</span>，而不是网络位置；</li>
+<li><b>加密流量<span class="zhen">（encrypted traffic）</span>增加</b>：很多攻击本身就用加密<span class="zhen">（encryption）</span>，防火墙<span class="zhen">（firewall）</span>难以检查；攻击者<span class="zhen">（attacker）</span>用 SSL/TLS 隧道<span class="zhen">（tunneling）</span>绕过传统防火墙<span class="zhen">（firewall）</span>；</li>
+<li><b>更复杂的威胁<span class="zhen">（threat）</span></b>：恶意软件<span class="zhen">（malware）</span>和黑客<span class="zhen">（hacker）</span>通过钓鱼<span class="zhen">（phishing）</span>、内部人员<span class="zhen">（insider）</span>、被盗凭证<span class="zhen">（stolen credentials）</span>进入网络内部，基于边界<span class="zhen">（perimeter）</span>的防火墙<span class="zhen">（firewall）</span>就失效了。</li>
 </ol>
-<h4>我们还需要防火墙吗（P5-81、P5-82）</h4>
+<h4>我们还需要防火墙<span class="zhen">（firewall）</span>吗（P5-81、P5-82）</h4>
 <p><b>需要，但单靠它不够。</b>现代做法包括：</p>
 <ul>
-<li><b>下一代防火墙（NGFW）</b>：深度包检测（DPI）、入侵防御（IPS）、应用层过滤、基于机器学习的威胁检测；还能检查加密流量、监控用户行为，从而执行零信任原则；</li>
+<li><b>下一代防火墙（NGFW）</b>：深度包检测（DPI）、入侵防御（IPS）、应用层过滤<span class="zhen">（application-layer filtering）</span>、基于机器学习的威胁检测<span class="zhen">（threat detection）</span>；还能检查加密流量<span class="zhen">（encrypted traffic）</span>、监控用户行为，从而执行零信任<span class="zhen">（zero trust）</span>原则；</li>
 <li><b>云防火墙（FWaaS）</b>：不需要本地硬件就能保护云上工作负载和远程用户，例如 Zscaler、Palo Alto Prisma、Cloudflare Gateway；</li>
-<li><b>网络分段</b>：不再只靠一道边界防火墙，而是把网络分成多个隔离的小区域，攻击者攻破一段也不能在网内自由移动。</li>
+<li><b>网络分段<span class="zhen">（network segmentation）</span></b>：不再只靠一道边界防火墙<span class="zhen">（perimeter firewall）</span>，而是把网络分成多个隔离的小区域，攻击者<span class="zhen">（attacker）</span>攻破一段也不能在网内自由移动。</li>
 </ul>
-<p>结论：边界没有消失，而是变得<b>动态和分散</b>；防火墙在演进而不是消亡，要和零信任、终端安全、云安全结合起来。</p>
-<h4>选择防火墙时要问的问题（P5-83）</h4>
+<p>结论：边界<span class="zhen">（perimeter）</span>没有消失，而是变得<b>动态和分散</b>；防火墙<span class="zhen">（firewall）</span>在演进而不是消亡，要和零信任<span class="zhen">（zero trust）</span>、终端安全<span class="zhen">（endpoint security）</span>、云安全<span class="zhen">（cloud security）</span>结合起来。</p>
+<h4>选择防火墙<span class="zhen">（firewall）</span>时要问的问题（P5-83）</h4>
 <ul>
-<li>哪种防火墙技术在防护功能和成本之间最适合本组织？</li>
+<li>哪种防火墙<span class="zhen">（firewall）</span>技术在防护功能和成本之间最适合本组织？</li>
 <li>基础价格包含哪些功能？哪些要额外付费？所有成本都清楚了吗？</li>
 <li>安装和配置难不难？有没有熟练的技术人员能做好？</li>
 <li>它能否适应组织网络的增长？</li>
 </ul>
 <h4>配置和管理防火墙（P5-83）</h4>
-<p>每台防火墙都有自己的一套配置规则；<b>一个小错误就可能把它变成网络的瓶颈（choke point）</b>。当安全规则和业务表现冲突时，<b>安全往往会输</b>，因为组织宁可承受“可能的风险”，也不愿接受“肯定的业务中断”。</p>
+<p>每台防火墙<span class="zhen">（firewall）</span>都有自己的一套配置规则；<b>一个小错误就可能把它变成网络的瓶颈（choke point）</b>。当安全规则和业务表现冲突时，<b>安全往往会输</b>，因为组织宁可承受“可能的风险<span class="zhen">（risk）</span>”，也不愿接受“肯定的业务中断”。</p>
 </section>
 
 <section class="sec" id="ids">
 <h2><span class="n">9</span>入侵检测（IDS）与入侵防御（IPS）</h2>
-<p>防火墙是门卫，<b>IDS 是监控摄像头</b>：它监视网络或系统的活动，发现可疑行为就告警。它的基本假设是：<b>入侵者的行为和合法用户不同，而且这种差异可以量化</b>（样题 Q5-13：True）。</p>
-<p>优点：早期发现威胁、实时监控、提供取证日志、帮助满足合规。缺点：会有误报和漏报，消耗计算资源，而且只告警、不拦截。</p>
+<p>防火墙<span class="zhen">（firewall）</span>是门卫，<b>IDS 是监控摄像头</b>：它监视网络或系统的活动，发现可疑行为就告警<span class="zhen">（alert）</span>。它的基本假设是：<b>入侵者<span class="zhen">（intruder）</span>的行为和合法用户<span class="zhen">（genuine user）</span>不同，而且这种差异可以量化</b>（样题 Q5-13：True）。</p>
+<p>优点：早期发现威胁<span class="zhen">（threat）</span>、实时监控<span class="zhen">（real-time monitoring）</span>、提供取证<span class="zhen">（forensics）</span>日志<span class="zhen">（log）</span>、帮助满足合规<span class="zhen">（compliance）</span>。缺点：会有误报<span class="zhen">（false positive）</span>和漏报<span class="zhen">（false negative）</span>，消耗计算资源，而且只告警<span class="zhen">（alert）</span>、不拦截。</p>
 <h3>按“看哪里”分：HIDS vs NIDS</h3>
 <div class="tbl"><table>
-<tr><th></th><th>HIDS 主机型</th><th>NIDS 网络型</th></tr>
-<tr><td>监视什么</td><td><b>单台主机</b>上的活动：日志、审计记录、进出该主机的流量（样题 Q5-15）</td><td><b>网段</b>的流量，分析网络层、传输层、应用层协议（样题 Q5-16）</td></tr>
-<tr><td>告警线索</td><td>登录失败、非正常时段登录、权限提升、新增用户账户</td><td>流量里出现已知的攻击特征</td></tr>
-<tr><td>优点</td><td>能看<b>解密后</b>的数据；误报少；可以针对具体操作系统和应用</td><td>少量设备就能覆盖整个网段；部署和维护成本低；能关联多台机器上的攻击</td></tr>
-<tr><td>缺点</td><td>每台要监视的机器都要装，拥有成本高，占用本机资源</td><td><b>流量加密后就失效</b>；看不到主机内部的活动</td></tr>
+<tr><th></th><th>HIDS 主机型<span class="zhen">（host-based）</span></th><th>NIDS 网络型<span class="zhen">（network-based）</span></th></tr>
+<tr><td>监视什么</td><td><b>单台主机</b>上的活动：日志<span class="zhen">（log）</span>、审计记录<span class="zhen">（audit trail）</span>、进出该主机的流量<span class="zhen">（traffic）</span>（样题 Q5-15）</td><td><b>网段<span class="zhen">（network segment）</span></b>的流量<span class="zhen">（traffic）</span>，分析网络层<span class="zhen">（network layer）</span>、传输层<span class="zhen">（transport layer）</span>、应用层<span class="zhen">（application layer）</span>协议<span class="zhen">（protocol）</span>（样题 Q5-16）</td></tr>
+<tr><td>告警<span class="zhen">（alert）</span>线索</td><td>登录失败、非正常时段登录、权限提升<span class="zhen">（privilege escalation）</span>、新增用户账户<span class="zhen">（user account）</span></td><td>流量<span class="zhen">（traffic）</span>里出现已知的攻击特征<span class="zhen">（attack signature）</span></td></tr>
+<tr><td>优点</td><td>能看<b>解密<span class="zhen">（decryption）</span>后</b>的数据；误报<span class="zhen">（false positive）</span>少；可以针对具体操作系统<span class="zhen">（operating system）</span>和应用</td><td>少量设备就能覆盖整个网段<span class="zhen">（network segment）</span>；部署和维护成本低；能关联多台机器上的攻击</td></tr>
+<tr><td>缺点</td><td>每台要监视的机器都要装，拥有成本高，占用本机资源</td><td><b>流量<span class="zhen">（traffic）</span>加密<span class="zhen">（encryption）</span>后就失效</b>；看不到主机内部的活动</td></tr>
 </table></div>
-<p>HIDS 还分被动的（只分析、告警）和主动的（能执行脚本、终止进程）；现代的 HIDS 常被称为 HIPS，集成了主机防火墙、行为和特征检测、恶意软件防护。</p>
-<h3>按“怎么判断”分：特征检测 vs 异常检测</h3>
+<p>HIDS 还分被动的（只分析、告警<span class="zhen">（alert）</span>）和主动的（能执行脚本、终止进程）；现代的 HIDS 常被称为 HIPS，集成了主机防火墙<span class="zhen">（host firewall）</span>、行为和特征检测<span class="zhen">（signature-based detection）</span>、恶意软件防护<span class="zhen">（malware protection）</span>。</p>
+<h3>按“怎么判断”分：特征检测<span class="zhen">（signature-based detection）</span> vs 异常检测<span class="zhen">（anomaly detection）</span></h3>
 <div class="tbl"><table>
-<tr><th></th><th>Signature-based 特征检测</th><th>Anomaly-based 异常检测</th></tr>
-<tr><td>别名</td><td>knowledge-based 基于知识</td><td>statistical / behavior-based 基于统计或行为</td></tr>
-<tr><td>原理</td><td>拿流量和<b>已知攻击模式</b>（特征库）比对，像杀毒软件的病毒库</td><td>先收集<b>合法用户在一段时间内的正常行为</b>，建立基线；之后定期采样比较，超出阈值（clipping level）就告警</td></tr>
-<tr><td>擅长</td><td>已知攻击，误报少</td><td><b>能发现新型攻击</b></td></tr>
-<tr><td>缺点</td><td>特征库要不断更新；对新攻击会<b>漏报</b>（false negative）</td><td><b>误报多</b>（false positive）；细微变化可能察觉不到</td></tr>
+<tr><th></th><th>Signature-based 特征检测<span class="zhen">（signature-based detection）</span></th><th>Anomaly-based 异常检测<span class="zhen">（anomaly detection）</span></th></tr>
+<tr><td>别名</td><td>knowledge-based 基于知识</td><td>statistical / behavior-based 基于统计<span class="zhen">（statistics-based）</span>或行为</td></tr>
+<tr><td>原理</td><td>拿流量<span class="zhen">（traffic）</span>和<b>已知攻击<span class="zhen">（known attack）</span>模式</b>（特征库<span class="zhen">（signature database）</span>）比对，像杀毒软件<span class="zhen">（antivirus software）</span>的病毒库<span class="zhen">（virus database）</span></td><td>先收集<b>合法用户<span class="zhen">（genuine user）</span>在一段时间内的正常行为</b>，建立基线<span class="zhen">（baseline）</span>；之后定期采样比较，超出阈值（clipping level）就告警<span class="zhen">（alert）</span></td></tr>
+<tr><td>擅长</td><td>已知攻击<span class="zhen">（known attack）</span>，误报<span class="zhen">（false positive）</span>少</td><td><b>能发现新型攻击</b></td></tr>
+<tr><td>缺点</td><td>特征库<span class="zhen">（signature database）</span>要不断更新；对新攻击会<b>漏报</b>（false negative）</td><td><b>误报多</b>（false positive）；细微变化可能察觉不到</td></tr>
 </table></div>
-<div class="analogy box"><span class="bt">类比</span><p>特征检测像拿着<b>通缉令</b>认人：照片上的人一眼就能认出，没上过通缉令的新罪犯认不出来。异常检测像小区保安对住户很熟，<b>“这人平时不这样”</b>就会起疑心，能发现陌生的坏人，但也常误会正常住户。</p></div>
+<div class="analogy box"><span class="bt">类比</span><p>特征检测<span class="zhen">（signature-based detection）</span>像拿着<b>通缉令</b>认人：照片上的人一眼就能认出，没上过通缉令的新罪犯认不出来。异常检测<span class="zhen">（anomaly detection）</span>像小区保安对住户很熟，<b>“这人平时不这样”</b>就会起疑心，能发现陌生的坏人，但也常误会正常住户。</p></div>
 <div class="pitfall box"><span class="bt">易错点（样题 Q5-14、Q5-17）</span><ul>
 <li>Q5-14 说“signature 定义正常行为，anomaly 定义恰当行为”，这是把两者说反了，答 <b>FALSE</b>。</li>
-<li>Q5-17“定义一组规则或攻击模式，用来判断某行为是否来自入侵者”：按定义应该是 <b>Signature detection</b>，但样题 PDF 标的是 Anomaly detection，疑似标错。刷题本里两个都判对。正式考试遇到原题时，请留意老师的口径。</li>
-<li>Q5-18“收集合法用户在一段时间内的行为数据”是 <b>Anomaly detection</b>，没有争议。</li></ul></div>
+<li>Q5-17“定义一组规则或攻击模式<span class="zhen">（attack pattern）</span>，用来判断某行为是否来自入侵者<span class="zhen">（intruder）</span>”：按定义应该是 <b>Signature detection</b>，但样题 PDF 标的是 Anomaly detection，疑似标错。刷题本里两个都判对。正式考试遇到原题时，请留意老师的口径。</li>
+<li>Q5-18“收集合法用户<span class="zhen">（genuine user）</span>在一段时间内的行为数据”是 <b>Anomaly detection</b>，没有争议。</li></ul></div>
 <h3>IDS vs IPS（P5-94）</h3>
 <div class="tbl"><table>
-<tr><th></th><th>IDS 入侵检测</th><th>IPS 入侵防御</th></tr>
-<tr><td>做什么</td><td>检测并<b>告警</b></td><td>检测并<b>拦截</b></td></tr>
-<tr><td>性质</td><td>被动（记录日志、告警）</td><td>主动（实时阻断）</td></tr>
-<tr><td>位置</td><td>监视网络或主机</td><td>在流量到达系统之前检查</td></tr>
-<tr><td>适合</td><td>取证分析和监控</td><td>实时执行安全策略</td></tr>
+<tr><th></th><th>IDS 入侵检测<span class="zhen">（intrusion detection）</span></th><th>IPS 入侵防御<span class="zhen">（intrusion prevention）</span></th></tr>
+<tr><td>做什么</td><td>检测并<b>告警<span class="zhen">（alert）</span></b></td><td>检测并<b>拦截</b></td></tr>
+<tr><td>性质</td><td>被动（记录日志<span class="zhen">（log）</span>、告警<span class="zhen">（alert）</span>）</td><td>主动（实时阻断）</td></tr>
+<tr><td>位置</td><td>监视网络或主机</td><td>在流量<span class="zhen">（traffic）</span>到达系统之前检查</td></tr>
+<tr><td>适合</td><td>取证分析<span class="zhen">（forensic analysis）</span>和监控</td><td>实时执行安全策略<span class="zhen">（security policy）</span></td></tr>
 <tr><td>工具</td><td>Snort、Zeek、OSSEC</td><td>Palo Alto NGFW、Suricata、Cisco Firepower</td></tr>
 </table></div>
 <h3>蜜罐 Honeypot（P5-95）</h3>
-<p>故意设置一台<b>诱饵系统</b>，看起来像真的（比如假的客户计费系统），还故意留下漏洞，吸引攻击者进来。用途：观察攻击者的手法，改进真实网络的防护；或者把攻击者从真实目标引开。局限：它发现不了真实系统上的入侵，也不一定能查出攻击者是谁。</p>
-<div class="check" data-a="2"><p class="cq">公司的流量大部分走 HTTPS 加密，想检查解密后的内容，应该更依赖？</p>
-<div class="opts"><button class="opt">NIDS</button><button class="opt">包过滤防火墙</button><button class="opt">HIDS</button></div>
-<div class="cx"><p>NIDS 遇到加密流量就“失明”；HIDS 在主机上，能看到解密后的数据。</p></div></div>
-<div class="check" data-a="1"><p class="cq">一种全新的攻击（零日），哪种检测方法更有可能发现它？</p>
-<div class="opts"><button class="opt">特征检测</button><button class="opt">异常检测</button><button class="opt">两者都发现不了</button></div>
-<div class="cx"><p>零日攻击不在特征库里；但它的行为偏离了正常基线，异常检测有机会发现，代价是误报多。</p></div></div>
+<p>故意设置一台<b>诱饵系统<span class="zhen">（decoy system）</span></b>，看起来像真的（比如假的客户计费系统），还故意留下漏洞<span class="zhen">（vulnerability）</span>，吸引攻击者<span class="zhen">（attacker）</span>进来。用途：观察攻击者<span class="zhen">（attacker）</span>的手法，改进真实网络的防护；或者把攻击者<span class="zhen">（attacker）</span>从真实目标引开。局限：它发现不了真实系统上的入侵<span class="zhen">（intrusion）</span>，也不一定能查出攻击者<span class="zhen">（attacker）</span>是谁。</p>
+<div class="check" data-a="2"><p class="cq">公司的流量<span class="zhen">（traffic）</span>大部分走 HTTPS 加密<span class="zhen">（encryption）</span>，想检查解密<span class="zhen">（decryption）</span>后的内容，应该更依赖？</p>
+<div class="opts"><button class="opt">NIDS</button><button class="opt">包过滤防火墙<span class="zhen">（packet filtering firewall）</span></button><button class="opt">HIDS</button></div>
+<div class="cx"><p>NIDS 遇到加密流量<span class="zhen">（encrypted traffic）</span>就“失明”；HIDS 在主机上，能看到解密<span class="zhen">（decryption）</span>后的数据。</p></div></div>
+<div class="check" data-a="1"><p class="cq">一种全新的攻击（零日<span class="zhen">（zero-day）</span>），哪种检测方法更有可能发现它？</p>
+<div class="opts"><button class="opt">特征检测<span class="zhen">（signature-based detection）</span></button><button class="opt">异常检测<span class="zhen">（anomaly detection）</span></button><button class="opt">两者都发现不了</button></div>
+<div class="cx"><p>零日攻击<span class="zhen">（zero-day attack）</span>不在特征库<span class="zhen">（signature database）</span>里；但它的行为偏离了正常基线<span class="zhen">（baseline）</span>，异常检测<span class="zhen">（anomaly detection）</span>有机会发现，代价是误报<span class="zhen">（false positive）</span>多。</p></div></div>
 <h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：IDS 与 IPS 的课件细节 <span class="ref">P5-86～P5-97</span></h3>
 
 <h4>IDS 的优缺点（P5-86）</h4>
 <div class="tbl"><table>
 <tr><th>优点</th><th>缺点</th></tr>
-<tr><td><b>早期发现威胁</b>：在造成重大损失前发现可疑活动<br><b>实时监控</b>：持续分析系统和网络活动<br><b>取证分析</b>：留下攻击尝试的日志和记录<br><b>执行安全策略</b>：帮助满足合规要求</td><td><b>误报（false positive）</b>：异常检测可能把正常活动当成威胁<br><b>漏报（false negative）</b>：特征检测可能漏掉新出现的威胁<br><b>资源消耗大</b>：处理大量流量需要算力<br><b>不会主动防护</b>：只检测和告警，不拦截（IPS 才会）</td></tr>
+<tr><td><b>早期发现威胁<span class="zhen">（threat）</span></b>：在造成重大损失前发现可疑活动<br><b>实时监控<span class="zhen">（real-time monitoring）</span></b>：持续分析系统和网络活动<br><b>取证分析<span class="zhen">（forensic analysis）</span></b>：留下攻击尝试的日志<span class="zhen">（log）</span>和记录<br><b>执行安全策略<span class="zhen">（security policy）</span></b>：帮助满足合规<span class="zhen">（compliance）</span>要求</td><td><b>误报（false positive）</b>：异常检测<span class="zhen">（anomaly detection）</span>可能把正常活动当成威胁<span class="zhen">（threat）</span><br><b>漏报（false negative）</b>：特征检测<span class="zhen">（signature-based detection）</span>可能漏掉新出现的威胁<span class="zhen">（threat）</span><br><b>资源消耗大</b>：处理大量流量<span class="zhen">（traffic）</span>需要算力<span class="zhen">（computing power）</span><br><b>不会主动防护<span class="zhen">（proactive protection）</span></b>：只检测和告警<span class="zhen">（alert）</span>，不拦截（IPS 才会）</td></tr>
 </table></div>
 <h4>IDS 的分类（P5-87）</h4>
-<p>按部署位置分为 <b>HIDS</b> 和 <b>NIDS</b>；按检测方法分为 <b>signature-based</b>（依赖预定义的攻击和流量模式，即“特征”）和 <b>anomaly-based（heuristic，启发式）</b>（监控活动，把它分类为“正常”或“异常”）。</p>
+<p>按部署位置分为 <b>HIDS</b> 和 <b>NIDS</b>；按检测方法分为 <b>signature-based</b>（依赖预定义的攻击和流量<span class="zhen">（traffic）</span>模式，即“特征”）和 <b>anomaly-based（heuristic，启发式）</b>（监控活动，把它分类为“正常”或“异常”）。</p>
 <h4>NIDS 的工作方式（P5-87～P5-89）</h4>
 <ul>
-<li>NIDS 是<b>解析网络流量</b>的引擎；</li>
-<li>它抓取全部网络流量，与一组预先分类的<b>攻击特征</b>比对；</li>
+<li>NIDS 是<b>解析网络流量<span class="zhen">（network traffic）</span></b>的引擎；</li>
+<li>它抓取全部网络流量<span class="zhen">（network traffic）</span>，与一组预先分类的<b>攻击特征<span class="zhen">（attack signature）</span></b>比对；</li>
 <li>一旦在包里发现特征，就启动保护动作，阻止并记录攻击；</li>
 <li><b>部署容易</b>，不需要大改网络；</li>
-<li>优点：覆盖整个网络需要的设备少；部署、维护和升级成本通常较低；能看到全部网络流量，可以<b>关联多台系统上的攻击</b>；</li>
-<li>缺点：<b>流量加密后就无效</b>；不知道主机自身发生了什么。</li>
+<li>优点：覆盖整个网络需要的设备少；部署、维护和升级成本通常较低；能看到全部网络流量<span class="zhen">（network traffic）</span>，可以<b>关联多台系统上的攻击</b>；</li>
+<li>缺点：<b>流量<span class="zhen">（traffic）</span>加密<span class="zhen">（encryption）</span>后就无效</b>；不知道主机自身发生了什么。</li>
 </ul>
 <h4>HIDS 的工作方式（P5-90～P5-92）</h4>
 <ul>
-<li>只检查<b>某一台主机</b>上的活动：日志、审计记录、进出该主机的流量；可以实时检查，也可以定期检查；</li>
-<li>会触发告警的迹象：<b>登录失败、非正常时段登录、权限提升、新增用户账户</b>；</li>
-<li>优点：可以针对具体操作系统和具体应用；能降低误报率；<b>能检查解密之后的数据</b>；能判断一次告警会对系统造成什么影响；</li>
+<li>只检查<b>某一台主机</b>上的活动：日志<span class="zhen">（log）</span>、审计记录<span class="zhen">（audit trail）</span>、进出该主机的流量<span class="zhen">（traffic）</span>；可以实时检查，也可以定期检查；</li>
+<li>会触发告警<span class="zhen">（alert）</span>的迹象：<b>登录失败、非正常时段登录、权限提升<span class="zhen">（privilege escalation）</span>、新增用户账户<span class="zhen">（user account）</span></b>；</li>
+<li>优点：可以针对具体操作系统<span class="zhen">（operating system）</span>和具体应用；能降低误报<span class="zhen">（false positive）</span>率；<b>能检查解密<span class="zhen">（decryption）</span>之后的数据</b>；能判断一次告警<span class="zhen">（alert）</span>会对系统造成什么影响；</li>
 <li>缺点：要监视的每台机器都得处理信息；拥有和维护成本可能很高；占用本机资源；</li>
-<li><b>Passive HIDS（被动）</b>：观察、分析活动并发出告警；</li>
+<li><b>Passive HIDS（被动）</b>：观察、分析活动并发出告警<span class="zhen">（alert）</span>；</li>
 <li><b>Active HIDS（主动）</b>：能力相同，还能作出反应，比如运行脚本、终止进程；</li>
-<li><b>现代 HIDS</b> 常被称为 <b>HIPS</b>（主机入侵防御系统），用三样东西来阻止攻击：集成的系统防火墙、基于行为和特征的 IDS、恶意软件检测与防护。</li>
+<li><b>现代 HIDS</b> 常被称为 <b>HIPS</b>（主机入侵防御系统），用三样东西来阻止攻击：集成的系统防火墙<span class="zhen">（firewall）</span>、基于行为<span class="zhen">（behavior-based）</span>和特征的 IDS、恶意软件<span class="zhen">（malware）</span>检测与防护。</li>
 </ul>
-<p>课件 P5-91 的示意：<b>Host IDS</b> 检查主机上存储的文件，有变化就通知管理员；<b>Network IDS</b> 检查网络上的包，发现异常模式就通知管理员。</p>
+<p>课件 P5-91 的示意：<b>Host IDS</b> 检查主机上存储的文件，有变化就通知管理员<span class="zhen">（administrator）</span>；<b>Network IDS</b> 检查网络上的包，发现异常模式就通知管理员<span class="zhen">（administrator）</span>。</p>
 <h4>两种检测方法的课件原文（P5-93）</h4>
 <div class="tbl"><table>
 <tr><th>Signature-based IDS</th><th>Statistical anomaly-based IDS</th></tr>
-<tr><td>也叫 <b>knowledge-based IDS</b><br>检查流量里有没有和<b>特征</b>匹配的东西，特征是预先配置好的、已经确定的攻击模式<br><b>问题</b>：一旦发现新的攻击策略，特征就必须更新</td><td>也叫 <b>behavior-based IDS</b><br>从正常流量中收集数据，建立<b>基线（baseline）</b><br>之后用统计方法定期采样网络活动，与基线比较<br>活动超出基线参数（即 <b>clipping level</b>）就通知管理员<br>因为它寻找的是任何类型的异常，所以<b>能发现新型攻击</b><br>但可能察觉不到细微变化，而且会产生<b>大量误报</b></td></tr>
+<tr><td>也叫 <b>knowledge-based IDS</b><br>检查流量<span class="zhen">（traffic）</span>里有没有和<b>特征</b>匹配的东西，特征是预先配置好的、已经确定的攻击模式<span class="zhen">（attack pattern）</span><br><b>问题</b>：一旦发现新的攻击策略<span class="zhen">（policy）</span>，特征就必须更新</td><td>也叫 <b>behavior-based IDS</b><br>从正常流量<span class="zhen">（traffic）</span>中收集数据，建立<b>基线（baseline）</b><br>之后用统计方法定期采样网络活动，与基线比较<br>活动超出基线<span class="zhen">（baseline）</span>参数（即 <b>clipping level</b>）就通知管理员<span class="zhen">（administrator）</span><br>因为它寻找的是任何类型的异常，所以<b>能发现新型攻击</b><br>但可能察觉不到细微变化，而且会产生<b>大量误报<span class="zhen">（false positive）</span></b></td></tr>
 </table></div>
 <h4>入侵防御系统 IPS（P5-94）</h4>
-<p>IPS 是一种<b>主动的</b>安全技术，<b>实时检测并拦截</b>恶意活动；IDS 只检测和告警。IPS 常集成在<b>下一代防火墙（NGFW）</b>里。</p>
+<p>IPS 是一种<b>主动的</b>安全技术，<b>实时检测并拦截</b>恶意活动；IDS 只检测和告警<span class="zhen">（alert）</span>。IPS 常集成在<b>下一代防火墙（NGFW）</b>里。</p>
 <h4>蜜罐（P5-95）</h4>
 <ul>
-<li>一台<b>牺牲性的</b>计算机系统，像诱饵一样吸引网络攻击；</li>
-<li>它模仿黑客的目标，利用入侵尝试来了解攻击者的手法，或者把攻击者从其他目标引开；</li>
-<li>看起来像真实系统，有应用和数据，比如模仿公司的客户账单系统（这是想偷信用卡号的罪犯常攻击的目标）；</li>
-<li>黑客进来后就可以被追踪，他们的行为能为加强真实网络提供线索；</li>
-<li>蜜罐会<b>故意留下安全漏洞</b>，让攻击者觉得有吸引力；</li>
-<li>局限：发现不了真实系统里的入侵，也不一定能查出攻击者是谁。</li>
+<li>一台<b>牺牲性的</b>计算机系统，像诱饵一样吸引网络攻击<span class="zhen">（cyberattack）</span>；</li>
+<li>它模仿黑客<span class="zhen">（hacker）</span>的目标，利用入侵<span class="zhen">（intrusion）</span>尝试来了解攻击者<span class="zhen">（attacker）</span>的手法，或者把攻击者<span class="zhen">（attacker）</span>从其他目标引开；</li>
+<li>看起来像真实系统，有应用和数据，比如模仿公司的客户账单系统（这是想偷信用卡<span class="zhen">（credit card）</span>号的罪犯常攻击的目标）；</li>
+<li>黑客<span class="zhen">（hacker）</span>进来后就可以被追踪，他们的行为能为加强真实网络提供线索；</li>
+<li>蜜罐<span class="zhen">（honeypot）</span>会<b>故意留下安全漏洞<span class="zhen">（security vulnerability）</span></b>，让攻击者<span class="zhen">（attacker）</span>觉得有吸引力；</li>
+<li>局限：发现不了真实系统里的入侵<span class="zhen">（intrusion）</span>，也不一定能查出攻击者<span class="zhen">（attacker）</span>是谁。</li>
 </ul>
-<h4>网络攻击带来的影响（P5-97）</h4>
-<p>每年有超过一半的企业成为网络攻击目标。影响包括四类：</p>
+<h4>网络攻击<span class="zhen">（cyberattack）</span>带来的影响（P5-97）</h4>
+<p>每年有超过一半的企业成为网络攻击<span class="zhen">（cyberattack）</span>目标。影响包括四类：</p>
 <div class="tbl"><table>
 <tr><th>影响</th><th>具体表现</th></tr>
 <tr><td><b>Financial 财务</b></td><td>从几万到几百万美元不等，还不包括恢复成本</td></tr>
-<tr><td><b>Productivity 生产力</b></td><td>时间就是金钱：修复社会工程攻击和处理损失要花大量时间，影响 IT 团队、普通员工，最终影响盈利</td></tr>
-<tr><td><b>Operational disruption 运营中断</b></td><td>影响会传导到整个供应链和服务交付，造成物流延误</td></tr>
+<tr><td><b>Productivity 生产力</b></td><td>时间就是金钱：修复社会工程<span class="zhen">（social engineering）</span>攻击和处理损失要花大量时间，影响 IT 团队、普通员工，最终影响盈利</td></tr>
+<tr><td><b>Operational disruption 运营中断</b></td><td>影响会传导到整个供应链<span class="zhen">（supply chain）</span>和服务交付，造成物流延误</td></tr>
 <tr><td><b>Reputational damage 声誉损失</b></td><td>客户不再觉得安全，信任很难重新建立</td></tr>
 </table></div>
 </section>
@@ -624,16 +624,16 @@
 <section class="sec" id="sum">
 <h2><span class="n">10</span>本章小结</h2>
 <div class="key box"><span class="bt">一页纸总结</span><ul>
-<li>HTTP 明文、无状态、端口 80；<b>HTTPS = HTTP + TLS</b>、端口 443，提供机密性、完整性和服务器认证。</li>
+<li>HTTP 明文<span class="zhen">（plaintext）</span>、无状态<span class="zhen">（stateless）</span>、端口<span class="zhen">（port）</span> 80；<b>HTTPS = HTTP + TLS</b>、端口<span class="zhen">（port）</span> 443，提供机密性<span class="zhen">（confidentiality）</span>、完整性<span class="zhen">（integrity）</span>和服务器认证<span class="zhen">（server authentication）</span>。</li>
 <li>SSL 由 Netscape 设计 → 1999 年改名 TLS 1.0 → 2018 年 TLS 1.3；SSL 在 2015 年淘汰。</li>
-<li>分层：Handshake、Change Cipher Spec、Alert 在上，<b>Record</b> 在下（机密性 + 完整性：分片 → 压缩 → MAC → 加密 → 加头）。</li>
-<li><b>握手最复杂</b>：ClientHello（列出 cipher suites）→ ServerHello（选一个）→ Certificate → ServerHelloDone → ClientKeyExchange（用服务器公钥加密会话密钥）→ ChangeCipherSpec → Finished。</li>
-<li>TLS 1.3：去掉 RSA 密钥交换（没有<b>前向保密</b>），只用 ephemeral DH；1-RTT；去掉 DES、3DES、MD5、RC4、SHA-1。会话密钥 ≥ 128 位。</li>
-<li>SSL 是两方协议，用得多；SET 是多方协议，所有参与方都有证书、商家看不到卡号，但几乎没人用。</li>
-<li>防火墙：只挡能证明是攻击的包；<b>防不了绕过它的攻击和内鬼</b>。包过滤无状态最快，SPI 有状态表，代理最安全最慢。</li>
-<li>规则<b>从上到下，第一条匹配即生效</b>，最后一条默认拒绝；吞吐量 pps = 带宽 ÷ (包大小 × 8)。</li>
-<li>架构：包过滤路由器 → screened host（堡垒主机）→ dual-homed（双网卡 + NAT）→ <b>screened subnet（两台路由器 + DMZ）</b>。</li>
-<li>HIDS 看单机、能看解密后的数据；NIDS 看网段、怕加密。<b>Signature 认已知攻击</b>（漏报新攻击），<b>Anomaly 认正常基线</b>（能发现新攻击，误报多）。IDS 只告警，<b>IPS 会拦截</b>；蜜罐是诱饵。</li>
+<li>分层：Handshake、Change Cipher Spec、Alert 在上，<b>Record</b> 在下（机密性<span class="zhen">（confidentiality）</span> + 完整性<span class="zhen">（integrity）</span>：分片<span class="zhen">（fragmentation）</span> → 压缩 → MAC → 加密<span class="zhen">（encryption）</span> → 加头）。</li>
+<li><b>握手<span class="zhen">（handshake）</span>最复杂</b>：ClientHello（列出 cipher suites）→ ServerHello（选一个）→ Certificate → ServerHelloDone → ClientKeyExchange（用服务器<span class="zhen">（server）</span>公钥加密<span class="zhen">（public-key encryption）</span>会话密钥<span class="zhen">（session key）</span>）→ ChangeCipherSpec → Finished。</li>
+<li>TLS 1.3：去掉 RSA 密钥交换<span class="zhen">（key exchange）</span>（没有<b>前向保密<span class="zhen">（forward secrecy）</span></b>），只用 ephemeral DH；1-RTT；去掉 DES、3DES、MD5、RC4、SHA-1。会话密钥<span class="zhen">（session key）</span> ≥ 128 位。</li>
+<li>SSL 是两方协议<span class="zhen">（two-party protocol）</span>，用得多；SET 是多方协议<span class="zhen">（multi-party protocol）</span>，所有参与方都有证书<span class="zhen">（certificate）</span>、商家<span class="zhen">（merchant）</span>看不到卡号，但几乎没人用。</li>
+<li>防火墙<span class="zhen">（firewall）</span>：只挡能证明是攻击的包；<b>防不了绕过它的攻击和内鬼<span class="zhen">（insider）</span></b>。包过滤<span class="zhen">（packet filtering）</span>无状态<span class="zhen">（stateless）</span>最快，SPI 有状态表<span class="zhen">（state table）</span>，代理<span class="zhen">（proxy）</span>最安全最慢。</li>
+<li>规则<b>从上到下，第一条匹配即生效</b>，最后一条默认拒绝<span class="zhen">（default deny）</span>；吞吐量<span class="zhen">（throughput）</span> pps = 带宽<span class="zhen">（bandwidth）</span> ÷ (包大小<span class="zhen">（packet size）</span> × 8)。</li>
+<li>架构：包过滤路由器<span class="zhen">（packet filtering router）</span> → screened host（堡垒主机<span class="zhen">（bastion host）</span>）→ dual-homed（双网卡<span class="zhen">（network interface card (NIC)）</span> + NAT）→ <b>screened subnet（两台路由器<span class="zhen">（router）</span> + DMZ）</b>。</li>
+<li>HIDS 看单机、能看解密<span class="zhen">（decryption）</span>后的数据；NIDS 看网段<span class="zhen">（network segment）</span>、怕加密<span class="zhen">（encryption）</span>。<b>Signature 认已知攻击<span class="zhen">（known attack）</span></b>（漏报<span class="zhen">（false negative）</span>新攻击），<b>Anomaly 认正常基线<span class="zhen">（baseline）</span></b>（能发现新攻击，误报<span class="zhen">（false positive）</span>多）。IDS 只告警<span class="zhen">（alert）</span>，<b>IPS 会拦截</b>；蜜罐<span class="zhen">（honeypot）</span>是诱饵。</li>
 </ul></div>
 <div class="exam box"><span class="bt">去刷题</span><p>本章对应 <b>Sample Quiz Part 5（18 题）</b>和刷题本 P5 的 18 道自编题。去<a href="practice.html#practice">刷题本</a>，在章节里选 P5。</p></div>
 <p><button class="btn" data-done></button> <button class="btn" data-reset-quiz>重做本页小测</button></p>

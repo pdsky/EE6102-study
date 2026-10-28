@@ -210,3 +210,6 @@ footer.foot{max-width:1180px;margin:0 auto;padding:24px 20px 40px;font-size:12.5
 .mod .st{font-family:var(--f-ui);font-size:12px;color:var(--muted)}
 .mod.soon{opacity:.55;pointer-events:none;box-shadow:none}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+
+/* English for Chinese technical terms */
+.zhen{color:var(--muted);font-size:.86em;font-weight:400;font-style:normal;letter-spacing:0;text-transform:none}
