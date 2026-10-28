@@ -357,7 +357,7 @@ details.more>summary{cursor:pointer;font-family:var(--f-ui);font-size:13px;color
         <a href="#exam" data-v="exam">期末专项 DH/RSA</a>
         <a href="#calc" data-v="calc">计算题</a></div>
     </nav>
-    <p class="side-foot">题目与答案依据 Dr M Y Siyal 的 EE6102 课件和样题整理，讲解为学习辅助。进度只保存在本浏览器中。</p>
+    <p class="side-foot">题目与答案依据 Dr M Y Siyal 的 EE6102 课件和样题整理，讲解为学习辅助。<span id="syncSt">进度只保存在本浏览器中。</span></p>
   </aside>
   <main id="view" class="main" tabindex="-1"></main>
 </div>
@@ -2788,7 +2788,66 @@ function load(){
   return blank();
 }
 var S=load();
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function save(){S._t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}cloudQueue()}
+function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function clone(o){return JSON.parse(JSON.stringify(o))}
+/* 合并两份进度（本机 a、云端或导入的 b）：同一题以较新的作答为准，错题取并集，尊重“清空错题本 / 清空全部”的时间 */
+function mergeState(a,b){
+  var bl=blank();a=a||bl;b=b||bl;
+  function fill(x){for(var k in bl){if(x[k]===undefined)x[k]=clone(bl[k])}return x}
+  a=fill(clone(a));b=fill(clone(b));
+  var ta=a._t||0,tb=b._t||0;
+  if((a._reset||0)>tb)return a;if((b._reset||0)>ta)return b;
+  var nw=ta>=tb?a:b,od=nw===a?b:a,m=clone(nw);
+  var ans={},src={};[[od,'o'],[nw,'n']].forEach(function(p){var o=p[0].ans||{};for(var k in o){if(!ans[k]||(o[k].t||0)>=(ans[k].t||0)){ans[k]=o[k];src[k]=p[0]}}});
+  m.ans=ans;
+  var clr=Math.max(a._wclr||0,b._wclr||0),C=(a._wclr||0)>=(b._wclr||0)?a:b,w={};
+  [a,b].forEach(function(X){for(var k in X.wrong){
+    var an=ans[k];
+    if(clr&&!C.wrong[k]&&!(an&&an.t>clr&&!an.ok))continue;
+    if(an&&an.ok&&src[k]&&!src[k].wrong[k])continue;
+    w[k]=1}});
+  m.wrong=w;
+  var st={};[a,b].forEach(function(X){for(var k in X.star)st[k]=1});m.star=st;
+  var qa=clone(od.qa||{});for(var q in (nw.qa||{}))qa[q]=nw.qa[q];m.qa=qa;
+  var seen={},mk=[];(a.mocks||[]).concat(b.mocks||[]).forEach(function(x){var key=(x&&x.t)||JSON.stringify(x);if(!seen[key]){seen[key]=1;mk.push(x)}});
+  mk.sort(function(x,y){return (x.t||0)-(y.t||0)});m.mocks=mk;
+  m._t=Math.max(ta,tb);m._wclr=clr;m._reset=Math.max(a._reset||0,b._reset||0);
+  return m;
+}
+/* 云端同步：在 claude.ai 上打开时把进度存进你自己账号的私有空间；其他地方（本地文件、GitHub Pages）自动跳过 */
+var CL={ref:null,timer:null,busy:false,dirty:false,st:'local'};
+function cloudBadge(){var el=$('#syncSt');if(!el)return;el.textContent=CL.st==='on'?'☁ 进度已同步到你的 Claude 账号，换电脑打开同一个链接即可继续。':CL.st==='err'?'云端同步暂时失败，进度先保存在本浏览器。':CL.st==='ro'?'当前身份无法写入云端，进度只保存在本浏览器中。':'进度只保存在本浏览器中。'}
+function cloudQueue(){if(!CL.ref)return;clearTimeout(CL.timer);CL.timer=setTimeout(cloudPush,2500)}
+function cloudPush(){
+  if(!CL.ref)return;if(CL.busy){CL.dirty=true;return}
+  CL.busy=true;clearTimeout(CL.timer);
+  CL.ref.set({s:clone(S),at:Date.now()}).then(function(){CL.st='on'},function(e){CL.st=(e&&e.code==='invalid_argument')?'ro':'err'}).then(function(){CL.busy=false;cloudBadge();if(CL.dirty){CL.dirty=false;cloudPush()}});
+}
+function applyRemote(r){
+  var m=mergeState(S,r);if(JSON.stringify(m)===JSON.stringify(S))return false;
+  S=m;saveLocal();updateWrongCnt();
+  if(cur!=='mock')render();
+  return true;
+}
+function cloudInit(){
+  if(!window.claude||typeof window.claude.use!=='function')return;
+  Promise.all([window.claude.use('db'),window.claude.use('user')]).then(function(r){
+    var db=r[0],us=r[1];if(!db||!us)return null;
+    return us.id().then(function(id){
+      if(!id)return null;
+      CL.ref=db.collection('data/users/'+id).doc('drill');
+      return CL.ref.get().then(function(snap){
+        var remote=snap.exists?(snap.data()||{}).s:null;
+        if(remote)applyRemote(remote);
+        CL.st='on';cloudBadge();
+        if(!remote||JSON.stringify(remote)!==JSON.stringify(S))cloudPush();
+        CL.ref.onSnapshot(function(sn){if(!sn.exists||sn.metadata.hasPendingWrites)return;var rr=(sn.data()||{}).s;if(rr&&(rr._t||0)>(S._t||0))applyRemote(rr)},function(){});
+      });
+    });
+  }).catch(function(){CL.st='err';cloudBadge()});
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&CL.timer){cloudPush()}});
+}
 function isOk(q,c){return c===q.a||(q.alt!==undefined&&c===q.alt)}
 function record(q,c){
   var ok=isOk(q,c),prev=S.ans[q.id];
@@ -2864,16 +2923,28 @@ function rHome(){
   h+='<p class="srcnote">题源：官方样题 '+off.total+' 道（Sample Quiz Part 1–5，答案取自 PDF 上的红色下划线）；自编题 '+(all.total-off.total)+' 道（依据 2026 S1 课件，覆盖样题没考到的新内容，Part 6 区块链全部为自编）；Q&amp;A '+QA.length+' 组。Part 5 第 17 题官方答案疑似标错，题内有说明。「老师强调」标签和录音新增的 15 道自编题依据 W2–W8 上课录音整理。</p>'+
   '<div class="sec-h"><h2>设置</h2></div><div class="panel row" style="justify-content:space-between">'+
   '<label class="row" style="gap:8px;font-size:14px"><input type="checkbox" id="pf-autorm"'+(S.prefs.autoRm?' checked':'')+'> 错题答对后自动移出错题本</label>'+
-  '<span class="row"><span id="rstwrap"><button class="btn sm danger" id="rst">清空全部进度</button></span></span></div>';
+  '<span class="row"><button class="btn sm" id="pexp">导出进度</button><button class="btn sm" id="pimp">导入进度</button><span id="rstwrap"><button class="btn sm danger" id="rst">清空全部进度</button></span></span></div><div id="pio"></div>';
   return h;
 }
 function bHome(){
   var c=$('[data-act="continue"]');
   if(c)c.onclick=function(){if(S.last.id&&BY[S.last.id]){P.part=String(BY[S.last.id].p);P.src='all';P.st='all';buildList(0);var i=P.list.indexOf(S.last.id);P.idx=i<0?0:i}else{P.part='1';P.src='all';P.st='all';buildList(0)}go('practice')};
   var ar=$('#pf-autorm');if(ar)ar.onchange=function(){S.prefs.autoRm=ar.checked;save()};
+  var pe=$('#pexp');if(pe)pe.onclick=function(){
+    $('#pio').innerHTML='<div class="panel" style="margin-top:10px"><p style="margin:0 0 6px;font-size:13.5px">复制下面整段文字，在另一台电脑（或另一个网址）的刷题本首页点「导入进度」，粘贴进去即可。</p><textarea id="pio-t" readonly style="width:100%;min-height:90px;font-family:var(--f-mono);font-size:12px">'+esc(JSON.stringify(S))+'</textarea><div class="row" style="margin-top:6px"><button class="btn sm pri" id="pio-c">复制</button><span id="pio-m" class="muted" style="font-size:13px"></span></div></div>';
+    $('#pio-c').onclick=function(){var t=$('#pio-t');var ok=function(){$('#pio-m').textContent='已复制'};var fb=function(){t.focus();t.select();$('#pio-m').textContent='已选中，按 Ctrl+C 复制'};try{navigator.clipboard.writeText(t.value).then(ok,fb)}catch(e){fb()}};
+  };
+  var pi=$('#pimp');if(pi)pi.onclick=function(){
+    $('#pio').innerHTML='<div class="panel" style="margin-top:10px"><label for="pio-i" style="font-size:13.5px">把另一台电脑导出的文字粘贴到这里，会和本机进度合并（同一题以较新的作答为准，错题取并集）：</label><textarea id="pio-i" style="width:100%;min-height:90px;font-family:var(--f-mono);font-size:12px"></textarea><div class="row" style="margin-top:6px"><button class="btn sm pri" id="pio-go">合并导入</button><button class="btn sm ghost" id="pio-x">取消</button><span id="pio-m" style="font-size:13px"></span></div></div>';
+    $('#pio-x').onclick=function(){$('#pio').innerHTML=''};
+    $('#pio-go').onclick=function(){var r;try{r=JSON.parse($('#pio-i').value)}catch(e){r=null}
+      if(!r||typeof r!=='object'||typeof r.ans!=='object'){$('#pio-m').style.color='var(--bad)';$('#pio-m').textContent='格式不对：请粘贴“导出进度”里的整段文字。';return}
+      S=mergeState(S,r);S._t=Date.now();save();updateWrongCnt();render();
+      var io=$('#pio');if(io)io.innerHTML='<p style="margin:8px 0 0;font-size:13.5px;color:var(--good)">✓ 已合并导入：现在错题本有 '+Object.keys(S.wrong).length+' 题，作答记录 '+Object.keys(S.ans).length+' 题。</p>'};
+  };
   var r=$('#rst');if(r)r.onclick=function(){
     $('#rstwrap').innerHTML='<span style="font-size:13px;color:var(--bad)">作答、错题、收藏和问答草稿都会被清空：</span> <button class="btn sm danger" id="rst2">确认清空</button> <button class="btn sm ghost" id="rst0">取消</button>';
-    $('#rst2').onclick=function(){S=blank();save();updateWrongCnt();buildList(0);render()};
+    $('#rst2').onclick=function(){S=blank();S._reset=Date.now();save();updateWrongCnt();buildList(0);render()};
     $('#rst0').onclick=function(){render()};
   };
 }
@@ -3106,7 +3177,7 @@ function rWrong(){
 function bWrong(){
   $$('[data-wp]').forEach(function(b){b.onclick=function(){var id=b.getAttribute('data-wp');P.part='all';P.src='all';P.st='wrong';buildList(0);var i=P.list.indexOf(id);P.idx=i<0?0:i;delete S.ans[id];save();go('practice')}});
   $$('[data-wr]').forEach(function(b){b.onclick=function(){delete S.wrong[b.getAttribute('data-wr')];save();updateWrongCnt();render()}});
-  var c=$('#wclr');if(c)c.onclick=function(){$('#wclrw').innerHTML='<button class="btn sm danger" id="wclr2">确认清空</button> <button class="btn sm ghost" id="wclr0">取消</button>';$('#wclr2').onclick=function(){S.wrong={};save();updateWrongCnt();render()};$('#wclr0').onclick=render};
+  var c=$('#wclr');if(c)c.onclick=function(){$('#wclrw').innerHTML='<button class="btn sm danger" id="wclr2">确认清空</button> <button class="btn sm ghost" id="wclr0">取消</button>';$('#wclr2').onclick=function(){S.wrong={};S._wclr=Date.now();save();updateWrongCnt();render()};$('#wclr0').onclick=render};
 }
 
 /* ================= Q&A ================= */
@@ -3725,6 +3796,7 @@ updateWrongCnt();
 if(S.last.id&&BY[S.last.id]){P.part=String(BY[S.last.id].p);buildList(0);var li=P.list.indexOf(S.last.id);P.idx=li<0?0:li}
 var h0=(location.hash||'').slice(1);
 go(VIEWS.indexOf(h0)>=0?h0:'home',true);
+cloudBadge();cloudInit();
 })();
 
 </script>
