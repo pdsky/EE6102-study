@@ -213,3 +213,8 @@ footer.foot{max-width:1180px;margin:0 auto;padding:24px 20px 40px;font-size:12.5
 
 /* English for Chinese technical terms */
 .zhen{color:var(--muted);font-size:.86em;font-weight:400;font-style:normal;letter-spacing:0;text-transform:none}
+
+/* exam key points circled in red */
+.kd{border:1.5px solid var(--mark);border-radius:999px;padding:0 .4em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.kd::after{content:"考";font-family:var(--f-ui);font-size:.62em;font-weight:700;color:#fff;background:var(--mark);border-radius:4px;padding:0 3px;margin-left:4px;vertical-align:.4em}
+.kd-note{font-size:14px;color:var(--ink-soft)}

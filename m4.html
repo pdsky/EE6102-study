@@ -31,7 +31,7 @@
 <p class="eyebrow">Module 04 · 对应课件 sld4</p>
 <h1 class="title">密码学<span class="zhen">（cryptography）</span>、数字签名<span class="zhen">（digital signature）</span>与证书<span class="zhen">（certificate）</span>：全课最重要的一章</h1>
 <p class="sub-en">Cryptography, Digital Signature and Digital Certificates</p>
-<div class="meta"><span>约 90 分钟，建议分两次学</span><span>17 道小测</span><span>6 个动手实验</span><span>Quiz 样题 Part 4 · 35 题；Q&amp;A Q21–Q33</span></div>
+<div class="meta"><span>约 90 分钟，建议分两次学</span><span>18 道小测</span><span>6 个动手实验</span><span>Quiz 样题 Part 4 · 35 题；Q&amp;A Q21–Q33</span></div>
 <p class="lede">样题里这一章有 35 题，是所有章节里最多的；期末的计算题（RSA、Diffie-Hellman）也全在这里。别被“密码学<span class="zhen">（cryptography）</span>”吓到：你只需要会小学的乘法和除法余数<span class="zhen">（remainder）</span>，就能手算 RSA。我们从两千年前的凯撒密码<span class="zhen">（Caesar cipher）</span>开始，一步一步走到你每天上网都在用的 HTTPS 背后的数学。</p>
 <div class="goals"><h3>学完这一章，你应该能：</h3><ul>
 <li>说清明文<span class="zhen">（plaintext）</span>、密文<span class="zhen">（ciphertext）</span>、密钥<span class="zhen">（key）</span>、加密<span class="zhen">（encryption）</span>、解密<span class="zhen">（decryption）</span>；对称<span class="zhen">（symmetric）</span>、非对称<span class="zhen">（asymmetric）</span>、哈希<span class="zhen">（hash）</span>三类密码<span class="zhen">（password）</span>的区别；</li>
@@ -556,42 +556,75 @@
 <!-- 10 -->
 <section class="sec" id="hash">
 <h2><span class="n">10</span>哈希<span class="zhen">（hash）</span>：给数据按一个“指纹<span class="zhen">（fingerprint）</span>”</h2>
-<p><b>Hash function</b> 把<b>任意长度</b>的数据压缩成一串<b>固定长度</b>的“摘要”（digest）。它是<b>单向<span class="zhen">（one-way）</span></b>的：从摘要无法还原原文。课件称它为“a special mathematical function that performs <b>one-way encryption</b>”（样题 Q4-33）。</p>
+<p class="kd-note">本节用 <span class="kd">红圈</span> 圈出的是 quiz 和期末最常考的结论，考前至少把圈出来的背熟。</p>
+<p>前面讲的加密<span class="zhen">（encryption）</span>都是为了<b>保密</b>：别人看不懂，但自己能解回来。这一节的哈希<span class="zhen">（hash）</span>目的完全不同：它不让人看不懂，而是让人<b>发现数据有没有被改过</b>。</p>
+<p><b>Hash function（哈希函数）</b>把<span class="kd">任意长度的数据压缩成一串固定长度的“摘要”（digest）</span>。它是<span class="kd">单向<span class="zhen">（one-way）</span>的：从摘要无法还原原文</span>。课件称它为 “a special mathematical function that performs <b>one-way encryption</b>”，答案是 <span class="kd">Hashing</span>（样题 Q4-33）。</p>
 <div class="analogy box"><span class="bt">类比</span><p>就像人的指纹<span class="zhen">（fingerprint）</span>：从一个人很容易得到他的指纹<span class="zhen">（fingerprint）</span>，但只看指纹<span class="zhen">（fingerprint）</span>没法“复原”出这个人；两个人指纹<span class="zhen">（fingerprint）</span>相同几乎不可能。Q&amp;A Q31 用的类比是软件包装盒上的<b>防拆封条<span class="zhen">（tamper-evident seal）</span></b>：盒子被打开过（文件被改过），一眼就能看出来。</p></div>
+
+<h3>看几个真实的 SHA-256 摘要<span class="zhen">（digest）</span></h3>
+<p>SHA-256 不管输入多长，输出永远是 256 位，写成 64 个十六进制字符：</p>
+<div class="out">
+<span class="eq">SHA-256("hello")  = 2cf24dba5fb0a30e…1fa7425e73043362938b9824</span>
+<span class="eq">SHA-256("Hello")  = 185f8db32271fe25…a518007d1764826381969</span>
+<span class="eq">SHA-256(一个 10 MB 的文件) = 0c9a42b3d065a640…7bc7973a421a964a11304c998c</span>
+</div>
+<p>三个现象正好对应哈希<span class="zhen">（hash）</span>的性质：① 5 个字母和 10 MB 的文件，输出<b>一样长</b>；② “hello” 只把 h 改成大写，256 位里有 <b>125 位</b>变了（接近一半），这就是<b>雪崩效应<span class="zhen">（avalanche effect）</span></b>；③ 同样的输入每次算出来都一样（确定性），所以才能拿来比对。</p>
+
 <h3>哈希<span class="zhen">（hash）</span>的性质（P4-108）</h3>
-<ul>
-<li>可以处理任意大小的数据，输出<b>固定长度</b>，计算很快；</li>
-<li><b>单向<span class="zhen">（one-way）</span>（抗原像<span class="zhen">（preimage resistance）</span>）</b>：给定摘要<span class="zhen">（digest）</span> h，找不到 x 使 H(x) = h；</li>
-<li><b>弱抗碰撞<span class="zhen">（weak collision resistance）</span></b>：给定 x，找不到另一个 y ≠ x 使 H(y) = H(x)；</li>
-<li><b>强抗碰撞<span class="zhen">（strong collision resistance）</span></b>：找不到<b>任意一对</b> x、y 使 H(x) = H(y)；</li>
-<li><b>雪崩效应<span class="zhen">（avalanche effect）</span></b>：输入改一个字母，输出完全变样（P4-111）。</li>
-</ul>
+<div class="tbl"><table>
+<tr><th>性质</th><th>意思</th><th>防的是什么</th></tr>
+<tr><td><span class="kd">固定长度、计算快</span></td><td>任意大小的输入，输出长度固定，算起来很快</td><td>—（实用前提）</td></tr>
+<tr><td><span class="kd">单向<span class="zhen">（one-way）</span>（抗原像<span class="zhen">（preimage resistance）</span>）</span></td><td>给定摘要<span class="zhen">（digest）</span> h，找不到 x 使 H(x) = h</td><td>从数据库<span class="zhen">（database）</span>里偷到密码<span class="zhen">（password）</span>哈希<span class="zhen">（hash）</span>，也反推不出密码<span class="zhen">（password）</span></td></tr>
+<tr><td><span class="kd">弱抗碰撞<span class="zhen">（weak collision resistance）</span></span>（抗第二原像）</td><td><b>给定</b>一个 x，找不到另一个 y ≠ x 使 H(y) = H(x)</td><td>攻击者<span class="zhen">（attacker）</span>造一个摘要<span class="zhen">（digest）</span>相同的假文件替换真文件</td></tr>
+<tr><td><span class="kd">强抗碰撞<span class="zhen">（strong collision resistance）</span></span></td><td>找不到<b>任意一对</b> x ≠ y 使 H(x) = H(y)</td><td>攻击者<span class="zhen">（attacker）</span>事先准备一真一假两份合同，让你签真的、他拿假的</td></tr>
+<tr><td><span class="kd">雪崩效应<span class="zhen">（avalanche effect）</span></span></td><td>输入改一个字母，输出完全变样（P4-111）</td><td>没法通过“输出差不多”去猜输入</td></tr>
+</table></div>
+<div class="pitfall box"><span class="bt">易错点：弱抗碰撞<span class="zhen">（weak collision resistance）</span> vs 强抗碰撞<span class="zhen">（strong collision resistance）</span></span><p>区别在<b>x 是不是给定的</b>。弱：题目先给你一个 x，让你找和它撞车的 y（更难）；强：x、y 都随你挑，只要撞车就行（更容易做到，所以要求更高）。碰撞<span class="zhen">（collision）</span>在数学上<b>一定存在</b>（无限多的输入挤进有限的输出），安全的意思是“找不到”。SHA-256 有 2<sup>256</sup> 种输出，按生日悖论，随便找一对碰撞<span class="zhen">（collision）</span>也要大约 2<sup>128</sup> 次计算。</p></div>
 <div class="lab"><p class="lt">雪崩效应<span class="zhen">（avalanche effect）</span>实验（真实的 SHA-256）</p><p class="ld">两段只差一个字母的文字，看看它们的 SHA-256 摘要<span class="zhen">（digest）</span>有多少位不同。红色标出两者不同的十六进制字符。</p>
 <div class="fields"><div class="fld" style="grid-column:1/-1"><label for="h1">文本 A</label><input id="h1" type="text" value="The red fox jumps over the blue dog"></div><div class="fld" style="grid-column:1/-1"><label for="h2">文本 B</label><input id="h2" type="text" value="The red fox jumps ouer the blue dog"></div></div>
 <div class="out" id="hout"></div></div>
+
 <h3>常见算法</h3>
 <div class="tbl"><table>
 <tr><th>算法</th><th>摘要长度<span class="zhen">（digest length）</span></th><th>状态</th></tr>
-<tr><td>MD5</td><td>128 位</td><td>✗ 不安全，不要再用</td></tr>
-<tr><td>SHA-1</td><td>160 位</td><td>✗ 已发现碰撞攻击<span class="zhen">（collision attack）</span>，不要再用</td></tr>
-<tr><td><b>SHA-2</b>（SHA-224/256/384/512）</td><td>名字里的数字就是长度</td><td>✓ 安全，最广泛使用（样题 Q4-27），比特币<span class="zhen">（Bitcoin）</span>用 SHA-256</td></tr>
-<tr><td>SHA-3</td><td>—</td><td>✓ 安全</td></tr>
+<tr><td>MD5</td><td>128 位</td><td><span class="kd">✗ 不安全</span>，几秒钟就能造出碰撞<span class="zhen">（collision）</span>，不要再用</td></tr>
+<tr><td>SHA-1</td><td><span class="kd">160 位</span></td><td><span class="kd">✗ 不安全</span>，2017 年 Google 公开了两份摘要<span class="zhen">（digest）</span>相同的 PDF</td></tr>
+<tr><td><b>SHA-2</b>（SHA-224/256/384/512）</td><td>名字里的数字就是长度</td><td><span class="kd">✓ 安全，最广泛使用</span>（样题 Q4-27），比特币<span class="zhen">（Bitcoin）</span>用 SHA-256</td></tr>
+<tr><td>SHA-3</td><td>224/256/384/512 位</td><td>✓ 安全，2015 年的新标准，内部结构和 SHA-2 完全不同</td></tr>
 </table></div>
+<p>样题 Q4-27 问“最重要、最广泛使用的哈希函数<span class="zhen">（hash function）</span>家族”，答案是 <span class="kd">SHA（Secure Hash Algorithm）</span>。注意老师强调的用词：<b>SHA 是算法</b>，<b>hash value 和 digest 都是输出</b>。</p>
 <div class="teacher box" data-t="m4halg"><span class="bt">老师课上强调 · W7</span><ul><li>MD5、SHA-1 不安全，不应再用；SHA-256 用于比特币<span class="zhen">（Bitcoin）</span>。</li><li>网站存的是密码<span class="zhen">（password）</span>的<b>哈希<span class="zhen">（hash）</span></b>。如果网站说能把原密码<span class="zhen">（password）</span>“找回”给你，说明它没用哈希<span class="zhen">（hash）</span>，不应该用；正常只能<b>重置</b>（NTU 也一样）。</li></ul></div>
+
+<h3>哈希用在哪：三个例子</h3>
+<div class="key box"><span class="bt">例 1：检查下载的文件有没有被改</span><p>软件官网在下载链接旁边公布安装包的 SHA-256。你下载完自己算一遍，和官网的对比：一样，说明文<span class="zhen">（plaintext）</span>件完整；哪怕被插进 1 个字节<span class="zhen">（byte）</span>的病毒<span class="zhen">（virus）</span>，摘要<span class="zhen">（digest）</span>也会完全不同。这就是哈希<span class="zhen">（hash）</span>的本职：<span class="kd">完整性<span class="zhen">（integrity）</span></span>。</p></div>
+<div class="key box"><span class="bt">例 2：网站怎么存你的密码<span class="zhen">（password）</span></span><p>网站不存密码<span class="zhen">（password）</span>本身，只存密码<span class="zhen">（password）</span>的哈希<span class="zhen">（hash）</span>。你设密码<span class="zhen">（password）</span> 123456，数据库<span class="zhen">（database）</span>里存的是 8d969eef6ecad3c2…；登录时把你输入的密码<span class="zhen">（password）</span>再算一次哈希<span class="zhen">（hash）</span>，和存的比对，一样就放行。这样数据库<span class="zhen">（database）</span>被偷了，黑客<span class="zhen">（hacker）</span>拿到的也只是摘要<span class="zhen">（digest）</span>。所以<span class="kd">能“找回原密码<span class="zhen">（password）</span>”的网站说明没用哈希<span class="zhen">（hash）</span>，不安全；正常只能重置</span>。</p><p>但像 123456 这种常用密码<span class="zhen">（password）</span>，攻击者<span class="zhen">（attacker）</span>可以提前把常见密码<span class="zhen">（password）</span>的哈希<span class="zhen">（hash）</span>都算好（彩虹表<span class="zhen">（rainbow table）</span>），一查就知道。所以实际中每个用户再加一段随机的<b>盐（salt）</b>一起哈希<span class="zhen">（hash）</span>，同样的 123456 存出来也各不相同。</p></div>
+<div class="key box"><span class="bt">例 3：数字签名<span class="zhen">（digital signature）</span>先哈希<span class="zhen">（hash）</span>再签</span><p>一份 100 页的合同直接用 RSA 签名<span class="zhen">（signature）</span>太慢，所以先算出 256 位的摘要<span class="zhen">（digest）</span>，再用私钥<span class="zhen">（private key）</span>只签这个摘要<span class="zhen">（digest）</span>。接收方重新算一遍摘要<span class="zhen">（digest）</span>，和解开的签名<span class="zhen">（signature）</span>比对，相等就说明没被改过、也确实是对方签的（下一节详细讲，样题 Q4-28、Q4-30）。</p></div>
+<p><b>哈希<span class="zhen">（hash）</span>单独用为什么不能认证<span class="zhen">（authentication）</span>：</b>哈希<span class="zhen">（hash）</span>人人都会算，没有密钥<span class="zhen">（key）</span>。攻击者<span class="zhen">（attacker）</span>把文件改了，顺手把旁边的摘要<span class="zhen">（digest）</span>也换成新算的，你根本发现不了。要证明“是谁发的”，必须加入密钥<span class="zhen">（key）</span>：要么用共享密钥<span class="zhen">（shared key）</span>做 <b>MAC/HMAC</b>（带密钥的哈希<span class="zhen">（keyed hash）</span>），要么用私钥<span class="zhen">（private key）</span>签名<span class="zhen">（signature）</span>做<b>数字签名<span class="zhen">（digital signature）</span></b>。</p>
 
 <h3>哈希<span class="zhen">（hash）</span> ≠ 加密（Q&amp;A Q31）</h3>
 <div class="tbl"><table>
 <tr><th></th><th>加密<span class="zhen">（encryption）</span></th><th>哈希<span class="zhen">（hash）</span></th></tr>
 <tr><td>输出长度</td><td>和明文<span class="zhen">（plaintext）</span>差不多，或更长</td><td>固定且短，与输入长度无关</td></tr>
-<tr><td>能还原吗</td><td>能（解密<span class="zhen">（decryption）</span>）</td><td><b>不能</b>（不能 de-hash）</td></tr>
-<tr><td>需要密钥<span class="zhen">（key）</span>吗</td><td>需要</td><td>不需要</td></tr>
-<tr><td>目的</td><td>机密性<span class="zhen">（confidentiality）</span></td><td><b>完整性<span class="zhen">（integrity）</span></b>（样题 Q4-26）</td></tr>
+<tr><td>能还原吗</td><td>能（解密<span class="zhen">（decryption）</span>）</td><td><span class="kd">不能</span>（不能 de-hash）</td></tr>
+<tr><td>需要密钥<span class="zhen">（key）</span>吗</td><td>需要</td><td><span class="kd">不需要</span></td></tr>
+<tr><td>目的</td><td>机密性<span class="zhen">（confidentiality）</span></td><td><span class="kd">完整性<span class="zhen">（integrity）</span></span>（样题 Q4-26）</td></tr>
 </table></div>
 <div class="check" data-a="0"><p class="cq">哈希函数<span class="zhen">（hash function）</span>的主要目的是？（样题 Q4-26）</p>
 <div class="opts"><button class="opt">数据完整性<span class="zhen">（data integrity）</span></button><button class="opt">认证<span class="zhen">（authentication）</span></button><button class="opt">两者都是</button></div>
 <div class="cx"><p>哈希<span class="zhen">（hash）</span>本身没有密钥<span class="zhen">（key）</span>，单独使用证明不了是谁发的，所以主要用于<b>完整性<span class="zhen">（integrity）</span></b>。和私钥<span class="zhen">（private key）</span>签名<span class="zhen">（signature）</span>结合后才能提供认证<span class="zhen">（authentication）</span>，那是下一节的内容。</p></div></div>
 <div class="teacher box" data-t="m4hash"><span class="bt">老师课上强调 · W8</span><p>样题 Q4-26：哈希<span class="zhen">（hash）</span>的主要目的？<b>只有 data integrity</b>，不提供 authentication，认证要靠数字签名<span class="zhen">（digital signature）</span>。Q4-27：SHA 是<b>算法</b>，hash value 和 digest 都是输出。</p></div>
-
+<div class="check" data-a="1"><p class="cq">攻击者<span class="zhen">（attacker）</span>想事先准备好一真一假两份合同，让它们的摘要<span class="zhen">（digest）</span>相同，再骗你签真的那份。这需要破坏哈希<span class="zhen">（hash）</span>的哪个性质？</p>
+<div class="opts"><button class="opt">单向<span class="zhen">（one-way）</span>性（抗原像<span class="zhen">（preimage resistance）</span>）</button><button class="opt">强抗碰撞<span class="zhen">（strong collision resistance）</span></button><button class="opt">固定长度</button></div>
+<div class="cx"><p>两份都由攻击者<span class="zhen">（attacker）</span>自己挑，只要求“任意一对撞车”，这是<b>强抗碰撞<span class="zhen">（strong collision resistance）</span></b>。如果是你给定一份文件、他去找另一份撞车，那是弱抗碰撞<span class="zhen">（weak collision resistance）</span>。</p></div></div>
+<div class="exam box"><span class="bt">考点清单（必背）</span><ul>
+<li>哈希<span class="zhen">（hash）</span>的主要目的：<span class="kd">只有完整性（data integrity）</span>，不提供认证<span class="zhen">（authentication）</span>、不提供保密。</li>
+<li>“one-way encryption” 的数学函数 = <span class="kd">Hashing</span>；哈希<span class="kd">不能还原</span>，<span class="kd">不需要密钥<span class="zhen">（key）</span></span>。</li>
+<li>输出<span class="kd">固定长度</span>；性质：单向<span class="zhen">（one-way）</span>、弱抗碰撞<span class="zhen">（weak collision resistance）</span>、强抗碰撞<span class="zhen">（strong collision resistance）</span>、雪崩效应<span class="zhen">（avalanche effect）</span>。</li>
+<li>最广泛使用的家族：<span class="kd">SHA</span>；MD5、SHA-1 <span class="kd">已不安全</span>；SHA-1 是 160 位（老师口误说成 168）。</li>
+<li>SHA 是<b>算法</b>，hash value / digest 是<b>输出</b>。</li>
+<li>密码<span class="zhen">（password）</span>存哈希；能找回原密码<span class="zhen">（password）</span>的网站不安全。</li>
+<li>数字签名<span class="zhen">（digital signature）</span>：<span class="kd">用发送方私钥<span class="zhen">（private key）</span>签摘要<span class="zhen">（digest）</span>，用发送方公钥<span class="zhen">（public key）</span>验证</span>，两个摘要<span class="zhen">（digest）</span>相等即通过（下一节）。</li>
+</ul></div>
 </section>
 
 <!-- 11 -->
