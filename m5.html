@@ -130,7 +130,7 @@
 <div class="st"><p><b>② ServerHello（服务器 → 客户端<span class="zhen">（client）</span>）</b></p><p>“好的，我们就用这个套件。”服务器<span class="zhen">（server）</span>从客户端<span class="zhen">（client）</span>的列表里<b>选一个</b>。</p></div>
 <div class="st"><p><b>③ Certificate（服务器<span class="zhen">（server）</span> → 客户端<span class="zhen">（client）</span>）</b></p><p>服务器<span class="zhen">（server）</span>发来自己的<b>数字证书<span class="zhen">（digital certificate）</span></b>，里面有它的公钥<span class="zhen">（public key）</span>。客户端<span class="zhen">（client）</span>按模块 4 的三步验证证书<span class="zhen">（certificate）</span>：CA 签名<span class="zhen">（signature）</span>、有效期<span class="zhen">（validity period）</span>、吊销状态<span class="zhen">（revocation status）</span>。</p></div>
 <div class="st"><p><b>④ ServerHelloDone</b></p><p>“我这边说完了。”</p></div>
-<div class="st"><p><b>⑤ ClientKeyExchange（客户端 → 服务器<span class="zhen">（server）</span>）</b></p><p>客户端<b>随机生成一把对称会话密钥<span class="zhen">（symmetric session key）</span></b>，用<b>服务器<span class="zhen">（server）</span>的公钥<span class="zhen">（public key）</span></b>加密<span class="zhen">（encryption）</span>后发过去。服务器<span class="zhen">（server）</span>用自己的私钥<span class="zhen">（private key）</span>解开，现在双方都有了同一把会话密钥<span class="zhen">（session key）</span>，Eve 没有。</p></div>
+<div class="st"><p><b>⑤ ClientKeyExchange（客户端 → 服务器<span class="zhen">（server）</span>）</b></p><p>客户端<span class="zhen">（client）</span><b>随机生成一把对称会话密钥<span class="zhen">（symmetric session key）</span></b>，用<b>服务器<span class="zhen">（server）</span>的公钥<span class="zhen">（public key）</span></b>加密<span class="zhen">（encryption）</span>后发过去。服务器<span class="zhen">（server）</span>用自己的私钥<span class="zhen">（private key）</span>解开，现在双方都有了同一把会话密钥<span class="zhen">（session key）</span>，Eve 没有。</p></div>
 <div class="st"><p><b>⑥ ChangeCipherSpec</b></p><p>客户端<span class="zhen">（client）</span>把选定的加密套件<span class="zhen">（cipher suite）</span>从“待定”切换为“启用”。</p></div>
 <div class="st"><p><b>⑦ Finished</b></p><p>客户端<span class="zhen">（client）</span>表示握手<span class="zhen">（handshake）</span>结束。从此进入正常通信阶段，<b>所有数据都用对称会话密钥<span class="zhen">（symmetric session key）</span>加密<span class="zhen">（encryption）</span></b>，由记录协议<span class="zhen">（record protocol）</span>负责。</p></div>
 <div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
@@ -227,7 +227,7 @@
 <h4>TLS 1.3 的握手<span class="zhen">（handshake）</span>只要三步（P5-21）</h4>
 <div class="stepper"><div class="sh"><span>TLS 1.3 握手<span class="zhen">（handshake）</span>（1-RTT）</span><span class="ctr"></span></div>
 <div class="st"><p><b>① Client Hello</b>：TLS 1.3 把支持的密码套件<span class="zhen">（cipher suite）</span>从 <b>37 个减到 5 个</b>，客户端<span class="zhen">（client）</span>可以直接<b>猜</b>服务器<span class="zhen">（server）</span>会用哪种密钥协商<span class="zhen">（key agreement）</span>方式，并在第一条消息里就附上自己的 <b>key share</b>，不用像 1.2 那样先等服务器<span class="zhen">（server）</span>回话。</p></div>
-<div class="st"><p><b>② Server Hello</b>：服务器回复 Server Hello，同时发来<b>证书<span class="zhen">（certificate）</span></b>和<b>自己的 key share</b>。此时服务器已经能算出会话密钥<span class="zhen">（session key）</span>，最后发出 <b>server Finished</b>。</p></div>
+<div class="st"><p><b>② Server Hello</b>：服务器回复 Server Hello，同时发来<b>证书<span class="zhen">（certificate）</span></b>和<b>自己的 key share</b>。此时服务器<span class="zhen">（server）</span>已经能算出会话密钥<span class="zhen">（session key）</span>，最后发出 <b>server Finished</b>。</p></div>
 <div class="st"><p><b>③ Client Finished</b>：客户端验证证书<span class="zhen">（certificate）</span>，用两份 key share 算出自己的那份会话密钥<span class="zhen">（session key）</span>，然后发出 <b>Finished</b>。握手<span class="zhen">（handshake）</span>完成，只用了<b>一个往返</b>。</p><p>密钥<span class="zhen">（key）</span>用 <b>Ephemeral Diffie-Hellman（EDH / DHE）</b>生成；允许的签名算法<span class="zhen">（signature algorithm）</span>有三种：<b>RSA（只用于签名<span class="zhen">（signature）</span>）、ECDSA、EdDSA</b>。</p></div>
 <div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
 <div class="tbl"><table>
@@ -317,7 +317,7 @@
 <tr><td>机密性 Confidentiality</td><td>对称密钥加密<span class="zhen">（symmetric key encryption）</span></td></tr>
 <tr><td>授权 Authorization</td><td>公钥密码<span class="zhen">（public-key cryptography）</span> RSA</td></tr>
 <tr><td>完整性 Integrity</td><td>哈希<span class="zhen">（hash）</span></td></tr>
-<tr><td>认证 Authentication</td><td>所有参与方都用数字证书<span class="zhen">（digital certificate）</span>认证</td></tr>
+<tr><td>认证 Authentication</td><td>所有参与方都用数字证书<span class="zhen">（digital certificate）</span>认证<span class="zhen">（authentication）</span></td></tr>
 </table></div>
 <p><b>SET 的优点</b>：商家<span class="zhen">（merchant）</span>看不到客户的账户信息（保护金融隐私<span class="zhen">（financial privacy）</span>）；它是完整的刷卡支付<span class="zhen">（card payment）</span>系统，包括支付传输、确认和查询。<b>SET 的缺点</b>：银行网络、商家<span class="zhen">（merchant）</span>和消费者电脑上都必须装相应的软件，这也是它几乎没人用的原因。</p>
 <h4>SET vs SSL 的根本区别（P5-37）</h4>
@@ -394,6 +394,24 @@
 <div class="lab"><p class="lt">防火墙吞吐量<span class="zhen">（firewall throughput）</span>计算器</p>
 <div class="fields"><div class="fld"><label for="tl">链路速率 (Gbps)</label><input id="tl" type="number" value="1" step="any"></div><div class="fld"><label for="ts">平均包大小 (bytes)</label><input id="ts" type="number" value="1000"></div><div class="fld"><label for="tc">防火墙<span class="zhen">（firewall）</span>能力 (pps)</label><input id="tc" type="number" value="100000"></div></div>
 <div class="out" id="tout"></div></div>
+<div class="stepper"><div class="sh"><span>例题：防火墙吞吐量<span class="zhen">（firewall throughput）</span>四种问法</span><span class="ctr"></span></div>
+<div class="st"><p><b>例 1（课件 P5-77 原题）</b>：防火墙<span class="zhen">（firewall）</span>每秒能处理 200,000 个包（pps），平均包大小<span class="zhen">（average packet size）</span> 1000 字节<span class="zhen">（byte）</span>，链路速率<span class="zhen">（link rate）</span> 1 Gbps。防火墙<span class="zhen">（firewall）</span>扛得住吗？</p>
+<div class="out"><span class="eq">第 1 步　所需包速率<span class="zhen">（packet rate）</span> = 带宽<span class="zhen">（bandwidth）</span> ÷ (包大小<span class="zhen">（packet size）</span> × 8)</span><span class="eq">　　　　= 1,000,000,000 ÷ (1000 × 8) = 1,000,000,000 ÷ 8,000 = <b>125,000 pps</b></span><span class="eq">第 2 步　比较：防火墙<span class="zhen">（firewall）</span>能力 200,000 pps ≥ 所需 125,000 pps</span><span class="eq">结论　　<b>扛得住 ✓</b>（还剩 75,000 pps 余量，负载 62.5%）</span></div></div>
+<div class="st"><p><b>例 2（课件 P5-78 原题）</b>：条件同上，但防火墙<span class="zhen">（firewall）</span>每秒只能处理 <b>100,000</b> 个包。</p>
+<div class="out"><span class="eq">第 1 步　所需包速率<span class="zhen">（packet rate）</span> = 1,000,000,000 ÷ (1000 × 8) = <b>125,000 pps</b>（和例 1 一样）</span><span class="eq">第 2 步　比较：防火墙<span class="zhen">（firewall）</span>能力 100,000 pps &lt; 所需 125,000 pps</span><span class="eq">结论　　<b>扛不住 ✗</b>，每秒有 25,000 个包处理不过来，会被丢弃或排队，造成延迟甚至中断</span></div>
+<p>这就是上面计算器默认的例子。期末写答案时两步都要写出来，最后一句写明 “The firewall can / cannot handle the traffic load.”</p></div>
+<div class="st"><p><b>例 3（变形：小包攻击）</b>：链路<span class="zhen">（link）</span> 100 Mbps，攻击者<span class="zhen">（attacker）</span>全发 <b>64 字节<span class="zhen">（byte）</span></b>的小包，防火墙<span class="zhen">（firewall）</span>能力 150,000 pps。扛得住吗？</p>
+<div class="out"><span class="eq">所需包速率<span class="zhen">（packet rate）</span> = 100,000,000 ÷ (64 × 8) = 100,000,000 ÷ 512 ≈ <b>195,313 pps</b></span><span class="eq">150,000 &lt; 195,313 → <b>扛不住 ✗</b></span></div>
+<p>链路<span class="zhen">（link）</span>只有 100 Mbps，比例 1 的 1 Gbps 慢 10 倍，却更难扛：<b>包越小，同样的带宽<span class="zhen">（bandwidth）</span>里塞的包越多</b>，防火墙<span class="zhen">（firewall）</span>要逐个检查，压力越大。这就是攻击者<span class="zhen">（attacker）</span>喜欢用小包洪泛<span class="zhen">（flood）</span>的原因。</p></div>
+<div class="st"><p><b>例 4（反过来问）</b>：防火墙<span class="zhen">（firewall）</span>能力 100,000 pps，平均包大小<span class="zhen">（average packet size）</span> 1000 字节<span class="zhen">（byte）</span>，它最多能跑满多快的链路<span class="zhen">（link）</span>？</p>
+<div class="out"><span class="eq">最大带宽<span class="zhen">（bandwidth）</span> = 包速率<span class="zhen">（packet rate）</span> × 包大小<span class="zhen">（packet size）</span> × 8 = 100,000 × 1000 × 8 = 800,000,000 bit/s = <b>800 Mbps</b></span></div>
+<p>所以例 2 的 1 Gbps 超过了 800 Mbps，扛不住，两种算法结论一致。同理也可以问“1 Gbps 链路<span class="zhen">（link）</span>下，平均包至少多大它才扛得住”：1,000,000,000 ÷ (100,000 × 8) = <b>1,250 字节<span class="zhen">（byte）</span></b>。</p></div>
+<div class="sf"><button class="btn" data-prev>← 上一步</button><button class="btn pri" data-next>下一步 →</button></div></div>
+<div class="pitfall box"><span class="bt">易错点</span><ul>
+<li><b>一定要 × 8</b>：链路速率<span class="zhen">（link rate）</span>是 bit/s（Gbps、Mbps），包大小<span class="zhen">（packet size）</span>是字节（byte），1 字节 = 8 位。忘了乘 8，例 1 会算成 1,000,000 pps，结论就错了。</li>
+<li>单位换算：1 Gbps = 1,000,000,000 bit/s，1 Mbps = 1,000,000 bit/s（网络里按 1000 进位，不是 1024）。</li>
+<li>结论看大小关系：<b>防火墙<span class="zhen">（firewall）</span>能力 ≥ 所需包速率<span class="zhen">（packet rate）</span></b>才扛得住。</li>
+</ul></div>
 <div class="check" data-a="0"><p class="cq">“A traditional packet filter makes filtering decisions on an individual packet basis and does not take into consideration any higher layer context.”</p>
 <div class="opts"><button class="opt">TRUE</button><button class="opt">FALSE</button></div>
 <div class="cx"><p>传统包过滤<span class="zhen">（packet filtering）</span>就是无状态<span class="zhen">（stateless）</span>、逐包判断（样题 Q5-7）。</p></div></div>
