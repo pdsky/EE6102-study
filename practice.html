@@ -351,7 +351,8 @@ details.more>summary{cursor:pointer;font-family:var(--f-ui);font-size:13px;color
       <div class="grp"><span class="gl">Quiz · 选择题</span>
         <a href="#practice" data-v="practice">分章练习</a>
         <a href="#mock" data-v="mock">模拟测验</a>
-        <a href="#wrong" data-v="wrong">错题本 <span class="cnt" id="wrongCnt"></span></a></div>
+        <a href="#wrong" data-v="wrong">错题本 <span class="cnt" id="wrongCnt"></span></a>
+        <a href="#redo" data-v="redo">错题 / 收藏重做</a></div>
       <div class="grp"><span class="gl">Final · 大题</span>
         <a href="#qa" data-v="qa">问答题 Q&amp;A</a>
         <a href="#exam" data-v="exam">期末专项 DH/RSA</a>
@@ -2827,7 +2828,7 @@ function cloudPush(){
 function applyRemote(r){
   var m=mergeState(S,r);if(JSON.stringify(m)===JSON.stringify(S))return false;
   S=m;saveLocal();updateWrongCnt();
-  if(cur!=='mock')render();
+  if(cur!=='mock'&&!(cur==='redo'&&R.phase==='run'))render();
   return true;
 }
 function cloudInit(){
@@ -2859,7 +2860,7 @@ function record(q,c){
 function updateWrongCnt(){var n=Object.keys(S.wrong).length;var el=$('#wrongCnt');if(el)el.textContent=n?String(n):''}
 
 /* ---------------- router ---------------- */
-var VIEWS=['home','notes','teacher','practice','mock','wrong','qa','calc','exam'];
+var VIEWS=['home','notes','teacher','practice','mock','wrong','redo','qa','calc','exam'];
 var cur='home';
 var view=$('#view');
 function go(v,noHash){
@@ -2871,9 +2872,9 @@ function go(v,noHash){
   try{view.scrollTop=0;window.scrollTo(0,0)}catch(e){}
 }
 function render(){
-  var f={home:rHome,notes:rNotes,teacher:rTeacher,practice:rPractice,mock:rMock,wrong:rWrong,qa:rQA,calc:rCalc,exam:rExam}[cur];
+  var f={home:rHome,notes:rNotes,teacher:rTeacher,practice:rPractice,mock:rMock,wrong:rWrong,redo:rRedo,qa:rQA,calc:rCalc,exam:rExam}[cur];
   view.innerHTML='<div class="view vfade">'+f()+'</div>';
-  var b={practice:bPractice,mock:bMock,qa:bQA,calc:bCalc,notes:bNotes,wrong:bWrong,home:bHome,exam:bExam}[cur];
+  var b={practice:bPractice,mock:bMock,qa:bQA,calc:bCalc,notes:bNotes,wrong:bWrong,redo:bRedo,home:bHome,exam:bExam}[cur];
   if(b)b();
 }
 window.addEventListener('hashchange',function(){var h=(location.hash||'').slice(1);if(VIEWS.indexOf(h)>=0&&h!==cur)go(h,true)});
@@ -3164,7 +3165,7 @@ function rWrong(){
   var ids=MCQ.filter(function(q){return S.wrong[q.id]}).map(function(q){return q.id});
   var h='<p class="eyebrow">Quiz · 错题本</p><h1 class="vh">错题本</h1><p class="lede">答错的题（包括模拟测验里答错和没答的）会自动收进来。'+(S.prefs.autoRm?'重练时答对会自动移出；可以在总览页关闭这个设置。':'目前不会自动移出，需要手动点“移出”。')+'</p>';
   if(!ids.length)return h+'<div class="empty">错题本是空的 🎉 去做题或来一套模拟测验吧。</div>';
-  h+='<div class="row" style="margin-bottom:12px"><button class="btn pri" data-go="practice" data-st="wrong">逐题重练全部 '+ids.length+' 道</button><span id="wclrw"><button class="btn ghost sm" id="wclr">清空错题本</button></span></div>';
+  h+='<div class="row" style="margin-bottom:12px"><button class="btn pri" data-go="redo">进入错题重做（不显示上次答案）</button><button class="btn" data-go="practice" data-st="wrong">按题号浏览全部 '+ids.length+' 道</button><span id="wclrw"><button class="btn ghost sm" id="wclr">清空错题本</button></span></div>';
   for(var p=1;p<=6;p++){
     var pi=ids.filter(function(id){return BY[id].p===p});if(!pi.length)continue;
     h+='<div class="sec-h"><h2>P'+p+' '+PARTS[p].t+'</h2><span class="pstat">'+pi.length+' 道</span></div><div class="wlist">';
@@ -3779,16 +3780,104 @@ function bExam(){
 }
 
 /* ---------------- keyboard ---------------- */
+
+/* ================= 错题 / 收藏重做 ================= */
+var R={phase:'setup',src:'wrong',part:'all',order:'part',onlyOff:false,ids:[],idx:0,picks:{},res:{},prev:{},showZh:{},last:null};
+function redoPool(src,part,onlyOff){
+  return MCQ.filter(function(q){
+    var w=!!S.wrong[q.id],st=!!S.star[q.id];
+    if(src==='wrong'?!w:src==='star'?!st:!(w||st))return false;
+    if(part!=='all'&&String(q.p)!==part)return false;
+    if(onlyOff&&q.s!=='o')return false;
+    return true;
+  }).map(function(q){return q.id});
+}
+function redoStart(ids){
+  R.ids=ids.slice();if(R.order==='rand')shuffle(R.ids);
+  R.idx=0;R.picks={};R.res={};R.prev={};R.showZh={};
+  R.ids.forEach(function(id){var a=S.ans[id];R.prev[id]=a&&a.c>=0?{c:a.c,ok:a.ok,w:a.w}:(a?{c:-1,ok:a.ok,w:a.w}:null)});
+  R.phase='run';render();try{window.scrollTo(0,0)}catch(e){}
+}
+function redoFinish(){
+  var ok=0,bad=[],skip=[];R.ids.forEach(function(id){if(R.res[id]===true)ok++;else if(R.res[id]===false)bad.push(id);else skip.push(id)});
+  R.last={n:R.ids.length,ok:ok,bad:bad,skip:skip,src:R.src};R.phase='done';render();try{window.scrollTo(0,0)}catch(e){}
+}
+function rRedo(){
+  var h='<p class="eyebrow">Quiz · 重做</p><h1 class="vh">错题 / 收藏重做</h1>';
+  if(R.phase==='setup'){
+    h+='<p class="lede">从错题本和收藏里重新出题。做题时<b>不显示上次的答案</b>，答完才告诉你上次选了什么。'+(S.prefs.autoRm?'答对的错题会自动移出错题本；':'')+'收藏不会自动取消，觉得已经会了，点题目右上角的 ★ 取消收藏。</p>';
+    var nW=redoPool('wrong','all',false).length,nS=redoPool('star','all',false).length,nB=redoPool('both','all',false).length;
+    var ids=redoPool(R.src,R.part,R.onlyOff);
+    h+='<div class="panel setup">';
+    h+='<div class="frow"><span class="fl">范围</span>'+[['wrong','错题',nW],['star','收藏',nS],['both','错题 + 收藏',nB]].map(function(x){return '<button class="chip'+(R.src===x[0]?' on':'')+'" data-rs="'+x[0]+'">'+x[1]+' · '+x[2]+'</button>'}).join('')+'</div>';
+    var all=redoPool(R.src,'all',R.onlyOff);
+    h+='<div class="frow"><span class="fl">章节</span><button class="chip'+(R.part==='all'?' on':'')+'" data-rp="all">全部 · '+all.length+'</button>';
+    for(var p=1;p<=6;p++){var n=all.filter(function(id){return BY[id].p===p}).length;if(n||R.part===String(p))h+='<button class="chip'+(R.part===String(p)?' on':'')+'" data-rp="'+p+'">P'+p+' · '+n+'</button>'}
+    h+='</div>';
+    h+='<div class="frow"><span class="fl">顺序</span><button class="chip'+(R.order==='part'?' on':'')+'" data-ro="part">按章节</button><button class="chip'+(R.order==='rand'?' on':'')+'" data-ro="rand">随机打乱</button>'+
+      '<label class="row" style="gap:6px;font-size:14px;margin-left:8px"><input type="checkbox" id="r-off"'+(R.onlyOff?' checked':'')+'> 只做官方样题</label></div>';
+    h+='<div class="row"><button class="btn pri" id="r-go"'+(ids.length?'':' disabled')+'>开始重做 '+ids.length+' 道</button>'+(ids.length?'':'<span class="muted" style="font-size:13.5px">'+(R.src==='star'?'还没有收藏，做题时点 ☆ 收藏。':'这个范围里没有题。')+'</span>')+'</div>';
+    h+='</div>';
+    if(R.last)h+='<p class="srcnote">上一轮：'+R.last.n+' 题，答对 '+R.last.ok+' 题'+(R.last.bad.length?'，仍错 '+R.last.bad.length+' 题':'')+'。</p>';
+    return h;
+  }
+  if(R.phase==='done'){
+    var L=R.last,pct=L.n?Math.round(L.ok/L.n*100):0;
+    h+='<div class="score"><div class="big">'+L.ok+'<small> / '+L.n+'</small></div><div><div class="pname">本轮答对 '+pct+'%</div><div class="pmeta">'+(L.bad.length?'仍然答错 '+L.bad.length+' 题':'全部答对 🎉')+(L.skip.length?'，跳过 '+L.skip.length+' 题':'')+'</div></div></div>';
+    h+='<div class="row" style="margin-bottom:14px">'+(L.bad.length+L.skip.length?'<button class="btn pri" id="r-again">再做一轮没做对的 '+(L.bad.length+L.skip.length)+' 道'+(L.skip.length?'（含跳过的 '+L.skip.length+' 道）':'')+'</button>':'')+'<button class="btn" id="r-new">重新选范围</button><button class="btn ghost" data-go="wrong">去错题本</button></div>';
+    if(L.bad.length){h+='<div class="sec-h"><h2>仍然答错的题</h2></div><div class="wlist">';
+      L.bad.forEach(function(id){var q=BY[id];h+='<div class="witem"><span class="qid">'+esc(qno(q))+'</span><span class="ws" lang="en" title="'+esc(q.q)+'">'+esc(q.q)+'</span><span class="tag ok">答案 '+LET[q.a]+'</span></div>'});h+='</div>'}
+    return h;
+  }
+  var id=R.ids[R.idx],q=BY[id],pk=R.picks[id],done=pk!==undefined,pv=R.prev[id];
+  var nd=Object.keys(R.res).length,nok=R.ids.filter(function(x){return R.res[x]===true}).length;
+  h+='<div class="mbar"><span class="pstat" style="margin:0">第 '+(R.idx+1)+' / '+R.ids.length+' 题 · 已做 '+nd+' · 答对 '+nok+'</span><span class="row"><button class="btn sm ghost" id="r-quit">结束本轮</button></span></div>';
+  h+='<div class="bar" style="margin:0 0 14px"><i class="g" style="width:'+(nok/R.ids.length*100)+'%"></i><i class="b" style="width:'+((nd-nok)/R.ids.length*100)+'%"></i></div>';
+  h+='<article class="qcard"><div class="qtop"><span class="qid">'+esc(qno(q))+'</span><span class="tag '+q.s+'">'+(q.s==='o'?'官方样题':q.s==='n'?'网传 Mock 题':'自编 · 依据课件')+'</span>'+(q.calc?'<span class="tag k">计算题</span>':'')+(hotOf(q)?'<span class="tag hot">老师强调</span>':'')+(S.wrong[id]?'<span class="tag no">在错题本</span>':'')+
+    '<span class="sp"></span><button class="star'+(S.star[id]?' on':'')+'" id="star" aria-label="收藏" title="收藏 (S)">'+(S.star[id]?'★':'☆')+'</button></div>';
+  h+='<div class="qbody"><p class="stem" lang="en">'+esc(q.q)+'</p>';
+  if(done||R.showZh[id]||S.prefs.zh)h+='<p class="zh">'+q.zh+'</p>';else h+='<button class="zhbtn" id="zhb">显示中文题意</button>';
+  h+=optsHTML(q,{picked:done?pk:null,reveal:done,lock:done});
+  if(done){var ok=R.res[id];
+    var was=pv?(pv.c>=0?'上次选了 '+LET[pv.c]+(pv.ok?'（答对）':'（答错）'):'上次答错'):'以前没做过';
+    h+='<div class="verdict '+(ok?'ok':'no')+'">'+(ok?'✓ 这次答对了':(pv&&pv.ok?'✗ 这次答错了':'✗ 还是答错了')+'，正确答案是 '+LET[q.a]+(q.alt!==undefined?'（按定义 '+LET[q.alt]+' 也对）':''))+'<span style="font-weight:400;font-size:13px;margin-left:auto">'+was+(pv&&pv.w>1?' · 累计错 '+(pv.w+(ok?0:1))+' 次':'')+(ok&&pv&&!pv.ok&&!S.wrong[id]?' · 已移出错题本':'')+'</span></div>';
+  }
+  h+='</div>';
+  if(done)h+=explainHTML(q);
+  var last=R.idx>=R.ids.length-1;
+  h+='<div class="qnav"><button class="btn" id="prev"'+(R.idx===0?' disabled':'')+'>← 上一题</button><span class="kbd">A–E 选择 · ←/→ 翻题 · S 收藏</span>'+
+    (last?'<button class="btn pri" id="r-end">完成本轮 →</button>':'<button class="btn pri" id="next">'+(done?'下一题 →':'跳过 →')+'</button>')+'</div></article>';
+  return h;
+}
+function bRedo(){
+  $$('[data-rs]').forEach(function(b){b.onclick=function(){R.src=b.getAttribute('data-rs');R.part='all';render()}});
+  $$('[data-rp]').forEach(function(b){b.onclick=function(){R.part=b.getAttribute('data-rp');render()}});
+  $$('[data-ro]').forEach(function(b){b.onclick=function(){R.order=b.getAttribute('data-ro');render()}});
+  var of=$('#r-off');if(of)of.onchange=function(){R.onlyOff=of.checked;render()};
+  var g=$('#r-go');if(g)g.onclick=function(){redoStart(redoPool(R.src,R.part,R.onlyOff))};
+  var ag=$('#r-again');if(ag)ag.onclick=function(){redoStart(R.last.bad.concat(R.last.skip))};
+  var nw=$('#r-new');if(nw)nw.onclick=function(){R.phase='setup';render()};
+  if(R.phase!=='run')return;
+  var id=R.ids[R.idx],q=BY[id];
+  $$('.opt').forEach(function(b){b.onclick=function(){if(R.picks[id]!==undefined)return;var c=+b.getAttribute('data-o');R.picks[id]=c;R.res[id]=record(q,c);render()}});
+  var z=$('#zhb');if(z)z.onclick=function(){R.showZh[id]=1;render()};
+  $('#star').onclick=function(){toggleStar(id)};
+  var pv=$('#prev');if(pv)pv.onclick=function(){if(R.idx>0){R.idx--;render()}};
+  var nx=$('#next');if(nx)nx.onclick=function(){if(R.idx<R.ids.length-1){R.idx++;render()}};
+  var en=$('#r-end');if(en)en.onclick=redoFinish;
+  $('#r-quit').onclick=redoFinish;
+}
+
 document.addEventListener('keydown',function(e){
   if(e.target.closest('input,textarea,select'))return;
   if(e.metaKey||e.ctrlKey||e.altKey)return;
-  if(cur!=='practice'&&!(cur==='mock'&&M.phase==='run'))return;
+  if(cur!=='practice'&&!(cur==='mock'&&M.phase==='run')&&!(cur==='redo'&&R.phase==='run'))return;
   var k=e.key.toLowerCase(),i=-1;
   if('abcde'.indexOf(k)>=0&&k.length===1)i='abcde'.indexOf(k);else if('12345'.indexOf(k)>=0&&k.length===1)i=+k-1;
   if(i>=0){var b=$('.opt[data-o="'+i+'"]');if(b&&!b.disabled){e.preventDefault();b.click()}return}
   if(k==='arrowright'||k==='enter'){var n=$('#next');if(n&&!n.disabled){e.preventDefault();n.click()}return}
   if(k==='arrowleft'){var p=$('#prev');if(p&&!p.disabled){e.preventDefault();p.click()}return}
-  if(k==='s'&&cur==='practice'){var s=$('#star');if(s){e.preventDefault();s.click()}}
+  if(k==='s'&&(cur==='practice'||cur==='redo')){var s=$('#star');if(s){e.preventDefault();s.click()}}
 });
 
 /* ---------------- boot ---------------- */
