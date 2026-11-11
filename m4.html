@@ -42,9 +42,9 @@
 <li>画出数字签名<span class="zhen">（digital signature）</span>的签名<span class="zhen">（signature）</span>和验证流程；说出验证数字证书<span class="zhen">（digital certificate）</span>要检查的三件事。</li></ul></div>
 
 <!-- 1 -->
-<div class="teacher box" data-t="m4top"><span class="bt">老师课上强调 · 录音 W5–W8</span><ul><li><b>Quiz 里 P4 的题最多</b>。期末 <b>Diffie-Hellman</b> 和 <b>RSA</b> 各至少 15 分，老师说是“really easy 15 marks”。</li><li>考试数字都<b>小于 20，最大素数<span class="zhen">（large prime）</span>是 19</b>。计算器没有 mod 键，用除法法算余数<span class="zhen">（remainder）</span>：320 ÷ 9 = 35.55… → 320 − 35 × 9 = 5。</li><li><b>公式考试不给</b>，必须自己背；每一步都写“公式 → 代入 → 结果”，最后验算。</li></ul><p>按考试规格练题：<a href="practice.html#exam">刷题本 · 期末专项 DH/RSA</a>（附满分答题模板<span class="zhen">（template）</span>）。</p></div>
+<div class="teacher box" data-t="m4top"><span class="bt">老师课上强调 · 录音 W5–W8</span><ul><li><b>Quiz 里 P4 的题最多</b>。期末 <b>Diffie-Hellman</b> 和 <b>RSA</b> 各至少 15 分，老师说是“really easy 15 marks”。</li><li>考试数字都<b>小于 20，最大素数<span class="zhen">（largest prime）</span>是 19</b>。计算器没有 mod 键，用除法法算余数<span class="zhen">（remainder）</span>：320 ÷ 9 = 35.55… → 320 − 35 × 9 = 5。</li><li><b>公式考试不给</b>，必须自己背；每一步都写“公式 → 代入 → 结果”，最后验算。</li></ul><p>按考试规格练题：<a href="practice.html#exam">刷题本 · 期末专项 DH/RSA</a>（附满分答题模板<span class="zhen">（template）</span>）。</p></div>
 <section class="sec" id="basic">
-<h2><span class="n">1</span>密码学<span class="zhen">（cryptography）</span>要解决什么问题</h2>
+<h2><span class="n">1</span><span class="ht">密码学<span class="zhen">（cryptography）</span>要解决什么问题</span></h2>
 <p>密码学<span class="zhen">（cryptography）</span>的故事里永远有三个人：<b>Alice</b> 要给 <b>Bob</b> 发消息，<b>Eve</b>（eavesdropper，窃听者）在中间偷听。互联网<span class="zhen">（Internet）</span>就是一个“人人都能偷听”的地方：你的消息要经过路由器<span class="zhen">（router）</span>、Wi-Fi、运营商……任何一环都可能有 Eve。</p>
 <p>密码学（cryptography，来自希腊语 kryptós“隐藏的” + gráphein“书写”）就是<b>用数学把消息变成别人看不懂的样子</b>，只有拥有正确钥匙的人才能还原。</p>
 <h3>基本术语（P4-5）</h3>
@@ -78,7 +78,7 @@
 
 <!-- 2 -->
 <section class="sec" id="classic">
-<h2><span class="n">2</span>从凯撒密码<span class="zhen">（Caesar cipher）</span>开始：替换、置换与“钥匙”的意义</h2>
+<h2><span class="n">2</span><span class="ht">从凯撒密码<span class="zhen">（Caesar cipher）</span>开始：替换、置换与“钥匙”的意义</span></h2>
 <p>最古老的密码学<span class="zhen">（cryptography）</span>用在军事和政治上（Q&amp;A Q21：最早用于在传递途中隐藏军事和政治机密）。凯撒大帝用过一个简单的办法：<b>每个字母往后移 3 位</b>，A→D、B→E……这就是<b>替换密码（substitution）</b>：把每个字母换成另一个。</p>
 <div class="lab"><p class="lt">凯撒密码<span class="zhen">（Caesar cipher）</span>机</p><p class="ld">“算法”是“字母往后移 k 位”，“密钥<span class="zhen">（key）</span>”就是 k。改改密钥<span class="zhen">（key）</span>看看效果，再想想：如果 Eve 知道算法，她最多要试几次就能破解？</p>
 <div class="fields"><div class="fld" style="grid-column:1/-1"><label for="cin">明文<span class="zhen">（plaintext）</span></label><input id="cin" type="text" value="ATTACK AT DAWN" autocomplete="off"></div><div class="fld"><label for="ck">密钥<span class="zhen">（key）</span> k（移位数）</label><input id="ck" type="number" value="3" min="0" max="25"></div></div>
@@ -102,7 +102,7 @@
 
 <!-- 3 -->
 <section class="sec" id="sym">
-<h2><span class="n">3</span>对称加密<span class="zhen">（symmetric encryption）</span>：一把钥匙锁门也开门</h2>
+<h2><span class="n">3</span><span class="ht">对称加密<span class="zhen">（symmetric encryption）</span>：一把钥匙锁门也开门</span></h2>
 <p><b>Symmetric（secret-key）cryptography</b>：加密<span class="zhen">（encryption）</span>和解密<span class="zhen">（decryption）</span>用<b>同一把钥匙</b>（样题 Q4-2）。发送方用密钥<span class="zhen">（key）</span> K 把明文<span class="zhen">（plaintext）</span> M 变成密文<span class="zhen">（ciphertext）</span> C，接收方用<b>同一个 K</b> 把 C 还原成 M：</p>
 <div class="out"><span class="eq">加密<span class="zhen">（encryption）</span>：C = E<sub>K</sub>(M)　　解密<span class="zhen">（decryption）</span>：M = D<sub>K</sub>(C) = D<sub>K</sub>(E<sub>K</sub>(M))</span></div>
 <p>算法（E 和 D）是<b>公开</b>的，所有人都知道 AES 怎么运算；安全性<b>只靠密钥<span class="zhen">（key）</span>保密</b>。这就是第 2 节说的“钥匙才是关键”：只要 Eve 拿不到 K，她在信道<span class="zhen">（channel）</span>上截到再多密文<span class="zhen">（ciphertext）</span>也没用。</p>
@@ -212,7 +212,7 @@
 
 <!-- 4 -->
 <section class="sec" id="desaes">
-<h2><span class="n">4</span>DES、3DES、AES：三代对称加密<span class="zhen">（symmetric encryption）</span>标准</h2>
+<h2><span class="n">4</span><span class="ht">DES、3DES、AES：三代对称加密<span class="zhen">（symmetric encryption）</span>标准</span></h2>
 <p>上一节讲了对称加密<span class="zhen">（symmetric encryption）</span>的思想，这一节看具体算法。三代标准一脉相承：<b>DES</b> 是第一个公开的商用标准，被算力<span class="zhen">（computing power）</span>追上后用 <b>3DES</b> 临时顶替，最后由 <b>AES</b> 接班，沿用至今。</p>
 <div class="tbl"><table>
 <tr><th>年份</th><th>事件</th></tr>
@@ -309,7 +309,7 @@
 
 <!-- 5 -->
 <section class="sec" id="pk">
-<h2><span class="n">5</span>公钥加密<span class="zhen">（public-key encryption）</span>：一对钥匙，彻底解决“钥匙怎么送”</h2>
+<h2><span class="n">5</span><span class="ht">公钥加密<span class="zhen">（public-key encryption）</span>：一对钥匙，彻底解决“钥匙怎么送”</span></h2>
 <p>第 3 节留下了一个难题：对称加密<span class="zhen">（symmetric encryption）</span>的双方必须<b>事先</b>共享同一把钥匙，而这把钥匙没法安全地在网上传。1976 年，斯坦福的两位研究者 Diffie 和 Hellman 提出了一个革命性的想法：<b>用两把不同但数学上相关的钥匙</b>（P4-47）。1978 年 Rivest、Shamir、Adleman 又提出了 RSA，让这个想法真正可用。</p>
 <ul>
 <li><b>公钥（public key）</b>：公开给全世界，可以挂在网站上、印在名片上，用来<b>加密<span class="zhen">（encryption）</span></b>和<b>验证签名<span class="zhen">（signature）</span></b>；</li>
@@ -401,7 +401,7 @@
 
 <!-- 6 -->
 <section class="sec" id="mod">
-<h2><span class="n">6</span>数学准备：模运算<span class="zhen">（modular arithmetic）</span>（只要会除法就行）</h2>
+<h2><span class="n">6</span><span class="ht">数学准备：模运算<span class="zhen">（modular arithmetic）</span>（只要会除法就行）</span></h2>
 <p>RSA 和 Diffie-Hellman 都建立在<b>模运算<span class="zhen">（modular arithmetic）</span></b>上。别怕，<code>a mod n</code> 就是 <b>a 除以 n 的余数<span class="zhen">（remainder）</span></b>。</p>
 <div class="analogy box"><span class="bt">类比：钟表</span><p>现在 10 点，再过 5 小时是几点？10 + 5 = 15，钟表上是 3 点。这就是 15 mod 12 = 3。模运算<span class="zhen">（modular arithmetic）</span>就是“绕圈计数”。</p></div>
 <p>课件的例子（P4-50）：</p>
@@ -464,7 +464,7 @@
 
 <!-- 8 -->
 <section class="sec" id="rsa">
-<h2><span class="n">8</span>RSA：最常用的公钥<span class="zhen">（public key）</span>系统，手算全流程</h2>
+<h2><span class="n">8</span><span class="ht">RSA：最常用的公钥<span class="zhen">（public key）</span>系统，手算全流程</span></h2>
 <p>RSA 以三位 MIT 教授 Rivest、Shamir、Adleman 的姓氏命名，1978 年发表（英国 GCHQ 在 1973 年就秘密发现过），是<b>最广泛使用的公钥<span class="zhen">（public key）</span>系统</b>（样题 Q4-15、Q4-17）。和 DH 不同，它是完整的系统：<b>密钥生成<span class="zhen">（key generation）</span> + 加密<span class="zhen">（encryption）</span> + 解密<span class="zhen">（decryption）</span> + 签名<span class="zhen">（signature）</span></b>都能做。安全性来自<b>大数分解难题<span class="zhen">（integer factorization problem）</span></b>：两个大素数<span class="zhen">（large prime）</span>相乘很容易，把乘积分解<span class="zhen">（factorization）</span>回去几乎不可能（样题 Q4-20）。</p>
 <h3>密钥生成<span class="zhen">（key generation）</span>五步（P4-67、P4-68）</h3>
 <div class="stepper"><div class="sh"><span>用 p = 5、q = 11 生成一对 RSA 钥匙（课件 P4-70～P4-72）</span><span class="ctr"></span></div>
@@ -518,7 +518,7 @@
 
 <!-- 9 -->
 <section class="sec" id="hybrid">
-<h2><span class="n">9</span>ElGamal、ECC 与混合系统<span class="zhen">（hybrid system）</span></h2>
+<h2><span class="n">9</span><span class="ht">ElGamal、ECC 与混合系统<span class="zhen">（hybrid system）</span></span></h2>
 <ul>
 <li><b>ElGamal</b>（1985）：基于 DH 的思想，安全性也基于离散对数<span class="zhen">（discrete logarithm）</span>；能加密<span class="zhen">（encryption）</span>也能签名<span class="zhen">（signature）</span>；但<b>密文<span class="zhen">（ciphertext）</span>是明文<span class="zhen">（plaintext）</span>的两倍长，速度慢</b>；</li>
 <li><b>ECC 椭圆曲线密码</b>（1985 年提出，2005 年后才广泛使用）：<b>用更短的密钥<span class="zhen">（key）</span>达到同样的安全性</b>，在加密货币<span class="zhen">（cryptocurrency）</span>里很流行。</li>
@@ -555,7 +555,7 @@
 
 <!-- 10 -->
 <section class="sec" id="hash">
-<h2><span class="n">10</span>哈希<span class="zhen">（hash）</span>：给数据按一个“指纹<span class="zhen">（fingerprint）</span>”</h2>
+<h2><span class="n">10</span><span class="ht">哈希<span class="zhen">（hash）</span>：给数据按一个“指纹<span class="zhen">（fingerprint）</span>”</span></h2>
 <p class="kd-note">本节用 <span class="kd">红圈</span> 圈出的是 quiz 和期末最常考的结论，考前至少把圈出来的背熟。</p>
 <p>前面讲的加密<span class="zhen">（encryption）</span>都是为了<b>保密</b>：别人看不懂，但自己能解回来。这一节的哈希<span class="zhen">（hash）</span>目的完全不同：它不让人看不懂，而是让人<b>发现数据有没有被改过</b>。</p>
 <p><b>Hash function（哈希函数）</b>把<span class="kd">任意长度的数据压缩成一串固定长度的“摘要”（digest）</span>。它是<span class="kd">单向<span class="zhen">（one-way）</span>的：从摘要无法还原原文</span>。课件称它为 “a special mathematical function that performs <b>one-way encryption</b>”，答案是 <span class="kd">Hashing</span>（样题 Q4-33）。</p>
@@ -629,7 +629,7 @@
 
 <!-- 11 -->
 <section class="sec" id="sig">
-<h2><span class="n">11</span>数字签名<span class="zhen">（digital signature）</span>：证明“这是我发的，而且没被改过”</h2>
+<h2><span class="n">11</span><span class="ht">数字签名<span class="zhen">（digital signature）</span>：证明“这是我发的，而且没被改过”</span></h2>
 <p>手写签名<span class="zhen">（handwritten signature）</span>容易伪造<span class="zhen">（forgery）</span>，靠和真迹比对来验证；<b>数字签名<span class="zhen">（digital signature）</span></b>很难伪造<span class="zhen">（forgery）</span>，用公开的算法验证（P4-103）。它就是把公钥加密<span class="zhen">（public-key encryption）</span>“反过来用”：发送方用<b>自己的私钥<span class="zhen">（private key）</span></b>处理消息的<b>哈希<span class="zhen">（hash）</span></b>（样题 Q4-28、Q4-31）。</p>
 <figure>
 <svg viewBox="0 0 680 280" role="img" aria-label="数字签名的签名与验证流程">
@@ -671,7 +671,7 @@
 
 <!-- 12 -->
 <section class="sec" id="cert">
-<h2><span class="n">12</span>数字证书<span class="zhen">（digital certificate）</span>与 CA：怎么确定这把公钥<span class="zhen">（public key）</span>真是 Bob 的</h2>
+<h2><span class="n">12</span><span class="ht">数字证书<span class="zhen">（digital certificate）</span>与 CA：怎么确定这把公钥<span class="zhen">（public key）</span>真是 Bob 的</span></h2>
 <p>还有一个漏洞<span class="zhen">（vulnerability）</span>：Alice 怎么知道手里的“Bob 公钥<span class="zhen">（public key）</span>”真的是 Bob 的？如果 Eve 冒充<span class="zhen">（masquerading）</span> Bob 发来<b>她自己的公钥<span class="zhen">（public key）</span></b>，Alice 用它去验证 Eve 伪造<span class="zhen">（forgery）</span>的签名<span class="zhen">（signature）</span>，当然“验证通过”（P4-118：不能用发送方自己提供的公钥<span class="zhen">（public key）</span>）。这正是公钥密码<span class="zhen">（public-key cryptography）</span>的核心难题：<b>证明一把公钥<span class="zhen">（public key）</span>确实属于某人</b>（P4-47）。</p>
 <div class="analogy box"><span class="bt">类比</span><p>陌生人说“我是张三”，你不信；他拿出政府签发的<b>身份证</b>，你就信了，因为你信任政府。数字证书<span class="zhen">（digital certificate）</span>就是公钥<span class="zhen">（public key）</span>的“身份证”，<b>CA（证书颁发机构）</b>就是“发证的政府”。</p></div>
 <p><b>Digital certificate</b>：由 CA 签发并<b>数字签名<span class="zhen">（digital signature）</span></b>的电子文件，把<b>用户名字和他的公钥<span class="zhen">（public key）</span>绑定</b>在一起（样题 Q4-25）。它的作用是<b>认证<span class="zhen">（authentication）</span>公钥<span class="zhen">（public key）</span></b>（样题 Q4-32），私钥<span class="zhen">（private key）</span>永远不会出现在证书<span class="zhen">（certificate）</span>里。</p>

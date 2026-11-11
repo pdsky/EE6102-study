@@ -355,7 +355,7 @@ details.more>summary{cursor:pointer;font-family:var(--f-ui);font-size:13px;color
         <a href="#redo" data-v="redo">错题 / 收藏重做</a></div>
       <div class="grp"><span class="gl">Final · 大题</span>
         <a href="#qa" data-v="qa">问答题 Q&amp;A</a>
-        <a href="#exam" data-v="exam">期末专项 DH/RSA</a>
+        <a href="#exam" data-v="exam">期末计算大题</a>
         <a href="#calc" data-v="calc">计算题</a></div>
     </nav>
     <p class="side-foot">题目与答案依据 Dr M Y Siyal 的 EE6102 课件和样题整理，讲解为学习辅助。<span id="syncSt">进度只保存在本浏览器中。</span></p>
@@ -2505,6 +2505,30 @@ window.NOTES = {
    NOTES.t 考点速记里的「老师上课重点」页
    追加的 MCQ：录音里强调、但样题和原自编题没覆盖的点（s:'c'，带 hot） */
 window.HOT = {
+'5.07':`W10：老师讲样题时说这题指的是<b>静态包过滤</b>（static packet filtering），不是 SPI，所以 TRUE。`,
+'5.12':`W10：答案 FALSE（防火墙<span class="zhen">（firewall）</span>挡不住绕过它的攻击）。老师提醒正式题干可能改成 “cannot”：“if it says cannot, then this will be true”。“Do not memorize it and answer the question blindly.”`,
+'5.14':`W10：FALSE。定义“正常行为”的是 anomaly，不是 signature；这题故意把两者说反了。`,
+'5.17':`W10：老师明确选 D Anomaly detection：“There's no word here, signature”。按教材定义更像 signature，期末简答按定义写：signature 匹配已知攻击<span class="zhen">（known attack）</span>模式，anomaly 偏离正常行为就报警。`,
+'5.c4':`W9：SET “perfect system, but not practical”：每一方都要证书<span class="zhen">（certificate）</span>，5 方 × 2（人和电脑）= 10 张证书<span class="zhen">（certificate）</span>，太慢，没人用。出事时 SSL 下商家<span class="zhen">（merchant）</span>赔钱，SET 下支付网关<span class="zhen">（payment gateway）</span>赔。`,
+'5.c5':`W9：老师至少说了 4 遍：<b>SPI 是今天的主边界防火墙<span class="zhen">（primary perimeter firewall）</span></b>，静态包过滤<span class="zhen">（static packet filtering）</span>只作辅助。只有约 1% 的建连包要细查，其余 99% 查状态表<span class="zhen">（state table）</span>就行，所以总体更快、更便宜。`,
+'5.c6':`W9：“Screen subnet is the most secure.” 两台路由器<span class="zhen">（router）</span>夹出 DMZ，三层防御<span class="zhen">（three layers of defense）</span>，内网<span class="zhen">（internal network）</span>对互联网<span class="zhen">（Internet）</span>不可见。`,
+'5.c7':`W9：规则从上往下匹配，<b>第一条命中的规则生效</b>；最后一条是默认拒绝<span class="zhen">（default deny）</span>。`,
+'5.c8':`W10：“IDS only detects. IPS will prevent it.” IDS 发告警<span class="zhen">（alert）</span>给人处理，适合取证<span class="zhen">（forensics）</span>；IPS 能实时阻断。`,
+'5.c9':`W10：蜜罐<span class="zhen">（honeypot）</span>能引诱和记录攻击者<span class="zhen">（attacker）</span>，但老师说 “not as great as it looks on the diagram”：攻击者<span class="zhen">（attacker）</span>也会把它当诱饵绕开。`,
+'5.c10':`W9 / W11：<b>防火墙吞吐量<span class="zhen">（firewall throughput）</span>是期末计算题</b>（复习课模拟卷原题）。需要的 pps = 带宽<span class="zhen">（bandwidth）</span> ÷ (包字节<span class="zhen">（byte）</span>数 × 8)，再和防火墙<span class="zhen">（firewall）</span>能力比较；“We need to have the same unit”，忘了乘 8 就全错。`,
+'5.c11':`W10：NIDS 两个缺点：流量<span class="zhen">（traffic）</span>加密<span class="zhen">（encryption）</span>时看不到攻击特征<span class="zhen">（attack signature）</span>；不知道主机上发生了什么。HIDS 能在主机解密<span class="zhen">（decryption）</span>后再检查。`,
+'5.c13':`W9：代理<span class="zhen">（proxy）</span>（应用层<span class="zhen">（application layer）</span>）防火墙<span class="zhen">（firewall）</span>看内容，最安全但最慢；SPI 是性价比最好的主边界防火墙<span class="zhen">（primary perimeter firewall）</span>。`,
+'6.c4':`W10：所有块靠哈希<span class="zhen">（hash）</span>串起来，改一个块就得改后面所有块，还要说服上百万个节点<span class="zhen">（node）</span>，所以改不了；出错只能追加新块更正。`,
+'6.c5':`W10 / W12：PoW 是为了防止一个人注册上亿个假账户来投票：先解出 SHA-256 难题证明做了功，才有资格记账。它很耗电，所以后来有了 PoS。`,
+'6.c6':`W10：今天最常用的共识算法<span class="zhen">（consensus algorithm）</span>是 PoW 和 PoS。期末 Q4 范围点名 PoW、PoS。`,
+'6.c10':`W11：期末范围点名“公有、私有、联盟”三类；老师说 “Only three types”，联盟链<span class="zhen">（consortium blockchain）</span>就是混合链<span class="zhen">（hybrid blockchain）</span>。`,
+'6.c11':`W10：交易速率<span class="zhen">（transaction rate）</span> 5 个例题 “very, very important from exam point of view”，期末 Q4 的计算部分 10–15 分。分两步：每块交易数<span class="zhen">（transactions per block (TPB)）</span> → 每秒交易数。`,
+'6.c12':`W10：吞吐量<span class="zhen">（throughput）</span> = TPS × 交易字节<span class="zhen">（byte）</span>数 × 8 ÷ 10<sup>6</sup>。课件 P6-36 例 4 中间一步印成 12 000 000 bits/s，应为 1 200 000，答案 1.2 Mbps 是对的。`,
+'6.c13':`W12 / P6-73：Bitcoin 是货币<span class="zhen">（currency）</span>，Ethereum 是去中心化应用<span class="zhen">（decentralized application）</span>平台；Bitcoin 2100 万封顶、PoW、不支持智能合约<span class="zhen">（smart contract）</span>。期末 Q4 范围点名“Bitcoin、Ethereum 各自的主要用途”。`,
+'6.c18':`W11 / W12：DeFi 的优缺点和风险<span class="zhen">（risk）</span>是期末 Q4 范围，两份往年卷和模拟卷都考过。扩展性<span class="zhen">（scalability）</span>风险<span class="zhen">（risk）</span>：以太坊<span class="zhen">（Ethereum）</span>每秒约 15 笔，Visa 约 65,000 笔。`,
+'6.c19':`W12：老师明确说两个案例 “have nothing to do with exam”，期末不考，了解即可。`,
+'6.c20':`W12：孟加拉央行案例期末不考，了解即可。`,
+'6.c25':`W10：数据库<span class="zhen">（database）</span>有管理员<span class="zhen">（administrator）</span>，可以改、删数据，管理员<span class="zhen">（administrator）</span>犯错或被收买信任就没了，还有单点故障<span class="zhen">（single point of failure）</span>；区块链<span class="zhen">（blockchain）</span>没有管理员<span class="zhen">（administrator）</span>。`,
 '1.03':`W3：这题在真题里有约 20 个版本，<b>约 80% 的人做错</b>。错误选项会把 Availability 换成 Access，把 Confidentiality 换成 Consideration，看到 “C、I、A” 就点的人全中招。一个单词一个单词核对拼写。`,
 '1.05':`W3：老师说这道原题当年“没人做对”，已经从真题里删掉。但 authenticity（确认对方就是他声称的那个人）这个概念还会换个说法考。`,
 '1.13':`W3：<b>人</b>冒用别人身份叫 masquerading；<b>服务器<span class="zhen">（server）</span> / IP 地址<span class="zhen">（IP address）</span></b>被伪造<span class="zhen">（forgery）</span>叫 spoofing。题干说的是“人”，就选 masquerading。`,
@@ -2514,7 +2538,7 @@ window.HOT = {
 '1.c7':`W2：DoS 包数也是期末计算题（和暴力破解<span class="zhen">（brute force）</span>合计约 30 分）。包越大，需要的包越少；网速越高，需要的包越多。例：100 Mbps、1000 字节<span class="zhen">（byte）</span> → 12,500 包/秒（500 字节<span class="zhen">（byte）</span>时是 25,000）。`,
 '2.c4':`W4：“如果考 compliance，每题都会有计算。”风险<span class="zhen">（risk）</span> = 威胁<span class="zhen">（threat）</span> × 脆弱性<span class="zhen">（vulnerability）</span> × 资产价值<span class="zhen">（asset value）</span>，每项 1–5 分，分越高风险<span class="zhen">（risk）</span>越大。（课上把 4×3×5 口误说成 16，正确是 60。）`,
 '2.c5':`W4：密码合规检查<span class="zhen">（password compliance check）</span>是 compliance 部分可能出的计算/判断题，逐条对照策略<span class="zhen">（policy）</span>检查。`,
-'3.09':`W5：老师点名“真题可能会问：没认证能不能授权<span class="zhen">（authorization）</span>？答案是不能。”先 authentication（你是谁），再 authorization（你能做什么）。`,
+'3.09':`W5：老师点名“真题可能会问：没认证<span class="zhen">（authentication）</span>能不能授权<span class="zhen">（authorization）</span>？答案是不能。”先 authentication（你是谁），再 authorization（你能做什么）。`,
 '3.c1':`W4：老师口径是 top-down 总是有效，bottom-up 不行。因为没有高层支持<span class="zhen">（senior management support）</span>就没有预算和权限<span class="zhen">（privileges）</span>。`,
 '3.c2':`W4：DLM 四层防御<span class="zhen">（four-tier defense）</span>中，第 1–3 层都是非技术层（约占 75%），只有第 4 层是技术措施。`,
 '3.c3':`W4：zero trust 就是谁都不默认信任，<b>连总裁的设备也要认证<span class="zhen">（authentication）</span></b>。`,
@@ -2682,50 +2706,223 @@ zh:`在 HTTPS 中，哪一方必须持有 SSL/TLS 数字证书<span class="zhen"
 ex:`服务器<span class="zhen">（server）</span>必须有 SSL 证书<span class="zhen">（certificate）</span>（证书<span class="zhen">（certificate）</span>里嵌着服务器<span class="zhen">（server）</span>公钥<span class="zhen">（public key）</span>，服务器<span class="zhen">（server）</span>保管私钥<span class="zhen">（private key）</span>）。客户端<span class="zhen">（client）</span>（浏览器<span class="zhen">（browser）</span>）不需要任何密钥<span class="zhen">（key）</span>：它向服务器<span class="zhen">（server）</span>请求连接，收到证书<span class="zhen">（certificate）</span>后检查 CA、有效期<span class="zhen">（validity period）</span>、是否吊销<span class="zhen">（revocation）</span>，然后随机生成会话密钥（TLS 1.2 用服务器<span class="zhen">（server）</span>公钥加密<span class="zhen">（public-key encryption）</span>发回；TLS 1.3 用 EDH 协商）。`,
 op:[`✗`,`✓`,`✗ 客户端<span class="zhen">（client）</span>几乎不认证<span class="zhen">（no authentication）</span>`,`✗`],
 tip:`服务器<span class="zhen">（server）</span>：证书<span class="zhen">（certificate）</span> + 公私钥<span class="zhen">（public-private key pair）</span>；客户端<span class="zhen">（client）</span>：什么都不用，只负责发起连接。`,ref:`P5 TLS · 录音 W7–W8`,
-hot:`W7：“作为客户端<span class="zhen">（client）</span>你不需要任何密钥<span class="zhen">（key）</span>，但服务器<span class="zhen">（server）</span>必须有 SSL 证书<span class="zhen">（certificate）</span>。”`}
+hot:`W7：“作为客户端<span class="zhen">（client）</span>你不需要任何密钥<span class="zhen">（key）</span>，但服务器<span class="zhen">（server）</span>必须有 SSL 证书<span class="zhen">（certificate）</span>。”`},
+{id:'5.c19',p:5,s:'c',q:`Which type of intrusion detection is able to detect a zero-day attack that has never been seen before?`,
+o:[`Signature-based detection`,`Anomaly (behaviour)-based detection`,`A static packet-filtering firewall`,`None – zero-day attacks can never be detected`],a:1,
+zh:`哪种入侵检测<span class="zhen">（intrusion detection）</span>有能力发现从没见过的零日攻击<span class="zhen">（zero-day attack）</span>？`,
+ex:`零日攻击<span class="zhen">（zero-day attack）</span>是新的攻击，还没有特征（signature），所以特征库<span class="zhen">（signature database）</span>里查不到。异常（行为）检测先学出正常行为的基线<span class="zhen">（baseline）</span>，偏离就报警，所以<b>有能力</b>发现零日攻击<span class="zhen">（zero-day attack）</span>，但不保证一定能发现。防火墙<span class="zhen">（firewall）</span>只看包头<span class="zhen">（packet header）</span>，更发现不了。`,
+op:[`✗ 特征库<span class="zhen">（signature database）</span>里还没有它的特征`,`✓ 偏离正常行为就报警`,`✗ 只看包头<span class="zhen">（packet header）</span>，不做深度检查`,`✗ 异常检测<span class="zhen">（anomaly detection）</span>有能力发现`],
+tip:`零日<span class="zhen">（zero-day）</span> = 没有特征 → 只能靠 anomaly。`,ref:`P5-93 · 录音 W10`,
+hot:`W10：老师当堂提问 “which system will be able to detect zero day attack?”：signature-based 不行，behaviour-based 有能力，但不保证。`},
+
+{id:'5.c20',p:5,s:'c',q:`Why is an IDS still needed in a network that is already protected by a firewall?`,
+o:[`A firewall cannot block any packets`,`An IDS replaces the need for firewall rules`,`A firewall examines only packet headers one packet at a time, while an IDS inspects content and sequences of packets`,`An IDS encrypts all traffic`],a:2,
+zh:`已经有防火墙<span class="zhen">（firewall）</span>了，为什么还需要 IDS？`,
+ex:`防火墙<span class="zhen">（firewall）</span>一次只看一个包，而且只看包头（IP、端口<span class="zhen">（port）</span>、协议<span class="zhen">（protocol）</span>），不看内容；它只丢弃“能证明是攻击”的包。IDS 做深度检查，看一串包和包的内容，能发现穿过防火墙<span class="zhen">（firewall）</span>的攻击和内部攻击。两者功能不同，互相补充。`,
+op:[`✗ 防火墙<span class="zhen">（firewall）</span>按规则丢弃包`,`✗ 两者互补，不是替代`,`✓`,`✗ IDS 不负责加密<span class="zhen">（encryption）</span>`],
+tip:`防火墙<span class="zhen">（firewall）</span>：单包 + 包头<span class="zhen">（packet header）</span>；IDS：一串包 + 内容。`,ref:`P5-86 · 录音 W9、W10`,
+hot:`W9：“防火墙<span class="zhen">（firewall）</span>只看包头<span class="zhen">（packet header）</span>，所以需要 IDS。” W10：IDS 做 deep inspection，看 sequence of packets。`},
+
+{id:'5.c21',p:5,s:'c',q:`Why is SET (Secure Electronic Transaction) almost never used, even though it is more secure than SSL for card payments?`,
+o:[`It does not use encryption`,`It only works with TLS 1.0`,`It cannot authenticate the merchant`,`Every party needs certificates and signatures, so it is slow and not user friendly`],a:3,
+zh:`SET 比 SSL 更适合刷卡支付<span class="zhen">（card payment）</span>、也更安全，为什么几乎没人用？`,
+ex:`SET 让每一方都认证<span class="zhen">（authentication）</span>：持卡人<span class="zhen">（cardholder）</span>、商家<span class="zhen">（merchant）</span>、发卡行<span class="zhen">（issuing bank）</span>、收单行、支付网关<span class="zhen">（payment gateway）</span>都要证书<span class="zhen">（certificate）</span>和数字签名<span class="zhen">（digital signature）</span>，老师算的是 5 方 × 2（人和电脑）= 10 张证书<span class="zhen">（certificate）</span>，还要续期、付费，<b>极慢、不好用</b>。SSL 只需要服务器<span class="zhen">（server）</span>一张证书<span class="zhen">（certificate）</span>。老师：“perfect system, but not practical”。`,
+op:[`✗ SET 用了加密<span class="zhen">（encryption）</span>和签名<span class="zhen">（signature）</span>`,`✗ 无关`,`✗ 认证<span class="zhen">（authentication）</span>商家<span class="zhen">（merchant）</span>正是 SET 的优点`,`✓`],
+tip:`SET = 每方都认证<span class="zhen">（authentication）</span> → 10 张证书<span class="zhen">（certificate）</span> → 太慢。`,ref:`P5-31~38 · 录音 W9`,
+hot:`W9：“nobody is using SET” 说了至少 6 次。出事时 SSL 下商家<span class="zhen">（merchant）</span>赔钱，SET 下支付网关<span class="zhen">（payment gateway）</span>赔。`},
+
+{id:'5.c22',p:5,s:'c',q:`Which of the following can SSL/TLS NOT do?`,
+o:[`Encrypt data in transit between browser and server`,`Authenticate the server with a certificate`,`Verify that the person using the card is the real cardholder`,`Detect modification of data in transit`],a:2,
+zh:`下面哪一项是 SSL/TLS 做不到的？`,
+ex:`SSL/TLS 能加密<span class="zhen">（encryption）</span>传输中的数据、用证书<span class="zhen">（certificate）</span>认证服务器<span class="zhen">（authentication server）</span>、用 MAC 检测篡改<span class="zhen">（tampering）</span>。但它<b>只保护传输中的数据</b>（不保护数据库<span class="zhen">（database）</span>），也<b>不能认证<span class="zhen">（authentication）</span>屏幕后面的真人</b>：不知道下单的人是不是持卡人<span class="zhen">（cardholder）</span>本人，所以挡不住盗刷。`,
+op:[`✗ 这是 TLS 的主要作用`,`✗ 服务器<span class="zhen">（server）</span>证书<span class="zhen">（certificate）</span>就是干这个的`,`✓ 认证<span class="zhen">（authentication）</span>不了人`,`✗ Record 协议<span class="zhen">（protocol）</span>的 MAC 能检测`],
+tip:`TLS 保护“管道”，不保护“人”和“仓库”。`,ref:`P5-30 · 录音 W9`,
+hot:`W9：“SSL TLS is not designed for online payment system”：认证<span class="zhen">（authentication）</span>不了商家<span class="zhen">（merchant）</span>和消费者本人，挡不住盗刷。`},
+
+{id:'6.c27',p:6,s:'c',q:`A blockchain adds a new block every 300 seconds with a block size limit of 2 MB (1 MB = 10^6 bytes). The average transaction is 350 bytes. How many whole transactions fit in one block?`,
+o:[`571`,`5714`,`19`,`57,142`],a:1,
+zh:`每 300 秒出一个块，块上限 2 MB（1 MB = 10^6 字节<span class="zhen">（byte）</span>），平均每笔 350 字节<span class="zhen">（byte）</span>。每块最多放多少笔完整交易？`,
+ex:`TPB = 块大小 ÷ 交易大小<span class="zhen">（transaction size）</span> = 2,000,000 ÷ 350 = 5714.29 → 只能放整数笔，<b>5714 笔</b>。再除以出块时间<span class="zhen">（block time）</span>：5714 ÷ 300 ≈ 19.05 TPS。这是 2025-26 S2 往年卷 Q4(a)(ii) 原题。若按 1 MB = 2<sup>20</sup> 字节<span class="zhen">（byte）</span>算是 5991 笔，答题时要写明假设。`,
+op:[`✗ 少了一个 0：2 MB 是 2,000,000 字节<span class="zhen">（byte）</span>`,`✓`,`✗ 这是 TPS，不是每块交易数<span class="zhen">（transactions per block (TPB)）</span>`,`✗ 多了一个 0`],
+tip:`TPB = 块大小 ÷ 交易大小<span class="zhen">（transaction size）</span>；TPS = TPB ÷ 出块时间<span class="zhen">（block time）</span>。`,ref:`P6-34 · 往年卷 2025-26 S2`,calc:1,
+hot:`W10：“Remember these five examples are very, very important from exam point of view.”`},
+
+{id:'6.c28',p:6,s:'c',q:`A blockchain network processes 750 TPS and the average transaction size is 400 bytes. What is the maximum data throughput?`,
+o:[`0.3 Mbps`,`300 Mbps`,`24 Mbps`,`2.4 Mbps`],a:3,
+zh:`网络每秒处理 750 笔交易，平均每笔 400 字节<span class="zhen">（byte）</span>。最大数据吞吐量<span class="zhen">（throughput）</span>是多少？`,
+ex:`字节<span class="zhen">（byte）</span>/秒 = 750 × 400 = 300,000；比特/秒 = 300,000 × 8 = 2,400,000；Mbps = 2,400,000 ÷ 10<sup>6</sup> = <b>2.4 Mbps</b>。0.3 是忘了乘 8 得到的 MB/s。这是 2025-26 S2 往年卷 Q4(a)(i) 原题。`,
+op:[`✗ 忘了 × 8（这是 MB/s）`,`✗ 单位换算错了`,`✗ 多乘了 10`,`✓`],
+tip:`Mbps = TPS × 字节<span class="zhen">（byte）</span> × 8 ÷ 10^6。`,ref:`P6-35~36 · 往年卷 2025-26 S2`,calc:1,
+hot:`W10：吞吐量<span class="zhen">（throughput）</span>例题会考，“there are two steps”；W11 模拟卷也有 800 TPS × 1 K 的同类题。`},
+
+{id:'6.c29',p:6,s:'c',q:`Why did Nakamoto require miners to perform Proof of Work before they can add a block?`,
+o:[`To encrypt every transaction`,`To make transactions free`,`To stop one party from creating millions of fake identities to out-vote everyone else`,`To allow the administrator to edit old blocks`],a:2,
+zh:`中本聪为什么规定矿工<span class="zhen">（miner）</span>必须先完成工作量证明（PoW）才能记账？`,
+ex:`公链<span class="zhen">（public blockchain）</span>谁都能加入、靠多数决定哪个块有效。如果投票不花成本，一个人可以注册上亿个假账户（女巫攻击）来控制结果、写入伪造<span class="zhen">（forgery）</span>交易。PoW 要求先解出 SHA-256 难题，投票就要付出真实的算力<span class="zhen">（computing power）</span>和电费，造假账户没用。代价是非常耗电，所以后来有了 PoS。`,
+op:[`✗ PoW 不负责加密<span class="zhen">（encryption）</span>交易`,`✗ 交易还是要付手续费<span class="zhen">（transaction fee）</span>`,`✓`,`✗ 区块链<span class="zhen">（blockchain）</span>没有管理员<span class="zhen">（administrator）</span>，旧块改不了`],
+tip:`PoW = 用算力<span class="zhen">（computing power）</span>投票，防假账户刷票。`,ref:`P6-13、P6-63 · 录音 W10、W12`,
+hot:`W10：“一个人可以注册 10 亿个账户去投票”，所以要先 proof of work 才能投票。课件 P6-63：防止 “creating millions of peers and spreads forged transactions”。`},
+
+{id:'6.c30',p:6,s:'c',q:`Blockchain is often called a "trustless" system. What does this mean?`,
+o:[`Nobody trusts the data on the blockchain`,`Trust is built into the system, so participants do not need to trust each other or a third party`,`Transactions are not verified`,`Only trusted banks may join`],a:1,
+zh:`区块链<span class="zhen">（blockchain）</span>常被称为 “trustless” 系统，这是什么意思？`,
+ex:`trustless 不是“没有信任”，而是信任已经<b>内建在系统里</b>：哈希<span class="zhen">（hash）</span>链让篡改<span class="zhen">（tampering）</span>会被发现，数字签名<span class="zhen">（digital signature）</span>证明是谁发的，共识<span class="zhen">（consensus）</span>让大多数节点<span class="zhen">（node）</span>同意每个块，分布式账本<span class="zhen">（distributed ledger）</span>人人都能核对。所以参与者不需要互相信任，也不需要银行这样的第三方。`,
+op:[`✗ 意思正好相反`,`✓`,`✗ 每笔交易都要验证`,`✗ 公有链<span class="zhen">（public blockchain）</span>谁都能加入`],
+tip:`trustless = 信任靠系统，不靠人。`,ref:`P6-68、P6-80 · 录音 W12`,
+hot:`W12：老师讲了两次 trustless 的含义；2024-25 S1 往年卷 Q4(a)(i) 原题就问这个。`},
+
+{id:'6.c31',p:6,s:'c',q:`According to the lecturer, how many main types of blockchain should you describe in the exam, and what is a consortium blockchain?`,
+o:[`Two – public and private only`,`Five – and consortium is the same as public`,`Four – and consortium means permissionless`,`Three – public, private and consortium; a consortium blockchain is a hybrid shared by a group of organisations`],a:3,
+zh:`按老师的口径，期末要答几类区块链<span class="zhen">（blockchain）</span>？联盟链<span class="zhen">（consortium blockchain）</span>是什么？`,
+ex:`老师复习课：“Only three types”——<b>公有</b>（谁都能加入，Bitcoin、Ethereum）、<b>私有</b>（只有获准的人能加入）、<b>联盟</b>（几个组织共同管理，公有和私有的混合，“Consortium is also hybrid model”，如 R3、Hyperledger Fabric）。课件 P6-30 列了 5 类，答题时可以顺带一句也有 permissioned、hybrid 的说法。`,
+op:[`✗ 漏了联盟链<span class="zhen">（consortium blockchain）</span>`,`✗ 联盟链<span class="zhen">（consortium blockchain）</span>不是公有链<span class="zhen">（public blockchain）</span>`,`✗ 联盟链<span class="zhen">（consortium blockchain）</span>是许可制的`,`✓`],
+tip:`公有、私有、联盟（= 混合）。`,ref:`P6-30 · 录音 W10、W11`,
+hot:`W11：期末 Q4 范围点名区块链<span class="zhen">（blockchain）</span>类型，模拟卷答案说 “Only three types”。`},
+
+{id:'6.c32',p:6,s:'c',q:`Which statement correctly compares Bitcoin and Ethereum?`,
+o:[`Both have a fixed supply of 21 million coins`,`Bitcoin supports smart contracts but Ethereum does not`,`Bitcoin is mainly a cryptocurrency with a fixed supply of 21 million; Ethereum is a programmable platform that supports smart contracts`,`Ethereum uses Proof of Work while Bitcoin uses Proof of Stake`],a:2,
+zh:`下面哪一项正确比较了 Bitcoin 和 Ethereum？`,
+ex:`课件 P6-73：Bitcoin 是加密货币<span class="zhen">（cryptocurrency）</span>，Ethereum 是去中心化应用<span class="zhen">（decentralized application）</span>的平台；Bitcoin 2100 万封顶，Ethereum 不封顶；Bitcoin 用 PoW，Ethereum 现在用 PoS；Ethereum 支持智能合约<span class="zhen">（smart contract）</span>，Bitcoin 不支持。`,
+op:[`✗ Ethereum 没有固定上限`,`✗ 说反了`,`✓`,`✗ 说反了`],
+tip:`BTC = 钱、21M、PoW、无合约；ETH = 平台、不封顶、PoS、有合约。`,ref:`P6-73 · 录音 W12`,
+hot:`W11：期末 Q4 范围点名 “Bitcoin、Ethereum 各自的主要用途”。`},
+
+{id:'6.c33',p:6,s:'c',q:`Which of the following is a risk of DeFi rather than a benefit?`,
+o:[`Accessibility for people without bank accounts`,`Lack of regulation – users cannot sue anyone when something goes wrong`,`Transactions recorded on a public ledger`,`Services available 24/7`],a:1,
+zh:`下面哪一项是 DeFi 的风险<span class="zhen">（risk）</span>，而不是好处？`,
+ex:`DeFi 的好处：去中介、人人可用（没有银行账户也行）、公开账本<span class="zhen">（ledger）</span>透明、24/7。风险<span class="zhen">（risk）</span>和缺点：加密资产<span class="zhen">（crypto asset）</span>波动大、技术不成熟、扩展性<span class="zhen">（scalability）</span>差（以太坊<span class="zhen">（Ethereum）</span>每秒约 15 笔，Visa 约 65,000 笔）、<b>没有监管</b>（老师：“You cannot sue them”）、太复杂。`,
+op:[`✗ 这是好处`,`✓`,`✗ 透明是好处`,`✗ 这是好处`],
+tip:`DeFi 风险<span class="zhen">（risk）</span>：波动、不成熟、扩展性<span class="zhen">（scalability）</span>、无监管、复杂。`,ref:`P6-78~79 · 录音 W11、W12`,
+hot:`W11：DeFi 的优点、缺点、风险<span class="zhen">（risk）</span>是期末 Q4 范围，两份往年卷都考过。`}
 ]);
 
 window.NOTES = window.NOTES || {};
-window.NOTES.t = `<h3 class="warn">考试安排（老师课上宣布）</h3>
+window.NOTES.t = `<h3 class="warn">期末考试（W9–W12 宣布）</h3>
 <ul>
-<li><b>你是 Group A：Quiz 在 10 月 30 日（周五），具体时间和教室待确认。</b>老师 W2 课上宣布的是 Group B 的安排：10 月 26 日（周一）10:40，在上课的 LT；原定 11 月 1 日（周日）取消，因为 NTU 规定周末不能考；Group A 另外安排。<span class="ref">W2</span></li>
-<li>Quiz：30 分钟，每人从题库随机抽题（左右前后的人题目都不同）。单选，不倒扣，<b>点了就不能回退</b>。电脑装 LockDown Browser；可带一张空白纸，但要先给监考看。<span class="ref">W2、W3</span></li>
-<li>Quiz 范围是 <b>Part 1–5</b>，<b>Part 6 区块链<span class="zhen">（blockchain）</span>不考</b>。只考 slides，不考视频和统计数字。<b>P4 题最多</b>，P2 也会有。<span class="ref">W8</span></li>
-<li>样题不会原样出现，会改写、换选项顺序。真题<b>比样题简单</b>，样题里的“绕”是故意的。老师说提前交卷的人错得最多，30 分钟足够，慢慢做。<span class="ref">W3、W5、W8</span></li>
-<li>期末：<b>约 80% 是计算题</b>，每题都有计算。只能带 NTU 批准的科学计算器（没有 mod 键），不能带纸和电子设备，要带实体证件（如护照）。<span class="ref">W2</span></li>
-<li>第 12 周复习课会告诉大家考哪些题、怎样答才能拿满分；考前 2–3 天会有 Zoom 答疑。<span class="ref">W2、W6</span></li>
+<li><b>11 月 26 日（周四）17:00</b>（课件 P1-4；考场待通知）。两份往年卷都是 3 小时、闭卷、4 题、每题分值相同。</li>
+<li><b>4 道大题全部必答</b>，每题分 (a)(b) 两部分，<b>每题都有计算</b>；老师 W11 说约 <b>70% 计算 + 30% 概念</b>（以前说约 80%）。<span class="ref">W9、W10、W11</span></li>
+<li><b>Q1–Q3 出自 Part 1–5，Q4 整题考 Part 6 区块链<span class="zhen">（blockchain）</span></b>。Quiz 不考区块链<span class="zhen">（blockchain）</span>，期末一定考，区块链<span class="zhen">（blockchain）</span>计算 10–15 分。<span class="ref">W10、W11</span></li>
+<li>只考复习课 5 页 topic list 上的内容：老师从几百页里挑了约 30%，“Any topic which is not listed ... will not be tested”。P6 的两个案例（Equifax、孟加拉央行）明确不考。<span class="ref">W11、W12</span></li>
+<li>RSA、DH 的数字都小于 20，最大素数<span class="zhen">（largest prime）</span> 19；只能带 NTU 批准的计算器（没有 mod 键）；公式不给；带实体证件。<span class="ref">W2、W11</span></li>
+<li>复习课 PPT（含 model exam paper）在 NTULearn，<b>模拟卷都是往年原题</b>。往年卷在图书馆，做完可以发给老师看；往年答案拿不到（学校会销毁）。<span class="ref">W11、W12</span></li>
+<li>答疑：考前 1–2 天晚上 7 点以后在 Zoom（具体日期等通知）；平时可以发邮件，或约 Zoom / Teams 一对一<span class="zhen">（one-to-one）</span>。<span class="ref">W11、W12</span></li>
+<li>Quiz 已在 10/30 考完，占总评 30%。老师说这次平均分很低，15 分以上就算好；有正当理由缺考的可以补考。<span class="ref">W10、W12</span></li>
 </ul>
-<h3 class="warn">期末计算题清单（每题约 15 分）</h3>
-<table class="mini"><tr><th>题型</th><th>老师怎么说</th><th>去哪练</th></tr>
-<tr><td>暴力破解时间<span class="zhen">（brute-force time）</span></td><td>“最容易拿的 15 分”，但很多人算错单位；÷ 31,536,000 换算成年；有 bots 再除</td><td>计算题 → 暴力破解<span class="zhen">（brute force）</span></td></tr>
-<tr><td>DoS 包数</td><td>和暴力破解<span class="zhen">（brute force）</span>合计约 30 分；包大小<span class="zhen">（packet size）</span>与网速的关系</td><td>计算题 → DoS</td></tr>
-<tr><td>风险分<span class="zhen">（risk score）</span> / 密码合规<span class="zhen">（password compliance）</span></td><td>“如果考 compliance，每题都有计算”</td><td>计算题 → 风险分<span class="zhen">（risk score）</span></td></tr>
-<tr><td><b>Diffie-Hellman</b></td><td>“really easy 15 marks”；简述原理 + 算公钥<span class="zhen">（public key）</span>和共享密钥<span class="zhen">（shared key）</span></td><td><b>期末专项</b></td></tr>
-<tr><td><b>RSA</b></td><td>“至少 15 分”；为什么 e ≠ 2 + 选 e + 求 d + 加密<span class="zhen">（encryption）</span>解密<span class="zhen">（decryption）</span></td><td><b>期末专项</b></td></tr>
-<tr><td><b>RSA 数字签名<span class="zhen">（digital signature）</span></b></td><td>不用哈希<span class="zhen">（hash）</span>：S = M<sup>d</sup> mod n，验证 S<sup>e</sup> mod n</td><td><b>期末专项</b></td></tr>
+<h3 class="warn">答题规则：怎样拿满分（W11 复习课）</h3>
+<ul>
+<li><b>按要点给分，每个要点 2 分</b>：10 分的简答 = 5 个要点。每个要点单独写一条，用 bullet point 就行，不看语法和拼写。老师讲了两个朋友答案“一样”，一个 A+、一个 C 的故事：C 的那个没把要点写全。</li>
+<li><b>计算写三步</b>：公式 → 代入数字 → 结果，最后验算。只写两行结果，15 分的题 “probably only two marks”；“If you do shortcut, your marks will also be cut”。</li>
+<li><b>“解释为什么”“写出假设（state assumptions）”的小问也要答</b>，一两条就够，空着会扣分。</li>
+<li><b>每道大题从新的一页开始写</b>（NTU 规定，两题挤在一页可能不批），题号标清楚（1A、1B……）。字迹工整、卷面清楚可能多给 1–2 分。</li>
+<li>今年题干会写得很长，但老师说 “Longer questions are the simpler one”：先把关键数字划出来。开考后先通读全卷，“75% answer lies in this question”。</li>
+<li>改卷要经过多轮复核，申诉基本不会改分。</li>
+</ul>
+<h3>期末范围（复习课 5 页 topic list）</h3>
+<table class="mini"><tr><th>部分</th><th>考点</th></tr>
+<tr><td>P1 → Q1–Q3</td><td>安全目标（机密性<span class="zhen">（confidentiality）</span>、完整性<span class="zhen">（integrity）</span>、可用性<span class="zhen">（availability）</span>、认证<span class="zhen">（authentication）</span>、隐私<span class="zhen">（privacy）</span>、不可否认<span class="zhen">（non-repudiation）</span>，写简答）；攻击和攻击者<span class="zhen">（attacker）</span>类型、恶意软件<span class="zhen">（malware）</span>（病毒<span class="zhen">（virus）</span>、蠕虫<span class="zhen">（worm）</span>、木马<span class="zhen">（Trojan horse）</span>、勒索软件<span class="zhen">（ransomware）</span>）；防护措施分技术（加密<span class="zhen">（encryption）</span>、防火墙<span class="zhen">（firewall）</span>、<b>及时更新</b>、强密码<span class="zhen">（password）</span>、双因素认证<span class="zhen">（authentication）</span>、<b>定期备份<span class="zhen">（backup）</span></b>）和非技术（培训、安全意识<span class="zhen">（security awareness）</span>、政策<span class="zhen">（policy）</span><b>并执行</b>）；密码<span class="zhen">（password）</span>的优缺点和策略<span class="zhen">（policy）</span>（≥ 12 位、大小写、特殊字符）；<b>暴力破解<span class="zhen">（brute force）</span>计算（含 botnet）</b>；DoS 和 DDoS 的区别、SYN flood；<b>DoS 包数计算</b>（包大小<span class="zhen">（packet size）</span>、链路<span class="zhen">（link）</span>速度、botnet 的影响）</td></tr>
+<tr><td>P2</td><td>风险管理<span class="zhen">（risk management）</span>流程（识别 → 评估 → 缓解 → 监控）；为什么要合规<span class="zhen">（compliance）</span>；<b>风险分<span class="zhen">（risk score）</span>计算和解读</b></td></tr>
+<tr><td>P3</td><td>生物识别<span class="zhen">（biometrics）</span>（人脸<span class="zhen">（face）</span>、指纹<span class="zhen">（fingerprint）</span>、虹膜<span class="zhen">（iris）</span>）的优缺点，能否取代密码<span class="zhen">（password）</span>（“Maybe maybe not”：准确率约 99.9% 不够，还有伪造<span class="zhen">（forgery）</span>和 AI 深度伪造<span class="zhen">（forgery）</span>）；DLM 四层（技术和政策<span class="zhen">（policy）</span>缺一不可）</td></tr>
+<tr><td>P4</td><td>对称<span class="zhen">（symmetric）</span>和非对称加密<span class="zhen">（asymmetric encryption）</span>、密钥<span class="zhen">（key）</span>的作用和长度；对称<span class="zhen">（symmetric）</span>的优缺点（快、安全；难在密钥交换<span class="zhen">（key exchange）</span>；用来加密<span class="zhen">（encryption）</span>大量数据）；公钥<span class="zhen">（public key）</span>的优缺点（解决了密钥交换<span class="zhen">（key exchange）</span>；慢、钥匙多；只用于密钥交换<span class="zhen">（key exchange）</span>和签名<span class="zhen">（signature）</span>）；混合系统<span class="zhen">（hybrid system）</span>和 SSL/TLS（AES 加密<span class="zhen">（encryption）</span>数据，RSA 交换密钥<span class="zhen">（key）</span>，TLS 1.3 改用 DH）；哈希<span class="zhen">（hash）</span>的两个作用（压缩数据、检测改动 = 完整性<span class="zhen">（integrity）</span>）；数字签名<span class="zhen">（digital signature）</span>（哈希<span class="zhen">（hash）</span> → 私钥<span class="zhen">（private key）</span>签 → 公钥<span class="zhen">（public key）</span>验）；<b>RSA 的每个细节</b>；DES、AES、RC 的分组和密钥长度<span class="zhen">（key length）</span>；<b>DH 的每个细节</b>（离散对数<span class="zhen">（discrete logarithm）</span>）</td></tr>
+<tr><td>P5</td><td>防火墙<span class="zhen">（firewall）</span>类型（包过滤<span class="zhen">（packet filtering）</span>、SPI、代理<span class="zhen">（proxy）</span>）的优点、局限和架构；防火墙架构<span class="zhen">（firewall architecture）</span>；<b>防火墙吞吐量<span class="zhen">（firewall throughput）</span>计算</b></td></tr>
+<tr><td>P6 → Q4</td><td>区块链<span class="zhen">（blockchain）</span>核心组成；类型（公有、私有、联盟，老师说联盟就是混合）；加密货币<span class="zhen">（cryptocurrency）</span> Bitcoin、Ethereum 及各自的主要用途；区块链<span class="zhen">（blockchain）</span>怎样带来效率和透明；PoW、PoS；<b>最大吞吐量<span class="zhen">（throughput）</span>和交易数计算</b>；DeFi 的优点、缺点和风险<span class="zhen">（risk）</span>；智能合约<span class="zhen">（smart contract）</span>的优点（模拟卷）</td></tr>
+</table>
+<h3 class="warn">期末计算题清单</h3>
+<table class="mini"><tr><th>题型</th><th>公式（考试不给）</th><th>出处</th><th>去哪练</th></tr>
+<tr><td>暴力破解<span class="zhen">（brute force）</span> / botnet</td><td>组合数<span class="zhen">（number of combinations）</span> = 字符数<sup>长度</sup>；时间 = 组合数<span class="zhen">（number of combinations）</span> ÷ 每秒次数；÷ 31,536,000 换成年；有 bots 再除以台数</td><td>P1-55~57；往年卷两份 Q3(a)</td><td>期末专项 → 暴力破解<span class="zhen">（brute force）</span></td></tr>
+<tr><td>DoS / DDoS 包数</td><td>包/秒 = 链路<span class="zhen">（link）</span>速度(bit/s) ÷ (包字节<span class="zhen">（byte）</span>数 × 8)；botnet 每台 = 总数 ÷ 台数</td><td>P1-68~70；W11 模拟卷；往年卷 2025-26 S2 Q2(b)、2024-25 S1 Q3(b)</td><td>期末专项 → DoS</td></tr>
+<tr><td>风险分<span class="zhen">（risk score）</span></td><td>TL × VL × AV，满分 125；1–29 低 / 30–59 中 / 60–125 高</td><td>P2-57；W11 模拟卷（40 → 中）</td><td>期末专项 → 风险分<span class="zhen">（risk score）</span></td></tr>
+<tr><td>防火墙吞吐量<span class="zhen">（firewall throughput）</span></td><td>需要的 pps = 带宽<span class="zhen">（bandwidth）</span> ÷ (包字节<span class="zhen">（byte）</span>数 × 8)，再和防火墙<span class="zhen">（firewall）</span>能力比</td><td>P5-76~78；W9；W11 模拟卷</td><td>期末专项 → 防火墙<span class="zhen">（firewall）</span></td></tr>
+<tr><td><b>Diffie-Hellman</b></td><td>Y = g<sup>x</sup> mod p；K = (对方的 Y)<sup>自己的 x</sup> mod p</td><td>P4-62；往年卷两份 Q2(a)</td><td>期末专项 → DH</td></tr>
+<tr><td><b>RSA</b></td><td>n = pq；φ = (p−1)(q−1)；选 e；d = (kφ+1)/e；C = M<sup>e</sup> mod n；M = C<sup>d</sup> mod n</td><td>往年卷两份 Q1(a)；W11 模拟卷</td><td>期末专项 → RSA</td></tr>
+<tr><td><b>RSA 数字签名<span class="zhen">（digital signature）</span></b></td><td>不用哈希<span class="zhen">（hash）</span>：S = M<sup>d</sup> mod n；验证 S<sup>e</sup> mod n = M</td><td>W11 模拟卷（e = 7，5 + 5 + 5 分）</td><td>期末专项 → 签名<span class="zhen">（signature）</span></td></tr>
+<tr><td><b>区块链<span class="zhen">（blockchain）</span> TPS / 吞吐量<span class="zhen">（throughput）</span></b></td><td>TPB = 块大小 ÷ 交易大小<span class="zhen">（transaction size）</span>；TPS = TPB ÷ 出块时间<span class="zhen">（block time）</span>（秒）；Mbps = TPS × 字节<span class="zhen">（byte）</span> × 8 ÷ 10<sup>6</sup></td><td>P6-34~36（5 个例题，老师说 “very, very important”）；W11 模拟卷；往年卷 2025-26 S2 Q4(a)</td><td>期末专项 → 区块链<span class="zhen">（blockchain）</span></td></tr>
 </table>
 <h3>考试数字和手算规则</h3>
 <ul>
-<li><b>数字都小于 20，最大素数<span class="zhen">（large prime）</span>是 19</b>（老师在 W6、W7 重复了很多遍，说“到复习时你们还会发邮件问计算器为什么算不了大数”）。</li>
+<li><b>数字都小于 20，最大素数<span class="zhen">（largest prime）</span>是 19</b>（老师在 W6、W7 重复了很多遍，说“到复习时你们还会发邮件问计算器为什么算不了大数”）。</li>
 <li>计算器没有 mod 键，用除法法：320 mod 9 → 320 ÷ 9 = 35.55…；35 × 9 = 315；320 − 315 = <b>5</b>。</li>
 <li><b>公式考试不给，必须背：</b>
   <ul>
   <li>DH：Y = g<sup>x</sup> mod p；K = (对方的 Y)<sup>自己的 x</sup> mod p</li>
   <li>RSA：n = pq；φ = (p−1)(q−1)；e·d mod φ = 1；C = M<sup>e</sup> mod n；M = C<sup>d</sup> mod n</li>
   <li>签名<span class="zhen">（signature）</span>：S = M<sup>d</sup> mod n；验证：S<sup>e</sup> mod n = M（与加密<span class="zhen">（encryption）</span>相反：私钥<span class="zhen">（private key）</span>签，公钥<span class="zhen">（public key）</span>验）</li>
-  </ul></li>
+  <li>指数<span class="zhen">（exponent）</span>大了计算器放不下（一般只显示 10 位）：比如 5<sup>15</sup> 有 11 位，要<b>分步取模</b>：5<sup>5</sup> = 3125 ≡ 20 (mod 23)，20<sup>3</sup> = 8000 ≡ 19，所以 5<sup>15</sup> mod 23 = 19。边乘边取模，结果不变。<span class="ref">W11</span></li>
+</ul></li>
 <li>老师说过的扣分点：答案对但没按题目要求写步骤，15 分题只给约 5 分（“我和朋友答案一样，为什么他 A 我 C？”）。每一步都写：公式 → 代入 → 结果，最后验算（解密<span class="zhen">（decryption）</span>回原文 / 双方密钥<span class="zhen">（key）</span>相等）。</li>
 </ul>
 <h3>DH 必背（W6）</h3>
 <ol><li>公开选定素数<span class="zhen">（prime number）</span> p 和生成元<span class="zhen">（generator）</span> g（题目会给）</li><li>双方各自选私密数<span class="zhen">（private value）</span>（题目会给）</li><li>A 算公钥<span class="zhen">（public key）</span> Y<sub>A</sub> = g<sup>a</sup> mod p</li><li>B 算公钥<span class="zhen">（public key）</span> Y<sub>B</sub> = g<sup>b</sup> mod p</li><li>交换公钥<span class="zhen">（public key）</span></li><li>各自算共享密钥<span class="zhen">（shared key）</span>：K<sub>A</sub> = Y<sub>B</sub><sup>a</sup> mod p，K<sub>B</sub> = Y<sub>A</sub><sup>b</sup> mod p，两者相等</li></ol>
 <p>可能的追问：私密数<span class="zhen">（private value）</span>泄露<span class="zhen">（leak）</span>会怎样？（攻击者<span class="zhen">（attacker）</span>能算出 K，毫无安全性）数字太小会怎样？（会被试出来，实际至少 2048 位）DH 能加密<span class="zhen">（encryption）</span>吗？（不能，只交换密钥<span class="zhen">（key）</span>，之后用 AES 加密<span class="zhen">（encryption）</span>）安全基础是什么？（离散对数难题<span class="zhen">（discrete logarithm problem）</span>）</p>
+<p>W11 复习课又完整算了一遍 p = 23、g = 5、a = 6、b = 15（Y<sub>A</sub> = 8，Y<sub>B</sub> = 19，K = 2），老师说考试的数字会比 23 小。两份往年卷的 Q2(a) 都是 DH 计算（见下面「往年期末卷」）。</p>
 <h3>RSA 必背（W7）</h3>
 <ul><li>安全基础：大数分解难题<span class="zhen">（integer factorization problem）</span>。</li>
 <li>选 e 的<b>三个条件</b>：① 1 &lt; e &lt; φ；② e 是素数<span class="zhen">（prime number）</span>；③ e 与 p−1、q−1 没有公因子<span class="zhen">（common factor）</span>。</li>
 <li><b>为什么 e 不能是 2</b>（往年考题）：除 2 外的素数<span class="zhen">（prime number）</span>都是奇数，减 1 后是偶数，2 一定是公因子<span class="zhen">（common factor）</span>，不满足第 ③ 条。</li>
 <li>求 d 的 k 法：d = (kφ + 1)/e，k = 1, 2, 3… 直到整除。老师建议考试就用这个方法。</li>
-<li>老师课上的练习题：p=5, q=11 自选密钥<span class="zhen">（key）</span>；p=17, q=19, e=5, M=25；p=13, q=23, e=7。</li></ul>
-<h3>Quiz 高频陷阱（老师点名）</h3>
+<li>老师课上的练习题：p=5, q=11 自选密钥<span class="zhen">（key）</span>；p=17, q=19, e=5, M=25；p=13, q=23, e=7。</li><li><b>RSA 只会这样考</b>（W11 原话 “That is the only possibility”）：描述算法；给参数加密<span class="zhen">（encryption）</span>和解密<span class="zhen">（decryption）</span>；给参数签名<span class="zhen">（signature）</span>和验证。“We need to know each and everything about RSA.”</li>
+<li>考试数字小，<b>e 和 d 可以相等</b>（例如 p = 5、q = 7、φ = 24 时 e = 5、d = 5），不是算错。</li>
+<li>W11 复习课例题：p = 11、q = 3、e = 3 → n = 33、φ = 20、d = 7；M = 8 → C = 17，解密<span class="zhen">（decryption）</span>回 8；签名<span class="zhen">（signature）</span> S = 8<sup>7</sup> mod 33 = 2，验证 2<sup>3</sup> = 8。</li>
+</ul>
+<h3 class="warn">往年期末卷（2024-25 S1、2025-26 S2）</h3>
+<p>数据盘 <code>PAST EXAM PAPER/EE6102/</code> 里只有这两份有题目（其余三份只有封面）。两份结构和复习课说的完全一致：4 题全答，每题 (a) 15 分 + (b) 10 分，Q4 是区块链<span class="zhen">（blockchain）</span>。下表是题目要点和计算答案（答案是我们算的，老师没给）。</p>
+<table class="mini"><tr><th>题</th><th>2025-26 S2（2026 年 4/5 月）</th><th>2024-25 S1（2024 年 11/12 月）</th></tr>
+<tr><td>Q1</td><td>(a) 为什么 RSA 不用来加密<span class="zhen">（encryption）</span>大量数据、怎样和对称加密<span class="zhen">（symmetric encryption）</span>在 SSL/TLS 里配合；p = 11、q = 5、e = 7（再判断 e = 3、e = 5 能不能用），M = 9 → <b>n = 55、φ = 40、d = 23、C = 4</b>，解密<span class="zhen">（decryption）</span>回 9；e = 3 可以（d = 27），e = 5 不行（是 p−1 = 10 的因子）。(b) PKI 中数字签名<span class="zhen">（digital signature）</span>的生成和验证全过程（哈希<span class="zhen">（hash）</span>、公私钥<span class="zhen">（public-private key pair）</span>、证书<span class="zhen">（certificate）</span>、CA）；哈希函数<span class="zhen">（hash function）</span>的作用和性质；为什么先哈希<span class="zhen">（hash）</span>再签名</td><td>(a) 为什么 RSA 要用大素数<span class="zhen">（large prime）</span>、素数<span class="zhen">（prime number）</span>太小有什么风险<span class="zhen">（risk）</span>；p = 5、q = 11、e = 3、m = 4 → <b>d = 27、C = 9</b>，解密<span class="zhen">（decryption）</span>回 4。(b) spear phishing 和 whaling 各针对谁；组织防钓鱼的技术措施</td></tr>
+<tr><td>Q2</td><td>(a) DH 原理、依赖的数学难题（离散对数<span class="zhen">（discrete logarithm）</span>）、PFS 的定义和 TLS 1.3 的 EDH；p = 13、g = 5、a = 7、b = 6 → <b>A = 8、B = 12、K = 12</b>。(b) DoS 和 DDoS 的区别、为什么 DDoS 难防；10 Gbps、256 K 字节<span class="zhen">（byte）</span>包（K = 1024）→ <b>4768.37 包/秒</b>；800 台 botnet、64 K 字节<span class="zhen">（byte）</span>包 → 共 19,073.49 包/秒，<b>每台 23.84 包/秒</b></td><td>(a) DH：公钥<span class="zhen">（public key）</span>公开为什么还安全；p = 7、g = 5、a = 7、b = 4 → <b>A = 5、B = 2、K = 2</b>（a 没有小于 p，要写明假设）。(b) 数字签名<span class="zhen">（digital signature）</span>的签名<span class="zhen">（signature）</span>和验证、哈希<span class="zhen">（hash）</span>的作用，以及签名<span class="zhen">（signature）</span>在区块链<span class="zhen">（blockchain）</span>、比特币<span class="zhen">（Bitcoin）</span>、以太坊<span class="zhen">（Ethereum）</span>中的用途</td></tr>
+<tr><td>Q3</td><td>(a) 密码<span class="zhen">（password）</span>的作用，长度、复杂度、复用怎样影响安全；102 种字符 × 10 位、每秒 1.2 × 10<sup>11</sup> 次 → <b>1.22 × 10<sup>20</sup> 种、1.02 × 10<sup>9</sup> 秒 ≈ 32.2 年</b>；升级到 5 × 10<sup>11</sup> 次/秒 → <b>7.73 年</b>。(b) 密码学<span class="zhen">（cryptography）</span>的目标和对称加密<span class="zhen">（symmetric encryption）</span>的作用；DES 和 AES 比较（分组、密钥<span class="zhen">（key）</span>、安全性）；分组密码<span class="zhen">（block cipher）</span>和流密码<span class="zhen">（stream cipher）</span>的区别</td><td>(a) 暴力破解<span class="zhen">（brute force）</span>、字典攻击<span class="zhen">（dictionary attack）</span>、彩虹表<span class="zhen">（rainbow table）</span>，以及 MFA 怎样防护；102 种字符 × 8 位、每秒 8 × 10<sup>9</sup> 次 → <b>1.46 × 10<sup>6</sup> 秒 ≈ 0.046 年（约 17 天）</b>；密码<span class="zhen">（password）</span>和无密码<span class="zhen">（password）</span>认证<span class="zhen">（authentication）</span>（生物识别<span class="zhen">（biometrics）</span>）的安全性比较。(b) IoT 设备为什么容易被拉进 botnet；500 万台、10 Gbps、64 K 字节<span class="zhen">（byte）</span>包 → 共 <b>19,073 包/秒</b>（每台约 0.0038 包/秒）；botnet 怎样招募和控制</td></tr>
+<tr><td>Q4</td><td>(a) 区块链<span class="zhen">（blockchain）</span>的组成（分布式账本<span class="zhen">（distributed ledger）</span>、哈希<span class="zhen">（hash）</span>、共识<span class="zhen">（consensus）</span>、智能合约<span class="zhen">（smart contract）</span>）和类型，怎样一起保证安全、透明、不可篡改<span class="zhen">（immutable）</span>；750 TPS × 400 字节<span class="zhen">（byte）</span> → <b>2.4 Mbps</b>；每 300 秒一块、块上限 2 MB、每笔 350 字节<span class="zhen">（byte）</span> → <b>5714 笔/块</b>（≈ 19 TPS，按 1 MB = 10<sup>6</sup> 字节<span class="zhen">（byte）</span>）。(b) 加密货币<span class="zhen">（cryptocurrency）</span>原理和<b>比特币<span class="zhen">（Bitcoin）</span>交易从发起到上链确认的全过程</b>；矿工<span class="zhen">（miner）</span>的作用和挖矿<span class="zhen">（mining）</span>的环境影响；DeFi 的定义、和传统金融的区别、优点和风险</td><td>(a) 为什么说区块链<span class="zhen">（blockchain）</span>是 “trustless”、靠什么保证安全透明不可篡改<span class="zhen">（immutable）</span>；公有链（Bitcoin / Ethereum）和私有/许可链（Hyperledger）比较；PoW 的能耗和转向 PoS。(b) DeFi 的概念、怎样挑战传统银行、风险<span class="zhen">（risk）</span>和回报；加密货币<span class="zhen">（cryptocurrency）</span>的前景</td></tr>
+</table>
+<p>每道计算题在刷题本「期末专项」里都有原题（按钮名带“往年卷”），可以填答案核对，并看满分答题模板<span class="zhen">（template）</span>和简答要点。</p>
+<h3>W11 复习课模拟卷（往年原题）</h3>
+<table class="mini"><tr><th>题</th><th>老师给的得分要点</th></tr>
+<tr><td>对称加密<span class="zhen">（symmetric encryption）</span>是什么、优点和局限（10 分）</td><td>同一把钥匙加密<span class="zhen">（encryption）</span>和解密<span class="zhen">（decryption）</span>；快、安全；难在密钥交换<span class="zhen">（key exchange）</span>；用来加密<span class="zhen">（encryption）</span>大量数据。5 个要点各 2 分</td></tr>
+<tr><td>数字签名<span class="zhen">（digital signature）</span>和哈希<span class="zhen">（hash）</span>摘要<span class="zhen">（digest）</span>分别提供什么、怎么工作（5 分）</td><td>签名<span class="zhen">（signature）</span>：认证<span class="zhen">（authentication）</span>、不可否认<span class="zhen">（non-repudiation）</span>、完整性<span class="zhen">（integrity）</span>，私钥<span class="zhen">（private key）</span>签、公钥<span class="zhen">（public key）</span>验；哈希<span class="zhen">（hash）</span>：完整性<span class="zhen">（integrity）</span></td></tr>
+<tr><td>RSA：Jennifer 能不能选 2 当公钥<span class="zhen">（public key）</span>；加密<span class="zhen">（encryption）</span>解密<span class="zhen">（decryption）</span>（15 分）</td><td>p、q 是奇素数<span class="zhen">（odd prime）</span>，p−1、q−1 都是偶数，2 一定是公因子<span class="zhen">（common factor）</span>；每一步写公式和代入的数</td></tr>
+<tr><td>RSA 签名<span class="zhen">（signature）</span>：已知 e = 7，求 d、签名<span class="zhen">（signature）</span>、验证（5 + 5 + 5 分）</td><td>先算 n、φ 才能求 d；签名<span class="zhen">（signature）</span>用私钥<span class="zhen">（private key）</span>，验证用公钥<span class="zhen">（public key）</span></td></tr>
+<tr><td>“两个可能的公钥<span class="zhen">（public key）</span>”，e = 5 时求 d，再加密<span class="zhen">（encryption）</span>解密<span class="zhen">（decryption）</span></td><td>题目已给 5，再找一个是 7；e = 5 时 d 也是 5，允许 e = d</td></tr>
+<tr><td>DoS：100 / 150 Mbps 各要多少包，为什么速度越高包越多，写出假设（15 分）</td><td>只写两行结果的学生拿 C；理论小问必须答：链路<span class="zhen">（link）</span>容量变大，能塞下更多包</td></tr>
+<tr><td>SYN flood 怎么工作；500 Mbps → 5 Gbps 时的包数</td><td>连接一直半开，资源耗尽；包大小<span class="zhen">（packet size）</span>不变、速度升高 → 包数变多；速度不变、包变大 → 包数变少</td></tr>
+<tr><td>为什么 ATM PIN 只要 6 位</td><td>攻击 PIN 必须人在 ATM 现场、手动输入、有录像、受当地法律约束；密码<span class="zhen">（password）</span>可以在千里之外用 botnet 远程破解，所以要长</td></tr>
+<tr><td>描述认证<span class="zhen">（authentication）</span>、机密性<span class="zhen">（confidentiality）</span>、完整性<span class="zhen">（integrity）</span>、不可否认<span class="zhen">（non-repudiation）</span>（10 分）</td><td>每项 2 分，写定义即可，不用很长</td></tr>
+<tr><td>防火墙<span class="zhen">（firewall）</span>怎样提供保护；这台防火墙<span class="zhen">（firewall）</span>扛不扛得住（10 分）</td><td>像守门员 / 保镖，站在可信内网<span class="zhen">（internal network）</span>和不可信互联网<span class="zhen">（Internet）</span>之间，挡坏包、放好包；1 Gbps、1000 字节<span class="zhen">（byte）</span> → 125,000 pps &lt; 200,000，扛得住</td></tr>
+<tr><td>风险分<span class="zhen">（risk score）</span>并解读</td><td>TL × VL × AV；1–29 低、30–59 中、60–125 高；本题 40 → 中</td></tr>
+<tr><td>合规<span class="zhen">（compliance）</span>怎样帮企业留住忠诚客户</td><td>有基本安全 → 客户信任 → 忠诚 → 回头客 → 利润更高</td></tr>
+<tr><td>描述区块链<span class="zhen">（blockchain）</span>技术和主要类型</td><td>“Only three types”：公有、私有、联盟（联盟 = 混合）</td></tr>
+<tr><td>DeFi 是什么、优缺点、前景</td><td>用区块链<span class="zhen">（blockchain）</span>把传统金融服务搬到线上；优点：人人可用、24/7、成本低；缺点：波动大、没有监管（出事没法起诉）、太复杂；前景取决于金融业是否接受、能否纳入监管</td></tr>
+<tr><td>区块链<span class="zhen">（blockchain）</span> 800 TPS、每笔 1 K（K = 1024），求数据量</td><td>800 × 1024 = 819,200 B/s → × 8 = 6,553,600 b/s → <b>6.5536 Mbps</b></td></tr>
+<tr><td>智能合约<span class="zhen">（smart contract）</span>的优点</td><td>去掉收佣金的第三方；区块<span class="zhen">（block）</span>可验证、不可篡改<span class="zhen">（immutable）</span>，自带信任；快、高效、成本低、24/7、自动执行；让进不了传统金融的人也能用</td></tr>
+</table>
+<h3>Part 5 后半：TLS 收尾、SET、防火墙<span class="zhen">（firewall）</span>、IDS（W9–W10）</h3>
+<ul>
+<li><b>防火墙吞吐量<span class="zhen">（firewall throughput）</span>是期末计算</b>：W9 讲完 “all four question will have calculation a part” 紧接着就讲 P5-76~78。“We need to have the same unit”：包是字节<span class="zhen">（byte）</span>、带宽<span class="zhen">（bandwidth）</span>是比特，<b>要乘 8</b>。<span class="ref">W9</span></li>
+<li>防火墙<span class="zhen">（firewall）</span>只在包<b>被证明是攻击</b>时才丢弃并记录（“this is important”）；只看包头<span class="zhen">（packet header）</span>、不看内容，所以还需要 IDS。<span class="ref">W9</span></li>
+<li>防火墙策略<span class="zhen">（firewall policy）</span>最重要，要定期更新；最大的问题是配置：太严挡住正常流量<span class="zhen">（traffic）</span>，太松放进攻击。<span class="ref">W9</span></li>
+<li><b>SPI 是今天的主边界防火墙<span class="zhen">（primary perimeter firewall）</span></b>，静态包过滤<span class="zhen">（static packet filtering）</span>只作辅助。只有约 1% 的包是建连包需要细查，其余 99% 查状态表<span class="zhen">（state table）</span>即可。老师的例子：一条消息 20 个包，静态过滤<span class="zhen">（static filtering）</span>每包 1 秒共 20 秒；SPI 只细查首尾两个包、每个 2 秒共 4 秒。SPI 还能发现 SYN flood（请求多、成功连接少，比如 5 个请求只成 1 个）。<span class="ref">W9</span></li>
+<li><b>屏蔽子网（screened subnet）最安全</b>：两台过滤路由器<span class="zhen">（filtering router）</span>夹出 DMZ，三层防御<span class="zhen">（three layers of defense）</span>，内网<span class="zhen">（internal network）</span>对互联网<span class="zhen">（Internet）</span>不可见。代理<span class="zhen">（proxy）</span>（应用层<span class="zhen">（application layer）</span>）防火墙<span class="zhen">（firewall）</span>安全性最好但最慢。<span class="ref">W9</span></li>
+<li>SSL/TLS 只保护传输中的数据，不保护数据库<span class="zhen">（database）</span>；不能认证<span class="zhen">（authentication）</span>屏幕后面的人，所以挡不住盗刷信用卡<span class="zhen">（credit card）</span>；是两方协议<span class="zhen">（two-party protocol）</span>。出事时 SSL 下<b>商家<span class="zhen">（merchant）</span></b>赔钱，SET 下支付网关<span class="zhen">（payment gateway）</span>赔。<span class="ref">W9</span></li>
+<li>SET “perfect system, but not practical”：5 方（持卡人<span class="zhen">（cardholder）</span>、商家<span class="zhen">（merchant）</span>、发卡行<span class="zhen">（issuing bank）</span>、收单行、支付网关<span class="zhen">（payment gateway）</span>）× 2（人和电脑）= <b>10 张证书<span class="zhen">（certificate）</span></b>，太慢太麻烦，没人用。<span class="ref">W9</span></li>
+<li>TLS 1.3：5 步 200 ms 对 1.2 的 7 步 300 ms；往返 2 → 1；去掉 3DES、DES、MD5、RC4、SHA-1。攻击对应版本：BEAST → TLS 1.0，POODLE → SSL 3.0，DROWN → SSL 2.0，Heartbleed → OpenSSL。补丁<span class="zhen">（patch）</span>要“几小时内”装好。<span class="ref">W9</span></li>
+<li><b>零日攻击<span class="zhen">（zero-day attack）</span></b>：signature-based IDS 检测不到（还没有特征）；anomaly / behavior-based 有能力发现，但不保证。<span class="ref">W10</span></li>
+<li>防火墙<span class="zhen">（firewall）</span>一次看一个包、只看包头<span class="zhen">（packet header）</span>；IDS 深度检查一串包。“IDS only detects. IPS will prevent it.” IDS 适合取证<span class="zhen">（forensics）</span>，IPS 适合实时防护。<span class="ref">W10</span></li>
+<li>NIDS 的缺点：流量<span class="zhen">（traffic）</span>加密<span class="zhen">（encryption）</span>时看不到攻击特征<span class="zhen">（attack signature）</span>；不知道主机上发生了什么。HIDS 能在主机解密<span class="zhen">（decryption）</span>之后再检查。NIDS 放在防火墙<span class="zhen">（firewall）</span>前后都可以。<span class="ref">W10</span></li>
+<li>误报（false positive）太多，人就会习惯性忽略，真告警<span class="zhen">（alert）</span>也被忽略。Anomaly 最难的是定基线<span class="zhen">（baseline）</span>。蜜罐<span class="zhen">（honeypot）</span> “not as great as it looks on the diagram”。<span class="ref">W10</span></li>
+<li>Sample Quiz P5 第 17 题老师选 D（Anomaly detection），第 12 题提醒：“if it says cannot, then this will be true”。<span class="ref">W10</span></li>
+</ul>
+<h3 class="warn">Part 6 区块链<span class="zhen">（blockchain）</span> = 期末 Q4（W10、W12）</h3>
+<ul>
+<li><b>交易速率<span class="zhen">（transaction rate）</span> 5 个例题（P6-34~36）</b>：“something similar will come in the exam”，“can carry ten to 15 marks”，“Remember these five examples are very, very important from exam point of view”。分两步：每块交易数<span class="zhen">（transactions per block (TPB)）</span> → 每秒交易数；吞吐量<span class="zhen">（throughput）</span> = TPS × 字节<span class="zhen">（byte）</span> × 8 ÷ 10<sup>6</sup>。<span class="ref">W10</span></li>
+<li>六个关键特性：去中心化<span class="zhen">（decentralization）</span>、透明（带来问责）、不可篡改<span class="zhen">（immutable）</span>（完整性<span class="zhen">（integrity）</span>）、安全（密码学<span class="zhen">（cryptography）</span>）、共识<span class="zhen">（consensus）</span>（带来信任）、链式结构。出错<b>只能追加新块更正</b>，不能改旧块。<span class="ref">W10</span></li>
+<li>组成：交易、账本<span class="zhen">（ledger）</span>、节点<span class="zhen">（node）</span>、加密<span class="zhen">（encryption）</span>、共识算法<span class="zhen">（consensus algorithm）</span>、<b>可选的</b>智能合约<span class="zhen">（smart contract）</span>（“Bitcoin does not have smart contracts”）。没有共识算法<span class="zhen">（consensus algorithm）</span>就没有区块链<span class="zhen">（blockchain）</span>；今天最常用的是 PoW 和 PoS。<span class="ref">W10</span></li>
+<li><b>为什么要 PoW</b>：公链<span class="zhen">（public blockchain）</span>靠多数表决，一个人可以注册上亿个假账户来投票，所以规定要先做功（解哈希<span class="zhen">（hash）</span>难题）才能记账。PoW 耗电耗时，所以有了 PoS。<span class="ref">W10、W12</span></li>
+<li>类型：老师口径“三类”——公有（Bitcoin、Ethereum）、私有 ≈ 许可（Ripple、MultiChain、Corda）、联盟 ≈ 混合（R3、Hyperledger Fabric）。<span class="ref">W10、W11</span></li>
+<li>区块链<span class="zhen">（blockchain）</span> vs 数据库<span class="zhen">（database）</span>：数据库<span class="zhen">（database）</span>有管理员<span class="zhen">（administrator）</span>，可以改、删，管理员<span class="zhen">（administrator）</span>犯错或被收买信任就没了，还有单点故障<span class="zhen">（single point of failure）</span>；区块链<span class="zhen">（blockchain）</span>没有管理员<span class="zhen">（administrator）</span>。<span class="ref">W10</span></li>
+<li>智能合约<span class="zhen">（smart contract）</span>：条件满足自动执行（航班延误超过 5 小时保险自动赔）；好处是去掉第三方（Grab 例）、更快、更省、更安全；风险<span class="zhen">（risk）</span>是代码 bug、写错改不回来（$10 打成 $100）、扩展性<span class="zhen">（scalability）</span>差、法律问题。<span class="ref">W10</span></li>
+<li>威胁<span class="zhen">（threat）</span>：钓鱼<span class="zhen">（phishing）</span>（偷私钥<span class="zhen">（private key）</span>）、路由攻击、女巫攻击（大量假身份）、51% 攻击。<span class="ref">W10</span></li>
+<li><b>Bitcoin vs Ethereum</b>（P6-73）：Bitcoin 是货币<span class="zhen">（currency）</span>，Ethereum 是去中心化应用<span class="zhen">（decentralized application）</span>平台；供应量 2100 万封顶 vs 不封顶；PoW vs PoS；不支持 vs 支持智能合约<span class="zhen">（smart contract）</span>；几分钟 vs 几秒。<span class="ref">W12</span></li>
+<li>中本聪为什么做比特币<span class="zhen">（Bitcoin）</span>：不信任银行、手续费<span class="zhen">（transaction fee）</span>高；要解决的是安全和重复花费，办法是公开账本<span class="zhen">（ledger）</span> + PoW。比特币<span class="zhen">（Bitcoin）</span>交易全过程（P6-62，Nick 给 Rose 0.5 BTC）和挖矿<span class="zhen">（mining）</span>耗电（P6-63~66）往年卷考过。<span class="ref">W12</span></li>
+<li><b>“Trustless” 不是“没有信任”</b>，而是信任已经内建在系统里，不需要另外证明对方可信（W12 讲了两次，2024-25 S1 Q4 考过）。<span class="ref">W12</span></li>
+<li>DeFi：好处（去中介、人人可用、透明、安全）、风险<span class="zhen">（risk）</span>（波动大、技术不成熟、扩展性<span class="zhen">（scalability）</span>：以太坊<span class="zhen">（Ethereum）</span>每秒约 15 笔，Visa 约 65,000 笔）、前景（看采用、监管和生态）。复习课、模拟卷、两份往年卷都有。<span class="ref">W11、W12</span></li>
+</ul>
+<h3>Quiz 里老师点名的概念（期末简答也用得上）</h3>
 <ul>
 <li>CIA 题有约 20 个版本、约 80% 人做错：注意 Access / Consideration 这类拼写陷阱。<span class="ref">W3</span></li>
 <li>virus 要宿主，worm 不要；人冒充叫 masquerading，服务器<span class="zhen">（server）</span>/IP 伪造<span class="zhen">（forgery）</span>叫 spoofing。<span class="ref">W2、W3</span></li>
@@ -2756,6 +2953,15 @@ window.NOTES.t = `<h3 class="warn">考试安排（老师课上宣布）</h3>
 <li>DH 例 p=29、g=2、a=5、b=13：课件写 K = 26，<b>正确是 Y<sub>B</sub> = 14、K = 19</b>。</li>
 <li>W8 把 TLS 1.3 说成“TLS 3.1”；W7 说 SHA-1 是“168 位”，实际是 160 位；W4 风险<span class="zhen">（risk）</span>例子把 4×3×5 说成“16”，实际是 60。</li>
 <li>老师要求 RSA 的 e“必须是素数<span class="zhen">（prime number）</span>”，比标准说法（gcd(e, φ) = 1）更严格，考试按老师的写。</li>
+<li>课件 P6-36 例 4 中间一步写成 12 000 000 bits/s，<b>应为 1 200 000</b>（200 × 750 × 8）；最后 1.2 Mbps 是对的。W10 口头说的 “400 transactions per block” 应为 4000。</li>
+<li>风险分<span class="zhen">（risk score）</span>档：W11 模拟卷答案是 1–29 低 / 30–59 中 / 60–125 高，但课件 P2-57 把 4×3×5 = 60 判成 medium。<b>考试按题目给的分档</b>。</li>
+<li>W11 把 “DES、AES、RC” 都说成分组密码<span class="zhen">（block cipher）</span>；课件 P4-15 写明 <b>RC4 是流密码<span class="zhen">（stream cipher）</span></b>（往年卷 2025-26 S2 Q3(b)(iii) 也这么说）。</li>
+<li>老师把 PoW 讲成“已知密文<span class="zhen">（ciphertext）</span>求明文<span class="zhen">（plaintext）</span>”，实际是不停换 nonce，直到区块<span class="zhen">（block）</span>的 SHA-256 哈希<span class="zhen">（hash）</span>满足难度要求。Proof of Burn 的“烧币<span class="zhen">（coin burning）</span>地址”是没有人持有私钥<span class="zhen">（private key）</span>的地址，不是内存地址。</li>
+<li>TLS 1.3 比 1.2 快多少，老师先后说了 3 倍和 2 倍；按 P5-25 时序图是 5 步 200 ms 对 7 步 300 ms，只有 1.5 倍。往返次数从 2 减到 1。</li>
+<li>W9 说双宿主（dual-homed）没有单点故障<span class="zhen">（single point of failure）</span>，课件 P5-71 写的是同样有单点故障<span class="zhen">（single point of failure）</span>。W9 把 SPI 的额外处理说成“不是缺点”，课件 P5-59 写的是 primary disadvantage。</li>
+<li>课件 P4-68 写 “(e × d) mod N = 1”，应为 <b>mod φ(N)</b>；P4-50、P4-70 把 1 当成素数<span class="zhen">（prime number）</span>（1 不是素数<span class="zhen">（prime number）</span>）。</li>
+<li>W11 的 DoS 例子说 1 KB 包、50 Mbps 要 3051 个包；按 1 KB = 1024 字节<span class="zhen">（byte）</span>应为 6103.5，3051 对应 2 KB 包（可能是转写或口误）。</li>
+<li>课件 P6-67 说以太坊<span class="zhen">（Ethereum）</span> 2021 年转到 PoS，实际是 2022 年 9 月；P6-71 Ripple 预挖<span class="zhen">（premined）</span> “1 billion”，实际是 1000 亿枚。考试按课件写不扣分，知道就行。</li>
 </ul>`;
 
 </script>
@@ -2903,15 +3109,15 @@ function rHome(){
   var all=partStat('all'),off=partStat('all','o');
   var h='<p class="eyebrow">EE6102 · Cyber Security &amp; Blockchain Technology</p><h1 class="vh">今天练哪一章？</h1>'+
   '<p class="lede">官方样题 + 课件自编题逐项讲解，模拟 30 题小测，Q&amp;A 大题写作练习，RSA / DH 等计算题分步演算。标着「老师强调」的题，是老师在上课录音里点过名的。进度只保存在这个浏览器里。</p>'+
-  '<div class="dates">'+dcell('Individual Quiz · 30 MCQ · 30%',quiz,'10 月 30 日（周五）· Group A · 时间/教室待确认',true)+dcell('Individual Assignment · 20%',asg,'10 月 23 日截止')+dcell('Final Exam · 4 题 · 50%',fin,'11 月 26 日（周四）17:00')+'</div>';
+  '<div class="dates">'+dcell('Final Exam · 4 题全答 · 50%',fin,'11 月 26 日（周四）17:00 · Q4 考区块链',true)+dcell('Individual Quiz · 30 MCQ · 30%',quiz,'10 月 30 日 · 已考完')+dcell('Individual Assignment · 20%',asg,'10 月 23 日截止')+'</div>';
   h+='<div class="quick">'+
    '<button class="qk" data-act="continue"><b>继续练习</b><span>'+(S.last.id&&BY[S.last.id]?'上次停在 '+esc(qno(BY[S.last.id])):'从 Part 1 开始')+'</span></button>'+
    '<button class="qk" data-go="mock"><b>模拟测验</b><span>30 题限时，交卷后看解析</span></button>'+
    '<button class="qk" data-go="wrong"><b>错题本</b><span>'+Object.keys(S.wrong).length+' 道待巩固</span></button>'+
    '<button class="qk" data-go="qa"><b>问答大题</b><span>'+Object.keys(S.qa).filter(function(k){return S.qa[k].r==='ok'}).length+' / '+QA.length+' 已掌握</span></button>'+
-   '<button class="qk hotk" data-go="teacher"><b>老师上课重点</b><span>7 份录音整理：考试安排、必考计算、陷阱</span></button>'+
+   '<button class="qk hotk" data-go="teacher"><b>老师上课重点</b><span>11 份录音整理：期末范围、答题规则、往年卷</span></button>'+
    '<button class="qk hotk" data-go="practice" data-st="hot"><b>老师强调的题</b><span>'+MCQ.filter(function(q){return hotOf(q)}).length+' 道，课上点过名</span></button>'+
-   '<button class="qk hotk" data-go="exam"><b>期末专项 DH / RSA</b><span>按考试规格出题（素数 ≤ 19）'+(S.exam.n?' · 已练 '+S.exam.n+' 题':'')+'</span></button></div>';
+   '<button class="qk hotk" data-go="exam"><b>期末计算大题专项</b><span>8 类大题 + 往年真题原题'+(S.exam.n?' · 已练 '+S.exam.n+' 题':'')+'</span></button></div>';
   h+='<div class="sec-h"><h2>分章进度</h2><span class="pstat">总计 '+all.done+' / '+all.total+' 已做 · 正确率 '+(all.done?Math.round(all.ok/all.done*100):0)+'%</span></div><div class="parts">';
   for(var p=1;p<=6;p++){
     var st=partStat(p),so=partStat(p,'o');
@@ -3628,19 +3834,19 @@ function pwCheck(pw,mn,up,lo,di,sy){
 
 /* ================= TEACHER ================= */
 function rTeacher(){
-  return '<p class="eyebrow">学习 · 老师上课重点</p><h1 class="vh">老师上课重点</h1><p class="lede">根据 W2–W8 七份上课录音整理：考试安排、期末必考计算、quiz 陷阱，以及老师自己的口径。右侧小字 W 后面的数字表示第几周的录音。</p>'+
-  '<div class="row" style="margin:0 0 14px"><button class="btn pri" data-go="exam">去做 DH / RSA 期末专项 →</button><button class="btn" data-go="practice" data-st="hot">练老师强调的选择题（'+MCQ.filter(function(q){return hotOf(q)}).length+' 道）</button></div>'+
+  return '<p class="eyebrow">学习 · 老师上课重点</p><h1 class="vh">老师上课重点</h1><p class="lede">根据 W2–W12 共 11 份上课录音（含 W11 期末复习课）和两份往年期末卷整理：期末范围、答题规则、必考计算、往年真题，以及老师自己的口径。右侧小字 W 后面的数字表示第几周的录音。</p>'+
+  '<div class="row" style="margin:0 0 14px"><button class="btn pri" data-go="exam">去做期末计算大题专项 →</button><button class="btn" data-go="practice" data-st="hot">练老师强调的选择题（'+MCQ.filter(function(q){return hotOf(q)}).length+' 道）</button></div>'+
   '<article class="notes">'+(NOTES.t||'')+'</article>';
 }
 
 /* ================= EXAM DRILL (DH / RSA / signature, exam-sized numbers) ================= */
 var EP=[3,5,7,11,13,17,19];
 var EX={type:'rsa',it:null,u:{},res:null,key:false,zh:false,ans:false};
-var EXT=[['rsa','RSA 加密解密'],['dh','Diffie-Hellman'],['sig','RSA 数字签名']];
+var EXT=[['rsa','RSA 加密解密'],['sig','RSA 数字签名'],['dh','Diffie-Hellman'],['brute','暴力破解 / botnet'],['dos','DoS / DDoS 包数'],['fw','防火墙吞吐量'],['risk','风险分'],['chain','区块链 TPS / 吞吐量']];
 var EXPRE={
- rsa:[{n:'W7 例 · p=5 q=11 e=3 M=32',p:5,q:11,e:3,M:32},{n:'W7 例 · p=5 q=11 e=7 M=32',p:5,q:11,e:7,M:32},{n:'W7 例 · p=3 q=11 e=3',p:3,q:11,e:3,M:5},{n:'W7 例 · p=17 q=11 e=7',p:17,q:11,e:7,M:8},{n:'W7 例 · p=11 q=13 e=7 M=9',p:11,q:13,e:7,M:9},{n:'W7 例 · p=7 q=17 e=5 M=19',p:7,q:17,e:5,M:19},{n:'W7 练习 · p=17 q=19 e=5 M=25',p:17,q:19,e:5,M:25},{n:'W7 练习 · p=5 q=11 自选 e',p:5,q:11,e:0,M:9}],
- dh:[{n:'W6 例 · p=13 g=6',p:13,g:6,a:5,b:4},{n:'W6 例 · p=11 g=7',p:11,g:7,a:3,b:6},{n:'W6 例 · p=11 g=2',p:11,g:2,a:4,b:3},{n:'W6 例 · p=17 g=3',p:17,g:3,a:7,b:12},{n:'W6 例 · p=23 g=5',p:23,g:5,a:6,b:15},{n:'课件 P4-63 · p=29 g=2（课件答案有误）',p:29,g:2,a:5,b:13}],
- sig:[{n:'W7 例 · p=5 q=11 e=3 M=51',p:5,q:11,e:3,M:51},{n:'p=11 q=13 e=7 M=20',p:11,q:13,e:7,M:20}]
+ rsa:[{n:'往年卷 2025-26 S2 Q1(a) · p=11 q=5 e=7 M=9',p:11,q:5,e:7,M:9,note:'这题还问 e = 3、e = 5 能不能用。p−1 = 10 = 2 × 5，q−1 = 4 = 2 × 2。<b>e = 3</b>：是素数、1 &lt; 3 &lt; 40、不是 10 和 4 的因子 → 可以（对应 d = 27）。<b>e = 5</b>：是 p−1 = 10 的因子 → 不行。题干的简答还要写：RSA 很慢，不适合直接加密大量数据，只用来交换会话密钥和做签名；SSL/TLS 先用 RSA（TLS 1.3 改用 DH）交换密钥，再用 AES 这类对称算法加密数据（混合系统）。'},{n:'往年卷 2024-25 S1 Q1(a) · p=5 q=11 e=3 M=4',p:5,q:11,e:3,M:4,note:'题干还问为什么要用大素数：素数太小，攻击者很快就能把 n 分解回 p 和 q，算出 φ(n) 和私钥 d，从而解密所有消息、伪造签名；实际使用的 n 至少 2048 位。'},{n:'W11 复习课 · p=11 q=3 e=3 M=8',p:11,q:3,e:3,M:8},{n:'W7 例 · p=5 q=11 e=3 M=32',p:5,q:11,e:3,M:32},{n:'W7 例 · p=5 q=11 e=7 M=32',p:5,q:11,e:7,M:32},{n:'W7 例 · p=3 q=11 e=3',p:3,q:11,e:3,M:5},{n:'W7 例 · p=17 q=11 e=7',p:17,q:11,e:7,M:8},{n:'W7 例 · p=11 q=13 e=7 M=9',p:11,q:13,e:7,M:9},{n:'W7 例 · p=7 q=17 e=5 M=19',p:7,q:17,e:5,M:19},{n:'W7 练习 · p=17 q=19 e=5 M=25',p:17,q:19,e:5,M:25},{n:'W7 练习 · p=5 q=11 自选 e',p:5,q:11,e:0,M:9}],
+ dh:[{n:'往年卷 2025-26 S2 Q2(a) · p=13 g=5 a=7 b=6',p:13,g:5,a:7,b:6,fu:0,note:'(a) 还要求定义 PFS 并说明 TLS 1.3 怎样做到：PFS（前向保密）指服务器的长期私钥将来即使泄露，以前录下的会话也解不开；TLS 1.3 用临时 DH（EDH），每次会话重新选私密数、用完即丢，最坏也只泄露一个会话。另外注意 g = 5 不是模 13 的原根（5<sup>4</sup> ≡ 1），照算即可。'},{n:'往年卷 2024-25 S1 Q2(a) · p=7 g=5 a=7 b=4',p:7,g:5,a:7,b:4,fu:0,note:'私密数本应在 1 和 p−1 之间，这里 a = 7 = p。照题目算，并在答案里写明这个假设；由费马小定理，5<sup>7</sup> ≡ 5 (mod 7)。题干还要解释：攻击者能看到双方公钥，但由公钥反推私密数是离散对数难题，所以得不到共享密钥。'},{n:'W6 例 · p=13 g=6',p:13,g:6,a:5,b:4},{n:'W6 例 · p=11 g=7',p:11,g:7,a:3,b:6},{n:'W6 例 · p=11 g=2',p:11,g:2,a:4,b:3},{n:'W6 例 · p=17 g=3',p:17,g:3,a:7,b:12},{n:'W6 例 · p=23 g=5',p:23,g:5,a:6,b:15},{n:'课件 P4-63 · p=29 g=2（课件答案有误）',p:29,g:2,a:5,b:13}],
+ sig:[{n:'W11 复习课 · p=11 q=3 e=3 M=8',p:11,q:3,e:3,M:8},{n:'W7 例 · p=5 q=11 e=3 M=51',p:5,q:11,e:3,M:51},{n:'p=11 q=13 e=7 M=20',p:11,q:13,e:7,M:20}]
 };
 function primRoots(p){var r=[];for(var g=2;g<p;g++)if(orderOf(g,p)===p-1)r.push(g);return r}
 function smallestE(p,q){var phi=(p-1)*(q-1),c=[3,5,7,11,13,17,19,23,29,31];for(var i=0;i<c.length;i++){if(c[i]>=phi)return 0;if(bgcd(BigInt(c[i]),BigInt(phi))===1n)return c[i]}return 0}
@@ -3648,7 +3854,7 @@ function dOf(e,phi){return Number(inverseSteps(BigInt(e),BigInt(phi)).d)}
 function rsaItem(o,type){
   var p=o.p,q=o.q,n=p*q,phi=(p-1)*(q-1),sel=!o.e,e=o.e||smallestE(p,q),d=dOf(e,phi),M=o.M;
   var C=Number(mpow(BigInt(M),BigInt(e),BigInt(n)));
-  var it={type:type,p:p,q:q,n:n,phi:phi,e:e,d:d,M:M,sel:sel,name:o.n||''};
+  var it={type:type,p:p,q:q,n:n,phi:phi,e:e,d:d,M:M,sel:sel,name:o.n||'',note:o.note};
   if(type==='rsa'){
     it.C=C;
     it.en='<b>Question (15 marks)</b><ol type="a"><li>Explain why the number 2 can never be chosen as the public key in the RSA algorithm.</li><li>Two prime numbers <b>p = '+p+'</b> and <b>q = '+q+'</b> are chosen. Calculate the modulus <i>n</i> and the totient function φ(<i>n</i>).</li><li>'+(sel?'Select the smallest valid public key <i>e</i> and calculate':'The public key <b>e = '+e+'</b> is chosen. Calculate')+' the matching private key <i>d</i>.</li><li>Encrypt the message <b>M = '+M+'</b>, then decrypt the ciphertext to verify your answer. Show all steps.</li></ol>';
@@ -3672,12 +3878,13 @@ function dhItem(o){
   var p=o.p,g=o.g,a=o.a,b=o.b,P_=BigInt(p),G=BigInt(g);
   var YA=Number(mpow(G,BigInt(a),P_)),YB=Number(mpow(G,BigInt(b),P_)),K=Number(mpow(BigInt(YB),BigInt(a),P_));
   var fu=o.fu!==undefined?o.fu:rint(0,DHFOLLOW.length-1);
-  return {type:'dh',p:p,g:g,a:a,b:b,YA:YA,YB:YB,K:K,fu:fu,name:o.n||'',
+  return {type:'dh',p:p,g:g,a:a,b:b,YA:YA,YB:YB,K:K,fu:fu,name:o.n||'',note:o.note,
    en:'<b>Question (15 marks)</b><ol type="a"><li>Briefly explain how the Diffie-Hellman key exchange algorithm works.</li><li>Alice and Bob agree on the prime number <b>p = '+p+'</b> and the generator <b>g = '+g+'</b>. Alice chooses the private number <b>'+a+'</b> and Bob chooses the private number <b>'+b+'</b>. Calculate the public keys of Alice and Bob and the shared secret key computed by each of them. Show all steps.</li><li>'+DHFOLLOW[fu].q+'</li></ol>',
    zh:'(a) 简述 Diffie-Hellman 密钥交换的工作原理。(b) 双方约定素数 p = '+p+'、生成元 g = '+g+'；Alice 的私密数为 '+a+'，Bob 的为 '+b+'。求双方公钥和各自算出的共享密钥，写出全部步骤。(c) 追问（见英文）。',
    f:[{k:'ya',l:'Alice 公钥 Y<sub>A</sub>',v:YA},{k:'yb',l:'Bob 公钥 Y<sub>B</sub>',v:YB},{k:'ka',l:'Alice 算出的 K',v:K},{k:'kb',l:'Bob 算出的 K',v:K}]};
 }
 function randExam(type){
+  if(GEN[type])return randMore(type);
   var tries=0;
   if(type==='dh'){var ps=[11,13,17,19],p=pick(ps),g=pick(primRoots(p)),a,b,K;
     do{a=rint(2,p-2);b=rint(2,p-2);K=Number(mpow(mpow(BigInt(g),BigInt(a),BigInt(p)),BigInt(b),BigInt(p)))}while((a===b||K===1)&&++tries<50);
@@ -3714,7 +3921,8 @@ function eSelHTML(it){
 }
 function examKeyHTML(it){
   var h='',sn=1;
-  if(it.type==='dh'){
+  if(it.kh)h=it.kh;
+  else if(it.type==='dh'){
     h+=step('(a)','Briefly explain DH（简答，照这个结构写）','<ul class="en-ans"><li>Diffie-Hellman is a <b>key-exchange protocol</b> (it does not encrypt data); its security is based on the <b>discrete logarithm problem</b> (one-way function).</li><li><b>Step 1:</b> both users publicly agree on a large prime p and a generator g.</li><li><b>Step 2:</b> each user selects a secret (private) number, a and b, and keeps it secret.</li><li><b>Step 3/4:</b> user A computes the public key Y<sub>A</sub> = g<sup>a</sup> mod p; user B computes Y<sub>B</sub> = g<sup>b</sup> mod p.</li><li><b>Step 5:</b> they swap public keys over the Internet.</li><li><b>Step 6:</b> A computes K = Y<sub>B</sub><sup>a</sup> mod p and B computes K = Y<sub>A</sub><sup>b</sup> mod p. Both get the same shared key, which is then used by a symmetric algorithm such as AES.</li><li>An attacker knows p, g, Y<sub>A</sub>, Y<sub>B</sub> but cannot find a or b; in practice the numbers must be at least 2048 bits.</li></ul>');
     var A=powLine(it.g,it.a,it.p),Bv=powLine(it.g,it.b,it.p),KA=powLine(it.YB,it.a,it.p),KB=powLine(it.YA,it.b,it.p);
     h+=step('(b)','Calculation','<p>Step 1 · Public values: p = '+it.p+', g = '+it.g+'. Private numbers: Alice a = '+it.a+', Bob b = '+it.b+'.</p>'+
@@ -3743,21 +3951,270 @@ function examKeyHTML(it){
         '<span class="eq">Verification (public key): S<sup>e</sup> mod n = '+it.S+'<sup>'+it.e+'</sup> mod '+it.n+' = <b>'+vf.res+'</b></span>'+vf.html+'<p>The result equals M = '+it.M+' ✓, so the signature is verified (signed with the private key d, verified with the public key e).</p>');
     }
   }
-  h+='<div class="hotbox"><b>老师的扣分提醒</b>：每一步写“公式 → 代入数字 → 结果”，公式不会给你；最后一定要验算（解密回原文、双方 K 相等、验签得回 M）。只写最终答案，15 分只剩约 5 分。</div>';
+  if(it.note)h+='<div class="tipbox"><b>这道往年题的其他小问</b>：'+it.note+'</div>';
+  h+='<div class="hotbox"><b>老师的扣分提醒（W11 复习课）</b>：每一步写“公式 → 代入数字 → 结果”，公式不会给你；最后验算（解密回原文、双方 K 相等、验签得回 M）。只写两行结果，15 分题“probably only two marks”。“解释为什么”“写出假设”的小问也要答。简答按要点给分，每点约 2 分，用 bullet point 写就行。每道大题从新的一页开始写。</div>';
   return h;
 }
+/* ---- 期末其他计算大题（W2、W9–W11 复习课 + 往年卷）：暴力破解、DoS、防火墙、风险分、区块链 ---- */
+function nf(x,dp){dp=dp===undefined?2:dp;var r=Math.round(x*Math.pow(10,dp))/Math.pow(10,dp);return r.toLocaleString('en-US',{maximumFractionDigits:dp})}
+function sci(x,dp){dp=dp===undefined?2:dp;if(x===0)return '0';var e=Math.floor(Math.log10(Math.abs(x)));if(e>=-2&&e<5)return nf(x,dp);var m=x/Math.pow(10,e);if(Math.abs(m)>=9.995){m/=10;e++}return m.toFixed(dp)+' × 10<sup>'+e+'</sup>'}
+function bigTxt(r){return r>=1e6?nf(r,0)+' ('+sci(r,1)+')':nf(r,0)}
+function bpsTxt(b){return b>=1e9?nf(b/1e9,2)+' Gbps':nf(b/1e6,2)+' Mbps'}
+function bpsFull(b){return bpsTxt(b)+' = '+nf(b,0)+' bits/s'}
+function sizeTxt(B,k){return k?(B/1024)+' K bytes (K = 1024)':nf(B,0)+' bytes'}
+function sizeEq(B,k){return k?(B/1024)+' × 1024 = '+nf(B,0)+' bytes':nf(B,0)+' bytes'}
+function ul(a){return '<ul class="en-ans"><li>'+a.join('</li><li>')+'</li></ul>'}
+var FU={
+ brute:[
+  {q:'Examine the role of passwords in modern cyber security and explain how password design choices (length, complexity and reuse) influence system security.',a:ul([
+   '<b>Role:</b> passwords are the most widely used authentication method (“something you know”): built into every system, easy to use, and easy to reset if compromised.',
+   '<b>Length:</b> combinations = (character set size)<sup>length</sup>, so every extra character multiplies the brute-force time by the size of the character set.',
+   '<b>Complexity:</b> mixing upper/lower case, digits and symbols enlarges the character set (10 → 26 → 62 → 95 or more), which multiplies the search space and defeats dictionary attacks.',
+   '<b>Reuse:</b> one breached website exposes every account that shares the password, however strong it is.',
+   '<b>Human weakness:</b> users choose short, guessable passwords, rarely change them and reuse them.',
+   '<b>Policy:</b> at least 12 characters with upper case, lower case, a digit and a symbol; no reuse; change regularly; no hints; store only (salted) hashes; add multi-factor authentication.'])},
+  {q:'Discuss brute-force, dictionary and rainbow-table attacks, and explain how Multi-Factor Authentication (MFA) protects against password attacks.',a:ul([
+   '<b>Brute force:</b> tries every possible combination; time = combinations ÷ attempts per second; a botnet divides the time by the number of bots.',
+   '<b>Dictionary attack:</b> tries common words and leaked passwords first, so it breaks weak human-chosen passwords very quickly.',
+   '<b>Rainbow table:</b> a precomputed table of hash → password used to reverse stolen password hashes; defeated by adding a random salt before hashing.',
+   '<b>MFA:</b> combines two or more factors – something you know (password), something you have (token, phone OTP) and something you are (biometric).',
+   'With MFA a cracked or stolen password alone is not enough to log in; account lock-out after a few failed attempts also slows online guessing.'])},
+  {q:'Cryptography recommends long keys, yet an ATM PIN has only 6 digits. Explain why this is acceptable.',a:ul([
+   'A 6-digit PIN has only 10<sup>6</sup> combinations – at 500,000 tries per second it can be searched in 2 seconds (slide P1-55), so its security does not come from its length.',
+   'To attack a PIN the attacker must be <b>physically at the ATM</b>, holding the card and typing each guess by hand; the card is blocked after a few wrong attempts.',
+   'ATMs are covered by cameras and the attacker is subject to local law.',
+   'A password can be attacked <b>remotely</b> (“sitting 1,000 miles away”), offline against a stolen password file and with a botnet, so it must be long and complex.'])},
+  {q:'Compare password-based authentication with password-less authentication (e.g. biometrics) in terms of security.',a:ul([
+   '<b>Passwords:</b> cheap, built into every system and can be reset; but users pick weak passwords and reuse them, and they are exposed to phishing, brute-force and dictionary attacks.',
+   '<b>Biometrics:</b> nothing to remember, cannot be forgotten or shared, hard to guess.',
+   'But biometric systems are about 99.9% accurate, not 100% (false acceptance / false rejection); they can be spoofed (presentation attacks, AI deepfakes); a stolen fingerprint cannot be reset; privacy concerns and extra cost.',
+   'The lecturer’s answer to “can biometrics replace passwords?” is “maybe, maybe not”: only at 100% accuracy. Today the best practice is to combine them (MFA).'])}
+ ],
+ dos:[
+  {q:'Explain the fundamental difference between Denial-of-Service (DoS) and Distributed Denial-of-Service (DDoS) attacks. Why are DDoS attacks significantly harder to mitigate?',a:ul([
+   '<b>DoS:</b> a single attacker or machine floods the target with traffic or requests until its bandwidth or resources are exhausted, so legitimate users are denied service (attack on availability).',
+   '<b>DDoS:</b> the same attack launched simultaneously from many compromised machines – a botnet, often of IoT devices – controlled by one attacker.',
+   '<b>Harder to mitigate:</b> traffic comes from thousands to millions of sources in many locations, often with spoofed source IP addresses, so there is no single address to block.',
+   'Each bot sends only a little traffic, so it looks legitimate, while the total volume can saturate even a 10 Gbps link.',
+   'Botnets are cheap to rent, and the real attacker is hard to trace.'])},
+  {q:'Explain how a SYN flood attack works.',a:ul([
+   'A normal TCP connection uses a three-way handshake: client SYN → server SYN/ACK → client ACK.',
+   'The attacker sends a high volume of SYN packets, usually with spoofed source IP addresses.',
+   'The server answers each with a SYN/ACK and keeps a half-open connection (an open port) waiting for the final ACK, which never arrives.',
+   'New SYN packets keep arriving until all available connections are used up; legitimate users can no longer connect (denial of service).',
+   'Because the sources are spoofed and distributed (botnet) they are hard to block; a stateful (SPI) firewall can detect the many unanswered requests and drop them.'])},
+  {q:'Explain how the packet size and the link speed affect the number of packets required, and state your assumptions.',a:ul([
+   'Packets per second = link speed (bits/s) ÷ (packet size in bytes × 8).',
+   'Same packet size, <b>faster link</b> → the link has more capacity → <b>more packets</b> are needed to fill it.',
+   'Same link, <b>bigger packets</b> → each packet fills more of the link → <b>fewer packets</b> are needed.',
+   '<b>Assumptions:</b> 1 Mbps = 10<sup>6</sup> bits/s and 1 Gbps = 10<sup>9</sup> bits/s; K = 1024 bytes when stated; 1 byte = 8 bits; the packet size includes all headers; there is no other traffic on the link; every packet reaches the target.'])},
+  {q:'How do botnets facilitate large-scale DDoS attacks? Discuss how devices are recruited into a botnet and how attackers control them, and why IoT devices are attractive targets.',a:ul([
+   '<b>Recruitment:</b> malware spread by worms, trojans, phishing e-mails and drive-by downloads, exploiting unpatched vulnerabilities and default passwords.',
+   '<b>IoT devices</b> are attractive: default or weak passwords, rarely patched, always on and connected, little processing power for security, and available in huge numbers (e.g. the Mirai botnet that attacked Dyn in 2016).',
+   '<b>Control:</b> each bot connects to a command-and-control (C&amp;C) server run by the botmaster (ringleader); on command, all bots send traffic to the target at the same time.',
+   '<b>Scale:</b> each bot sends only a few packets, but millions together saturate the victim’s link; the traffic is distributed and hard to filter or trace.'])}
+ ],
+ fw:[
+  {q:'Explain how a firewall provides protection to an organisation.',a:ul([
+   'A firewall sits between the trusted internal network and the untrusted Internet, like a goalkeeper or bodyguard; all traffic must pass through it.',
+   'It examines each packet’s header (source and destination IP address, port number, protocol) against a list of rules, checked from top to bottom; the first matching rule allows or denies the packet, and the last rule denies everything else.',
+   'It drops and logs a packet only when the packet is <b>provably an attack</b>; other packets are allowed through.',
+   'The firewall policy is the most important part and must be updated regularly; the biggest problem is configuration – too strict blocks legitimate traffic, too loose lets attacks in.',
+   '<b>Limits:</b> it only looks at headers, not content, and cannot stop attacks that bypass it (insiders, encrypted content), so an IDS is still needed.'])},
+  {q:'Compare packet filtering, stateful packet inspection (SPI) and application proxy firewalls.',a:ul([
+   '<b>Static packet filtering:</b> the oldest type; checks one packet at a time and only its header. Fast and cheap and can stop spoofed IP addresses, but has no context, so many attacks pass; today only a secondary firewall.',
+   '<b>SPI:</b> keeps a state (connection) table. Only connection-opening packets (about 1% of traffic) get full inspection; the other 99% are just checked against the table. Low cost, fast and secure, can detect SYN floods – the main border firewall today.',
+   '<b>Application proxy:</b> acts as an intermediary at the application layer, inspects the content, hides internal hosts and can authenticate users and log activity. Most secure, but slow, expensive and needs one proxy per application.'])},
+  {q:'Describe the main firewall architectures. Which one is the most secure and why?',a:ul([
+   '<b>Packet-filtering router:</b> a single router filters all traffic – simple, one point of failure.',
+   '<b>Screened host:</b> a packet-filtering router plus a bastion host that all traffic must go through.',
+   '<b>Dual-homed host:</b> a host with two network cards and routing disabled, so traffic cannot pass directly between the networks.',
+   '<b>Screened subnet (most secure):</b> an outer and an inner filtering router create a DMZ for public servers (web, mail). It gives three layers of defence: the outer router advertises only the DMZ to the Internet, the inner router advertises only the DMZ to the inside, so the internal network is invisible from the Internet and internal hosts cannot route directly to it.'])},
+  {q:'Why is an intrusion detection system (IDS) still needed when a firewall is installed?',a:ul([
+   'A firewall checks one packet at a time and only its header; an IDS performs deep inspection of the content and of sequences of packets.',
+   'An IDS can detect attacks that passed the firewall or come from insiders.',
+   '<b>Signature-based</b> IDS matches known attack patterns (must be updated, cannot detect zero-day attacks); <b>anomaly-based</b> IDS learns a baseline of normal behaviour and alarms on deviations (can detect zero-day attacks, but gives false positives).',
+   'An IDS only detects and raises alerts; an IPS can also block. A host-based IDS can inspect traffic after it is decrypted on the host.'])}
+ ],
+ risk:[
+  {q:'Describe the risk management process.',a:ul([
+   '<b>Identify:</b> list the assets, the threats against them and their vulnerabilities.',
+   '<b>Assess:</b> rate the likelihood and impact – e.g. Risk = Threat × Vulnerability × Asset value – and rank the risks.',
+   '<b>Mitigate:</b> apply controls (technical, administrative, physical) to reduce the high risks, or accept, transfer or avoid them.',
+   '<b>Monitor:</b> review continuously, because threats, systems and vulnerabilities change; then repeat the cycle.'])},
+  {q:'Why is compliance needed, and how can it help a company retain loyal customers?',a:ul([
+   'Compliance means following the standards and regulatory requirements set by an authority.',
+   'It ensures that basic security measures are in place and shows where the system is weak.',
+   'Customers trust a compliant company → they become loyal, repeat customers → higher profit.',
+   'It is a legal requirement: non-compliance can lead to fines, lawsuits and damage to reputation.'])},
+  {q:'Interpret the result and recommend what the company should do.',a:ul([
+   '<b>High</b> (60–125): act immediately – patch the vulnerability, add controls, protect the asset, report to management.',
+   '<b>Medium</b> (30–59): plan and apply controls within a set time and monitor closely.',
+   '<b>Low</b> (1–29): accept the risk and keep monitoring.',
+   'Lowering any one factor lowers the score, e.g. reducing the vulnerability level from 3 to 1 cuts the risk score by two-thirds.'])}
+ ],
+ chain:[
+  {q:'Explain the fundamental components of blockchain technology (distributed ledger, cryptographic hashing, consensus mechanism, smart contracts) and how they work together to ensure security, transparency and immutability.',a:ul([
+   '<b>Distributed ledger:</b> every node (peer) keeps a full copy – no single point of failure, and anyone can audit it (transparency).',
+   '<b>Cryptographic hashing:</b> each block stores the hash of the previous block; changing one block changes its hash and breaks every block after it, so tampering is detected (immutability). Errors are fixed only by adding a new block.',
+   '<b>Public-key cryptography / digital signatures:</b> each transaction is signed with the sender’s private key (authenticity, non-repudiation).',
+   '<b>Consensus mechanism</b> (PoW, PoS): the nodes agree which block is added next; an attacker would need more than 50% of the network (51% attack).',
+   '<b>Smart contracts</b> (optional): code on the blockchain that executes automatically when its conditions are met.'])},
+  {q:'Describe the main types of blockchain, with examples, and compare their advantages and disadvantages.',a:ul([
+   '<b>Public (permissionless):</b> anyone can join, read, write and validate. Fully decentralised and transparent, but slow and (with PoW) energy-hungry; e.g. Bitcoin, Ethereum.',
+   '<b>Private (permissioned):</b> one organisation decides who may join. Fast, scalable and keeps data private, but more centralised, so participants must trust the owner; e.g. Ripple, MultiChain, Corda.',
+   '<b>Consortium</b> (the lecturer: “also a hybrid model”): a group of organisations share control – between public and private; e.g. R3, Hyperledger Fabric.',
+   'The lecturer’s answer is “only three types”; the slides also list permissioned and hybrid blockchains separately, which you can mention.'])},
+  {q:'Blockchain is often described as a “trustless” system. Explain how it removes the need for trust between participants.',a:ul([
+   '“Trustless” does not mean there is no trust – the trust is <b>built into the system</b>, so participants do not need to trust each other or a third party such as a bank.',
+   'Hash links make the chain tamper-evident and immutable.',
+   'Digital signatures prove who created each transaction.',
+   'Consensus (PoW/PoS) makes the majority of nodes agree on every block.',
+   'The distributed ledger gives everyone the same transparent, auditable copy; smart contracts execute automatically according to their code.'])},
+  {q:'Compare Proof of Work (PoW) and Proof of Stake (PoS), including the environmental impact of PoW.',a:ul([
+   '<b>PoW:</b> miners compete to solve a SHA-256 puzzle (find a nonce so that the block hash meets the difficulty target); the winner adds the block and receives new coins plus fees. It stops one party from creating millions of fake peers to out-vote others (used by Bitcoin).',
+   '<b>Environmental impact:</b> huge electricity use (the lecture compared Bitcoin with the consumption of a whole country), carbon footprint when the power comes from fossil fuels, and electronic waste from mining hardware.',
+   '<b>PoS:</b> validators are chosen in proportion to the coins they stake; dishonest validators lose their stake. No puzzle, so far less energy and faster (Ethereum moved from PoW to PoS).',
+   '<b>Solutions:</b> move to PoS or other efficient consensus, use renewable energy for mining, more efficient hardware.'])},
+  {q:'Define Decentralized Finance (DeFi) and explain how it differs from traditional finance. Discuss its advantages, risks and future.',a:ul([
+   '<b>Definition:</b> financial services – lending, borrowing, trading, insurance – offered on public blockchains through smart contracts, without banks or other intermediaries.',
+   '<b>Difference:</b> no central authority; open 24/7 to anyone with an Internet connection; every transaction is on a public ledger; rules are enforced by code.',
+   '<b>Advantages:</b> decentralisation (no intermediaries), accessibility (people without bank accounts), transparency, security, low transaction cost, 24/7.',
+   '<b>Risks / disadvantages:</b> volatile crypto assets; immature technology (bugs, hacks, lost funds); scaling (Ethereum about 15 TPS vs Visa about 65,000); no regulation – “you cannot sue them”; too complex for many users.',
+   '<b>Future:</b> depends on adoption by the financial industry, regulation and the development of the ecosystem.'])},
+  {q:'What are the advantages of smart contracts?',a:ul([
+   'Remove third parties (intermediaries) that charge both sides commission.',
+   'Built-in trust: blocks are verified and immutable.',
+   'Execute automatically when the conditions are met (e.g. flight-delay insurance pays out automatically).',
+   'Fast and efficient, lower cost, available 24/7, transparent.',
+   'Give people outside the traditional financial system access to services.',
+   '(Risks to mention if asked: code bugs, mistakes cannot be reversed, legal uncertainty.)'])},
+  {q:'Explain the fundamental principles of cryptocurrencies. Describe the Bitcoin transaction lifecycle, from creation to confirmation within a block, and the role of miners.',a:ul([
+   '<b>Principles:</b> a digital currency secured by cryptography, recorded on a decentralised public ledger, with no central bank; new units are created by mining.',
+   '<b>1.</b> The sender (e.g. Nick sends 0.5 BTC to Rose) creates the transaction in his wallet and signs it with his private key; it is broadcast to the network.',
+   '<b>2.</b> Nodes verify the signature and that the sender has enough unspent bitcoin (no double spending); valid transactions wait in a pool.',
+   '<b>3.</b> Miners collect pending transactions into a candidate block and compete to solve the Proof-of-Work puzzle.',
+   '<b>4.</b> The first miner to solve it broadcasts the block; other nodes verify it and add it to their copy of the chain; the miner receives the block reward (Coinbase transaction) plus fees.',
+   '<b>5.</b> The transaction is confirmed; each further block added on top makes it more secure, and Rose can spend the 0.5 BTC.'])},
+  {q:'Compare Bitcoin and Ethereum.',a:ul([
+   '<b>Primary use:</b> Bitcoin is a cryptocurrency (digital money); Ethereum is a programmable platform for decentralised applications, using Ether as payment.',
+   '<b>Supply:</b> Bitcoin is capped at 21 million coins; Ethereum has no fixed supply.',
+   '<b>Consensus:</b> Bitcoin uses Proof of Work; Ethereum now uses Proof of Stake.',
+   '<b>Smart contracts:</b> Ethereum supports them (Solidity language); Bitcoin does not.',
+   '<b>Speed:</b> Ethereum settles in seconds, Bitcoin in minutes (a block about every 10 minutes).'])}
+ ]
+};
+function fuOf(t,o){return o.fu!==undefined?o.fu:rint(0,FU[t].length-1)}
+function fuStep(t,i,lab){return step(lab,'Short answer（按要点写，每点约 2 分）','<p class="en-ans"><b>'+FU[t][i].q+'</b></p>'+FU[t][i].a)}
+function qHead(t,i,marks){return '<b>Question ('+marks+' marks)</b><ol type="a"><li>'+FU[t][i].q+'</li><li>'}
+function lg(v){return {log:Math.log10(v)}}
+
+function bruteItem(o){
+  var N=Math.pow(o.cs,o.len),T=N/o.rate,Y=T/31536000,fu=fuOf('brute',o);
+  var two=o.bots?{bots:o.bots,Y:Y/o.bots}:o.rate2?{rate:o.rate2,Y:N/o.rate2/31536000}:null;
+  var en=qHead('brute',fu,15)+'A password is built from <b>'+o.cs+'</b> possible characters and is <b>'+o.len+'</b> characters long. An attacker can test <b>'+bigTxt(o.rate)+'</b> passwords per second.<ol type="i"><li>Calculate the total number of possible passwords.</li><li>Calculate the worst-case time to search the entire password space, in seconds and in years.</li>'+
+    (two?'<li>'+(two.bots?'The attacker now uses a botnet of <b>'+bigTxt(two.bots)+'</b> computers, each with the same speed.':'The attacker upgrades the system to <b>'+bigTxt(two.rate)+'</b> attempts per second.')+' How long (in years) will the exhaustive search take now?</li>':'')+'</ol></li></ol><p>Show detailed calculations and clearly specify your assumptions.</p>';
+  var zh='(a) 简答（见英文）。(b) 密码由 '+o.cs+' 种字符组成、长 '+o.len+' 位，攻击者每秒试 '+bigTxt(o.rate)+' 次。(i) 总共有多少种密码？(ii) 穷举最坏要多少秒、多少年？'+(two?'(iii) '+(two.bots?'改用 '+bigTxt(two.bots)+' 台机器的僵尸网络，':'速度提高到每秒 '+bigTxt(two.rate)+' 次，')+'现在要多少年？':'');
+  var f=[{k:'n',l:'组合数',v:N,c:lg(N)},{k:'t',l:'时间（秒）',v:T,c:lg(T)},{k:'y',l:'时间（年）',v:Y,c:lg(Y)}];
+  if(two)f.push({k:'y2',l:'(iii) 时间（年）',v:two.Y,c:lg(two.Y)});
+  var kh=fuStep('brute',fu,'(a)')+
+   step('(b)(i)','Number of possible passwords','<span class="eq">Combinations = (character set size)<sup>length</sup> = '+o.cs+'<sup>'+o.len+'</sup> = <b>'+sci(N)+'</b></span>')+
+   step('(b)(ii)','Worst-case time','<span class="eq">Time = combinations ÷ attempts per second = '+sci(N)+' ÷ '+sci(o.rate)+' = <b>'+sci(T)+' seconds</b></span><span class="eq">1 year = 60 × 60 × 24 × 365 = 31,536,000 seconds</span><span class="eq">Time = '+sci(T)+' ÷ 31,536,000 = <b>'+sci(Y)+' years</b></span>'+(Y<1?'<p>（不到 1 年：约 '+nf(T/86400,2)+' 天 = '+nf(T/3600,2)+' 小时。题目要年就写年，再补一句换算。）</p>':''))+
+   (two?step('(b)(iii)',two.bots?'With a botnet':'Faster attacker',two.bots?'<span class="eq">Each bot searches part of the space, so time = '+sci(Y)+' years ÷ '+bigTxt(two.bots)+' bots = <b>'+sci(two.Y)+' years</b></span>':'<span class="eq">Time = '+sci(N)+' ÷ '+sci(two.rate)+' = '+sci(N/two.rate)+' s ÷ 31,536,000 = <b>'+sci(two.Y)+' years</b></span><p>Speed × '+nf(two.rate/o.rate,2)+' → time ÷ '+nf(two.rate/o.rate,2)+'.</p>'):'')+
+   '<div class="tipbox"><b>Assumptions</b>（写在答案里）：1 year = 365 days；worst case = every combination is tried；the attacker’s speed is constant'+(two&&two.bots?'；all bots have the same speed and split the work without overlap':'')+'。平均情况是最坏情况的一半。</div>';
+  return {type:'brute',name:o.n||'',en:en,zh:zh,f:f,kh:kh};
+}
+function dosItem(o){
+  var fu=fuOf('dos',o),bits=o.size*8,p1=o.link/bits,two=null;
+  if(o.link2)two={link:o.link2,p:o.link2/bits};
+  else if(o.bots){var b2=(o.size2||o.size)*8,tot=o.link/b2;two={bots:o.bots,size:o.size2||o.size,tot:tot,per:tot/o.bots}}
+  var en=qHead('dos',fu,two&&two.bots?10:15)+'An attacker floods a target that is connected to the Internet by a <b>'+bpsTxt(o.link)+'</b> link, using packets of <b>'+sizeTxt(o.size,o.k)+'</b>.<ol type="i"><li>Calculate the minimum number of packets per second required to fully saturate the link.</li>'+
+   (two?(two.bots?'<li>The attacker now uses a botnet of <b>'+bigTxt(two.bots)+'</b> compromised devices, each sending packets of <b>'+sizeTxt(two.size,o.k)+'</b>. Calculate the total packets per second required and the number of packets per second each device must send.</li>':'<li>The company upgrades its link to <b>'+bpsTxt(two.link)+'</b> (same packet size). How many packets per second are needed now? Explain why the number changes.</li>'):'')+'</ol></li></ol><p>Show detailed calculations and clearly specify your assumptions.</p>';
+  var zh='(a) 简答（见英文）。(b) 目标的链路是 '+bpsTxt(o.link)+'，攻击包大小 '+sizeTxt(o.size,o.k)+'。(i) 每秒至少要发多少个包才能占满链路？'+(two?(two.bots?'(ii) 改用 '+bigTxt(two.bots)+' 台设备的僵尸网络、每个包 '+sizeTxt(two.size,o.k)+'：总共每秒要多少包？每台每秒要发多少？':'(ii) 链路升级到 '+bpsTxt(two.link)+'（包大小不变），现在每秒要多少包？解释为什么变了。'):'');
+  var f=[{k:'p1',l:'(i) 包/秒',v:p1,c:{v:p1,tol:1,rel:.002}}];
+  if(two&&two.bots)f.push({k:'tot',l:'(ii) 总包/秒',v:two.tot,c:{v:two.tot,tol:1,rel:.002}},{k:'per',l:'(ii) 每台 包/秒',v:two.per,c:{v:two.per,tol:Math.min(.01,two.per*.02),rel:.02}});
+  else if(two)f.push({k:'p2',l:'(ii) 包/秒',v:two.p,c:{v:two.p,tol:1,rel:.002}});
+  function line(L,B,P){return '<span class="eq">Packets per second = link speed (bits/s) ÷ (packet size × 8) = '+nf(L,0)+' ÷ ('+nf(B,0)+' × 8) = '+nf(L,0)+' ÷ '+nf(B*8,0)+' = <b>'+nf(P,P<1?4:2)+' packets/s</b></span>'}
+  var kh=fuStep('dos',fu,'(a)')+
+   step('(b)(i)','Packets to saturate the link','<p>Link = '+bpsFull(o.link)+'；packet = '+sizeEq(o.size,o.k)+' = '+nf(bits,0)+' bits.</p>'+line(o.link,o.size,p1)+(p1%1?'<p>课件 P1-69 把 187.5 写成 187（取整数部分）。写到小数或取整都行，但要说明怎么取。</p>':''))+
+   (two?(two.bots?step('(b)(ii)','Botnet','<p>Packet = '+sizeEq(two.size,o.k)+'.</p>'+line(o.link,two.size,two.tot)+'<span class="eq">Per device = '+nf(two.tot,2)+' ÷ '+nf(two.bots,0)+' = <b>'+nf(two.per,two.per<1?4:2)+' packets/s</b></span>'+(two.per<1?'<p>每台每秒不到 1 个包，相当于每 '+nf(1/two.per,1)+' 秒发 1 个。所以 botnet 里每台设备的流量很小、看起来像正常流量，很难过滤。</p>':'<p>每台设备只需要发很少的包，合起来就能占满链路，这就是 DDoS 难防的原因。</p>')):
+     step('(b)(ii)','Faster link',line(two.link,o.size,two.p)+'<p class="en-ans">The link speed increased × '+nf(two.link/o.link,2)+', so the number of packets increases × '+nf(two.link/o.link,2)+': a faster link has more capacity, so more packets of the same size are needed to fill it.</p>')):'')+
+   '<div class="tipbox"><b>Assumptions</b>：1 Mbps = 10<sup>6</sup> bits/s，1 Gbps = 10<sup>9</sup> bits/s；'+(o.k?'K = 1024 bytes（题目给的）；':'')+'1 byte = 8 bits；packet size includes headers；no other traffic；all packets reach the target。老师 W11：“解释为什么”和“写出假设”的小问也要答，不答会扣分。</div>';
+  return {type:'dos',name:o.n||'',en:en,zh:zh,f:f,kh:kh};
+}
+function fwItem(o){
+  var fu=fuOf('fw',o),req=o.link/(o.size*8),ok=o.cap>=req,mx=o.cap*o.size*8;
+  var en=qHead('fw',fu,10)+'A firewall can process <b>'+nf(o.cap,0)+'</b> packets per second (pps). The average packet size is <b>'+nf(o.size,0)+' bytes</b> and the link speed is <b>'+bpsTxt(o.link)+'</b>.<ol type="i"><li>Calculate the packet rate required to handle a fully loaded link.</li><li>Can this firewall handle the load? Justify your answer.</li><li>What is the maximum link speed (in Mbps) this firewall can support at this packet size?</li></ol></li></ol>';
+  var zh='(a) 简答（见英文）。(b) 防火墙每秒能处理 '+nf(o.cap,0)+' 个包，平均包 '+nf(o.size,0)+' 字节，链路 '+bpsTxt(o.link)+'。(i) 满载时每秒要处理多少包？(ii) 扛得住吗（Y/N）？(iii) 这个包大小下，它最多能支持多快的链路（Mbps）？';
+  var f=[{k:'req',l:'(i) 需要的 pps',v:req,c:{v:req,tol:1,rel:.002}},{k:'ok',l:'(ii) 扛得住？Y/N',v:ok?'Y':'N',yn:1,c:{text:1,v:ok?'Y':'N'}},{k:'mx',l:'(iii) 最大链路 Mbps',v:mx/1e6,c:{v:mx/1e6,tol:.01,rel:.002}}];
+  var kh=fuStep('fw',fu,'(a)')+
+   step('(b)(i)','Required throughput','<span class="eq">Required pps = bandwidth ÷ packet size = '+nf(o.link,0)+' bits/s ÷ ('+nf(o.size,0)+' × 8 bits) = <b>'+nf(req,2)+' pps</b></span>')+
+   step('(b)(ii)','Compare with the firewall capacity','<span class="eq">Firewall capacity = '+nf(o.cap,0)+' pps；required = '+nf(req,2)+' pps</span><p class="en-ans">'+(ok?'Capacity ≥ required, so the firewall <b>can</b> handle the traffic load (it runs at '+nf(req/o.cap*100,1)+'% of its capacity).':'Capacity &lt; required, so the firewall <b>cannot</b> handle the load: it would be overloaded ('+nf(req/o.cap*100,1)+'% of capacity) and packets would be dropped or delayed. A faster firewall (at least '+nf(Math.ceil(req),0)+' pps) is needed.')+'</p>')+
+   step('(b)(iii)','Maximum link speed','<span class="eq">Max link = capacity × packet size × 8 = '+nf(o.cap,0)+' × '+nf(o.size,0)+' × 8 = '+nf(mx,0)+' bits/s = <b>'+nf(mx/1e6,2)+' Mbps</b></span>')+
+   '<div class="tipbox">老师 W9：“We need to have the same unit.” 包大小是字节、带宽是比特，<b>一定要 × 8</b>；忘了乘 8 会算成 '+nf(o.link/o.size,0)+' pps，结论就错了。W11 复习课模拟卷原题就是 P5-76 这道（125,000 &lt; 200,000，扛得住）。</div>';
+  return {type:'fw',name:o.n||'',en:en,zh:zh,f:f,kh:kh};
+}
+function riskLevel(s){return s>=60?'H':s>=30?'M':'L'}
+function riskItem(o){
+  var fu=fuOf('risk',o),s=o.t*o.v*o.a,pct=s/125*100,lv=riskLevel(s),LV={H:'High',M:'Medium',L:'Low'};
+  var en=qHead('risk',fu,10)+'A company assesses one of its systems and assigns: Threat Likelihood (TL) = <b>'+o.t+'</b>, Vulnerability Level (VL) = <b>'+o.v+'</b>, Asset Value (AV) = <b>'+o.a+'</b>, each rated on a scale of 1–5. Calculate the risk score, express it as a percentage of the maximum possible score, and interpret the result using the levels 1–29 Low, 30–59 Medium, 60–125 High.</li></ol>';
+  var zh='(a) 简答（见英文）。(b) TL = '+o.t+'、VL = '+o.v+'、AV = '+o.a+'（每项 1–5 分）。求风险分、占满分的百分比，按 1–29 低 / 30–59 中 / 60–125 高 判断等级。';
+  var f=[{k:'s',l:'风险分',v:s,c:{v:s}},{k:'p',l:'占满分 %',v:pct,c:{v:pct,tol:.1}},{k:'lv',l:'等级 L/M/H',v:lv,yn:1,c:{text:1,v:lv}}];
+  var kh=fuStep('risk',fu,'(a)')+
+   step('(b)','Risk score','<span class="eq">Risk = TL × VL × AV = '+o.t+' × '+o.v+' × '+o.a+' = <b>'+s+'</b></span><span class="eq">Maximum = 5 × 5 × 5 = 125；percentage = '+s+' ÷ 125 × 100 = <b>'+nf(pct,1)+'%</b></span><p class="en-ans">Using the given levels, '+s+' falls in '+(lv==='H'?'60–125':lv==='M'?'30–59':'1–29')+', so this is a <b>'+LV[lv]+'</b> risk. '+(lv==='H'?'Immediate mitigation is required.':lv==='M'?'Controls should be planned and the system monitored.':'The risk can be accepted and monitored.')+'</p>')+
+   '<div class="tipbox">分档来自 W11 复习课模拟卷答案（40 → Medium）。课件 P2-57 却把 4×3×5 = 60（48%）判成 medium，和这套分档矛盾。<b>考试按题目给的分档判断</b>，没给分档就写出你用的分档。</div>';
+  return {type:'risk',name:o.n||'',en:en,zh:zh,f:f,kh:kh};
+}
+function chainItem(o){
+  var fu=fuOf('chain',o),f=[],parts=[],zh=[],kh=fuStep('chain',fu,'(a)'),r=0;
+  var RN=['i','ii','iii'];
+  if(o.thr){var t=o.thr,Bps=t.tps*t.size,bps=Bps*8,M=bps/1e6;
+    parts.push('A blockchain network can process <b>'+nf(t.tps,0)+'</b> transactions per second (TPS), with an average transaction size of <b>'+sizeTxt(t.size,t.k)+'</b>. Calculate the maximum data throughput of the network in Megabits per second (Mbps).');
+    zh.push('网络每秒处理 '+nf(t.tps,0)+' 笔交易，平均每笔 '+sizeTxt(t.size,t.k)+'，求最大数据吞吐量（Mbps）。');
+    f.push({k:'bps',l:'('+RN[r]+') 字节/秒',v:Bps,c:{v:Bps,tol:.5}},{k:'mb',l:'('+RN[r]+') Mbps',v:M,c:{v:M,tol:.005,rel:.002}});
+    kh+=step('(b)('+RN[r]+')','Maximum data throughput','<span class="eq">Bytes/second = TPS × transaction size = '+nf(t.tps,0)+' × '+nf(t.size,0)+' = <b>'+nf(Bps,0)+' bytes/s</b></span><span class="eq">Bits/second = '+nf(Bps,0)+' × 8 = '+nf(bps,0)+' bits/s</span><span class="eq">Mbps = '+nf(bps,0)+' ÷ 1,000,000 = <b>'+nf(M,4)+' Mbps</b></span>'+(t.size===750&&t.tps===200?'<div class="tipbox">⚠ 课件 P6-36 例 4 把中间一步写成 12 000 000 bits/s，应为 <b>1 200 000</b>；最后的 1.2 Mbps 是对的。</div>':'')+(t.k?'<p>题目写明 K = 1024，所以先换成字节；换 Mbps 时仍按 1 Mb = 10<sup>6</sup> bits（与课件一致），并在答案里写出这个假设。</p>':''));
+    r++}
+  if(o.blk){var b=o.blk,tpb=b.tpb||b.mb*1e6/b.tx,w=b.tpb||Math.floor(tpb),tps=w/b.time;
+    parts.push(b.tpb?'Assume a block time of <b>'+b.time+' seconds</b> and that an average block includes <b>'+b.tpb+'</b> transactions. Calculate the transactions per second (TPS).':'A blockchain adds a new block every <b>'+b.time+' seconds</b>, and each block has a size limit of <b>'+b.mb+' MB</b>. Given an average transaction size of <b>'+b.tx+' bytes</b>, calculate how many transactions can be included in each block and the resulting transactions per second (TPS).');
+    zh.push(b.tpb?'出块时间 '+b.time+' 秒，平均每块 '+b.tpb+' 笔交易，求 TPS。':'每 '+b.time+' 秒出一个块，块上限 '+b.mb+' MB，平均每笔 '+b.tx+' 字节：每块能放多少笔？TPS 是多少？');
+    if(!b.tpb)f.push({k:'tpb',l:'('+RN[r]+') 每块交易数',v:w,c:{v:tpb,tol:.5+(tpb-w)}});
+    f.push({k:'tps',l:'('+RN[r]+') TPS',v:tps,c:{v:tps,tol:.015,rel:.003}});
+    kh+=step('(b)('+RN[r]+')','Transactions per block and per second',(b.tpb?'':'<span class="eq">TPB = block size ÷ average transaction size = '+nf(b.mb*1e6,0)+' bytes ÷ '+b.tx+' bytes = '+nf(tpb,2)+' → <b>'+nf(w,0)+' transactions/block</b></span>'+(tpb%1?'<p>只能放整数笔交易，所以向下取整。</p>':''))+'<span class="eq">TPS = transactions per block ÷ block time = '+nf(w,0)+' ÷ '+b.time+' s ≈ <b>'+nf(tps,2)+' TPS</b></span><p class="en-ans">Interpretation: under these assumptions the blockchain processes roughly '+nf(Math.floor(tps),0)+'–'+nf(Math.floor(tps)+1,0)+' transactions per second.</p>'+(b.mb?'<p>假设 1 MB = 10<sup>6</sup> bytes（课件 P6-34 的用法）。若按 1 MB = 2<sup>20</sup> = 1,048,576 bytes，每块是 '+nf(Math.floor(b.mb*1048576/b.tx),0)+' 笔。答题时写明你用的是哪一种。</p>':''));
+    r++}
+  var en=qHead('chain',fu,15)+(parts.length>1?'<ol type="i"><li>'+parts.join('</li><li>')+'</li></ol>':parts[0])+'</li></ol><p>Show detailed calculations and clearly specify your assumptions.</p>';
+  kh+='<div class="tipbox">老师 W10：“Remember these five examples are very, very important from exam point of view.” 区块链计算题 10–15 分，“there are two steps”：先算每块交易数，再除以出块时间；吞吐量是 TPS × 字节数 × 8 ÷ 10<sup>6</sup>。</div>';
+  return {type:'chain',name:o.n||'',en:en,zh:'(a) 简答（见英文）。(b) '+zh.join(' '),f:f,kh:kh};
+}
+var GEN={brute:bruteItem,dos:dosItem,fw:fwItem,risk:riskItem,chain:chainItem};
+function randMore(type){
+  if(type==='brute'){var o={cs:pick([26,36,52,62,95,102]),len:rint(6,12),rate:pick([1e6,6.4e6,1e8,4e8,1e9,8e9,1.2e11])};if(Math.random()<.5)o.bots=pick([100,1000,1e6]);else o.rate2=o.rate*pick([4,5,10]);return bruteItem(o)}
+  if(type==='dos'){var k=Math.random()<.4,sz=k?pick([1,2,4,16,64,256])*1024:pick([250,500,1000,1500]),L=pick([1.5e6,2e6,10e6,50e6,100e6,1e9,10e9]),o2={size:sz,k:k,link:L};
+    if(Math.random()<.5)o2.link2=L*pick([2,5,10]);else{o2.bots=pick([100,800,1000,1e6,5e6]);o2.size2=sz}return dosItem(o2)}
+  if(type==='fw'){var L2=pick([1e8,1e9,1e9,1e10]),s=pick([500,1000,1500]),need=L2/(s*8);return fwItem({link:L2,size:s,cap:Math.round(need*pick([.5,.8,1.25,1.6,2])/1000)*1000||1000})}
+  if(type==='risk')return riskItem({t:rint(1,5),v:rint(1,5),a:rint(1,5)});
+  var o3={};if(Math.random()<.8)o3.thr={tps:pick([100,200,500,750,800,1000,1200,1500]),size:pick([250,300,400,500,600,750])};
+  if(!o3.thr||Math.random()<.7)o3.blk={mb:pick([1,2,4]),tx:pick([250,300,350,400,500]),time:pick([15,60,120,300,600])};
+  return chainItem(o3);
+}
+
+EXPRE.brute=[{n:'课件 P1-55 · 6 位数字 PIN',cs:10,len:6,rate:5e5,fu:2},{n:'课件 P1-56 · 95 字符 × 10 位',cs:95,len:10,rate:6.4e6},{n:'课件 P1-57 · 102 字符 × 16 位 + 100 万 bots',cs:102,len:16,rate:4e8,bots:1e6},{n:'往年卷 2025-26 S2 Q3(a) · 102 字符 × 10 位',cs:102,len:10,rate:1.2e11,rate2:5e11,fu:0},{n:'往年卷 2024-25 S1 Q3(a) · 102 字符 × 8 位',cs:102,len:8,rate:8e9,fu:1}];
+EXPRE.dos=[{n:'课件 P1-68 · 500 字节',size:500,link:1.5e6,link2:100e6,fu:2},{n:'课件 P1-69 · 1000 字节',size:1000,link:1.5e6,link2:100e6,fu:2},{n:'往年卷 2025-26 S2 Q2(b) · 10 Gbps + 800 台',size:256*1024,k:true,link:10e9,bots:800,size2:64*1024,fu:0},{n:'往年卷 2024-25 S1 Q3(b) · 10 Gbps + 500 万台',size:64*1024,k:true,link:10e9,bots:5e6,fu:3}];
+EXPRE.fw=[{n:'课件 P5-76 例 1 / W11 模拟卷 · 200,000 pps',cap:200000,size:1000,link:1e9,fu:0},{n:'课件 P5-78 例 2 · 100,000 pps',cap:100000,size:1000,link:1e9,fu:1},{n:'变式 · 100 Mbps、500 字节、20,000 pps',cap:20000,size:500,link:1e8,fu:3}];
+EXPRE.risk=[{n:'课件 P2-57 · 4 × 3 × 5（医院）',t:4,v:3,a:5,fu:0},{n:'W11 模拟卷 · 得分 40（如 4 × 2 × 5）',t:4,v:2,a:5,fu:1}];
+EXPRE.chain=[{n:'往年卷 2025-26 S2 Q4(a)',thr:{tps:750,size:400},blk:{mb:2,tx:350,time:300},fu:0},{n:'课件 P6-34 例 1 · 1 MB / 250 B / 600 s',blk:{mb:1,tx:250,time:600},fu:1},{n:'课件 P6-35 例 2 · 每块 100 笔 / 15 s',blk:{tpb:100,time:15},fu:2},{n:'课件 P6-35 例 3 · 1000 TPS × 250 B',thr:{tps:1000,size:250},fu:3},{n:'课件 P6-36 例 4 · 200 TPS × 750 B',thr:{tps:200,size:750},fu:4},{n:'课件 P6-36 例 5 · 1200 TPS × 600 B',thr:{tps:1200,size:600},fu:6},{n:'W11 模拟卷 · 800 TPS × 1 K',thr:{tps:800,size:1024,k:true},fu:5}];
+function dispV(f){var v=f.v;if(typeof v!=='number')return v;return (v!==0&&(Math.abs(v)>=1e7||Math.abs(v)<.01))?sci(v,3):nf(v,4)}
 function rExam(){
   if(!EX.it)EX.it=randExam(EX.type);
-  var it=EX.it,h='<p class="eyebrow">Final · 期末专项</p><h1 class="vh">DH / RSA 15 分大题专项</h1><p class="lede">按老师说的考试规格出题：素数不超过 19，公式不给，计算器没有 mod 键。先在纸上把整题写一遍，再把关键数字填进来核对，最后对照「满分答题模板」看步骤写全没有。</p>';
-  h+='<div class="hotbox" style="margin:0 0 16px"><b>老师划的规则（W2、W6、W7）</b>：期末约 80% 是计算；DH、RSA 各至少 15 分；数字都小于 20、最大素数 19；mod 用除法算（320 ÷ 9 = 35.55… → 320 − 35×9 = 5）；公式要自己背。</div>';
+  var it=EX.it,h='<p class="eyebrow">Final · 期末专项</p><h1 class="vh">期末计算大题专项</h1><p class="lede">按 W11 复习课的考试范围和两份往年卷出题：RSA、签名、DH、暴力破解、DoS、防火墙、风险分、区块链。每题都是“简答 + 计算”，和真题一样。先在纸上写完整题，再填关键数字核对，最后对照「满分答题模板」看步骤和要点写全没有。</p>';
+  h+='<div class="hotbox" style="margin:0 0 16px"><b>老师划的规则（W2–W11）</b>：4 道大题全部必答，每题分 (a)(b)、每题都有计算，约 70% 计算 + 30% 概念。Q1–Q3 出自 Part 1–5，<b>Q4 整题考区块链</b>。RSA、DH 的数字都小于 20，最大素数 19；mod 用除法算（320 ÷ 9 = 35.55… → 320 − 35×9 = 5）；公式要自己背。</div>';
   h+='<div class="tools">';EXT.forEach(function(t){h+='<button class="chip'+(EX.type===t[0]?' on':'')+'" data-xt="'+t[0]+'">'+t[1]+'</button>'});h+='</div>';
-  h+='<section class="tool"><div class="presets"><span class="fl">老师例题</span>';
+  h+='<section class="tool"><div class="presets"><span class="fl">例题 / 往年卷</span>';
   EXPRE[EX.type].forEach(function(p,i){h+='<button class="chip" data-xp="'+i+'">'+p.n+'</button>'});
   h+='<button class="btn sm pri" id="xrand" style="margin-left:6px">随机出一题</button><span class="pstat" style="margin:0 0 0 auto">已练 '+S.exam.n+' 题 · 全对 '+S.exam.ok+' 题</span></div>';
   h+='<div class="exq">'+'<p class="exname">'+(it.name?esc(it.name):'随机题 · 考试规格')+'</p>'+'<div class="stem" lang="en">'+it.en+'</div>'+
     (EX.zh?'<p class="zh">'+it.zh+'</p>':'<button class="zhbtn" id="xzh">显示中文题意</button>')+'</div>';
   h+='<p class="ex-k" style="margin:4px 0 0">填关键数字（简答部分写在纸上，看模板对照）</p><div class="ansin">';
-  it.f.forEach(function(f){var r=EX.res?EX.res[f.k]:undefined;h+='<div class="fld"><label for="xa-'+f.k+'">'+f.l+(r!==undefined?' <span class="chk '+(r?'ok':'no')+'">'+(r?'✓':'✗ 应为 '+f.v)+'</span>':'')+'</label><input id="xa-'+f.k+'" value="'+esc(EX.u[f.k]||'')+'" inputmode="numeric" autocomplete="off"></div>'});
+  it.f.forEach(function(f){var r=EX.res?EX.res[f.k]:undefined;h+='<div class="fld"><label for="xa-'+f.k+'">'+f.l+(r!==undefined?' <span class="chk '+(r?'ok':'no')+'">'+(r?'✓':'✗ 应为 '+dispV(f))+'</span>':'')+'</label><input id="xa-'+f.k+'" value="'+esc(EX.u[f.k]||'')+'" '+(f.yn?'':' inputmode="decimal"')+' autocomplete="off"></div>'});
   h+='</div>';
   if(EX.res){var all=it.f.every(function(f){return EX.res[f.k]});h+='<div class="verdict '+(all?'ok':'no')+'" style="margin:0">'+(all?'✓ 全对！再对照模板，确认步骤和简答都写全了。':'有 '+it.f.filter(function(f){return !EX.res[f.k]}).length+' 处不对。打开模板看是哪一步出错。')+'</div>'}
   h+='<div class="row"><button class="btn pri" id="xck">核对答案</button><button class="btn" id="xkey">'+(EX.key?'收起满分答题模板':'满分答题模板')+'</button><button class="btn ghost" id="xnext">换一题</button></div>';
@@ -3769,13 +4226,13 @@ function bExam(){
   function keep(){EX.it.f.forEach(function(f){var el=$('#xa-'+f.k);if(el)EX.u[f.k]=el.value})}
   function fresh(it){EX.it=it;EX.u={};EX.res=null;EX.key=false;EX.counted=false;render()}
   $$('[data-xt]').forEach(function(b){b.onclick=function(){EX.type=b.getAttribute('data-xt');fresh(randExam(EX.type))}});
-  $$('[data-xp]').forEach(function(b){b.onclick=function(){var p=EXPRE[EX.type][+b.getAttribute('data-xp')];fresh(EX.type==='dh'?dhItem(p):rsaItem(p,EX.type))}});
+  $$('[data-xp]').forEach(function(b){b.onclick=function(){var p=EXPRE[EX.type][+b.getAttribute('data-xp')];fresh(GEN[EX.type]?GEN[EX.type](p):EX.type==='dh'?dhItem(p):rsaItem(p,EX.type))}});
   $('#xrand').onclick=function(){fresh(randExam(EX.type))};
   $('#xnext').onclick=function(){fresh(randExam(EX.type))};
   var z=$('#xzh');if(z)z.onclick=function(){keep();EX.zh=true;render()};
   $('#xkey').onclick=function(){keep();EX.key=!EX.key;render()};
   $('#xck').onclick=function(){keep();var res={},all=true,filled=true;
-    EX.it.f.forEach(function(f){var v=String(EX.u[f.k]||'').trim();if(!v)filled=false;res[f.k]=checkAns(v,{v:f.v});if(!res[f.k])all=false});
+    EX.it.f.forEach(function(f){var v=String(EX.u[f.k]||'').trim();if(!v)filled=false;if(f.yn)v=v.charAt(0).toUpperCase();res[f.k]=checkAns(v,f.c||{v:f.v});if(!res[f.k])all=false});
     EX.res=res;if(filled&&!EX.counted){EX.counted=true;S.exam.n++;if(all)S.exam.ok++;save()}render()};
 }
 

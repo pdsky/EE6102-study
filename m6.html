@@ -30,7 +30,7 @@
 <aside class="toc" aria-label="本页目录"><p class="tt">本模块目录</p><ol></ol><div class="prog"><span class="pct"></span><div class="bar"><i></i></div></div></aside>
 <main class="lesson">
 <p class="eyebrow">Module 06 · 对应课件 sld6</p>
-<h1 class="title">区块链<span class="zhen">（blockchain）</span>、加密货币<span class="zhen">（cryptocurrency）</span>与案例：不需要信任中间人<span class="zhen">（man-in-the-middle）</span>的账本<span class="zhen">（ledger）</span></h1>
+<h1 class="title">区块链<span class="zhen">（blockchain）</span>、加密货币<span class="zhen">（cryptocurrency）</span>与案例：不需要信任中间人<span class="zhen">（intermediary）</span>的账本<span class="zhen">（ledger）</span></h1>
 <p class="sub-en">Blockchain Technology, Cryptocurrencies and Business Applications</p>
 <div class="meta"><span>约 60 分钟</span><span>8 道小测</span><span>3 个动手实验</span><span>样题没有这一章，刷题本 P6 有 26 道自编题</span></div>
 <p class="lede">课程目标里说，区块链<span class="zhen">（blockchain）</span>被称为“第二次数字革命<span class="zhen">（second digital revolution）</span>”。这一章会用到模块 4 的两样东西：<b>哈希<span class="zhen">（hash）</span></b>和<b>数字签名<span class="zhen">（digital signature）</span></b>。你会亲手改一个区块<span class="zhen">（block）</span>，看着整条链“断掉”；还会真的跑一次 SHA-256 挖矿<span class="zhen">（mining）</span>，体会比特币<span class="zhen">（Bitcoin）</span>为什么这么耗电。章末是两个真实的大案和事件响应<span class="zhen">（incident response）</span>，它们是对整门课的总结。</p>
@@ -44,8 +44,9 @@
 <li>比较比特币<span class="zhen">（Bitcoin）</span>、以太坊<span class="zhen">（Ethereum）</span>、瑞波<span class="zhen">（Ripple (XRP)）</span>；说出 DeFi 的好处和风险<span class="zhen">（risk）</span>；</li>
 <li>讲清 Equifax 和孟加拉央行两个案例的教训，以及事件响应<span class="zhen">（incident response）</span>的四个阶段。</li></ul></div>
 
+<div class="teacher box" data-t="m6top"><span class="bt">老师课上强调 · 录音 W10–W12 · 期末 Q4</span><ul><li><b>Quiz 不考本章，但期末 Q4 整题考区块链<span class="zhen">（blockchain）</span></b>，也有计算（10–15 分）。“Part six is very important from exam point of view.”</li><li>复习课的 Q4 范围：核心组成；类型（公有、私有、联盟）；Bitcoin 和 Ethereum 各自的主要用途；效率和透明；PoW、PoS；<b>吞吐量<span class="zhen">（throughput）</span>和交易数计算</b>；DeFi 的优点、缺点、风险<span class="zhen">（risk）</span>；智能合约<span class="zhen">（smart contract）</span>的优点。</li><li>往年卷 Q4：2025-26 S2 考了组成和类型、750 TPS × 400 B、2 MB / 350 B / 300 s、比特币<span class="zhen">（Bitcoin）</span>交易全过程、矿工<span class="zhen">（miner）</span>和挖矿<span class="zhen">（mining）</span>耗电、DeFi；2024-25 S1 考了 trustless、公有链<span class="zhen">（public blockchain）</span> vs 许可链<span class="zhen">（permissioned blockchain）</span>、PoW 耗能和 PoS、DeFi、加密货币<span class="zhen">（cryptocurrency）</span>前景。</li><li>两个案例（Equifax、孟加拉央行）老师明确说<b>不考</b>。</li></ul><p>完整整理见 <a href="teacher.html">老师上课重点</a>；Q4 计算和简答要点去<a href="practice.html#exam">刷题本 · 期末专项 → 区块链<span class="zhen">（blockchain）</span></a>练。</p></div>
 <section class="sec" id="decent">
-<h2><span class="n">1</span>从中心化到去中心化<span class="zhen">（decentralization）</span></h2>
+<h2><span class="n">1</span><span class="ht">从中心化到去中心化<span class="zhen">（decentralization）</span></span></h2>
 <p>计算机的组织方式经历了三个阶段（P6-3）：</p>
 <div class="tbl"><table>
 <tr><th>阶段</th><th>样子</th><th>特点</th></tr>
@@ -60,7 +61,7 @@
 </section>
 
 <section class="sec" id="what">
-<h2><span class="n">2</span>区块链<span class="zhen">（blockchain）</span>是什么</h2>
+<h2><span class="n">2</span><span class="ht">区块链<span class="zhen">（blockchain）</span>是什么</span></h2>
 <p><b>Blockchain</b> 是一种<b>去中心化<span class="zhen">（decentralization）</span>、分布式</b>的数字账本<span class="zhen">（digital ledger）</span>技术，以安全、<b>不可篡改<span class="zhen">（immutable）</span></b>、透明的方式记录交易，<b>不需要中心机构</b>（P6-6）。</p>
 <h3>五个关键特征</h3>
 <div class="tbl"><table>
@@ -73,6 +74,8 @@
 </table></div>
 <p>组成部分（P6-7）：<b>交易</b>（用数字签名<span class="zhen">（digital signature）</span>保护的事件记录，验证、排序后打包成块）、<b>不可篡改<span class="zhen">（immutable）</span>的账本<span class="zhen">（ledger）</span></b>、<b>去中心化<span class="zhen">（decentralization）</span>的节点<span class="zhen">（node）</span></b>、<b>加密<span class="zhen">（encryption）</span></b>、<b>共识机制<span class="zhen">（consensus mechanism）</span></b>，以及可选的<b>智能合约<span class="zhen">（smart contract）</span></b>。</p>
 <p>“不可篡改<span class="zhen">（immutable）</span>”的比喻（P6-8）：像用墨水写的账本<span class="zhen">（ledger）</span>，记错了不能擦，只能<b>再记一笔来更正</b>。所以区块链<span class="zhen">（blockchain）</span>也是一份“历史档案”，可以追溯来源（provenance）。</p>
+<div class="teacher box" data-t="m6trait"><span class="bt">老师课上强调 · W10</span><ul><li>老师按 P6-6 讲的是<b>六个</b>关键特性：去中心化<span class="zhen">（decentralization）</span>、透明（带来问责）、不可篡改<span class="zhen">（immutable）</span>（保证完整性<span class="zhen">（integrity）</span>）、安全（密码学<span class="zhen">（cryptography）</span>保证真实性<span class="zhen">（authenticity）</span>）、共识<span class="zhen">（consensus）</span>（带来信任）、链式结构。</li><li>区块链<span class="zhen">（blockchain）</span>出错<b>只能追加一个新块来更正</b>，不能改旧块：块靠哈希<span class="zhen">（hash）</span>串起来，改一个就得改后面所有块，还要说服上百万个节点<span class="zhen">（node）</span>。</li><li>组成：交易、账本<span class="zhen">（ledger）</span>、节点<span class="zhen">（node）</span>、加密<span class="zhen">（encryption）</span>、共识算法<span class="zhen">（consensus algorithm）</span>、<b>可选的</b>智能合约<span class="zhen">（smart contract）</span>。“Bitcoin does not have smart contracts”，Ethereum 有。</li></ul></div>
+
 <h3>起源（P6-21）</h3>
 <ul><li><b>1991 年</b>：Stuart Haber 和 W. Scott Stornetta 提出用密码学<span class="zhen">（cryptography）</span>保护的区块链<span class="zhen">（blockchain）</span>来给文档打时间戳<span class="zhen">（timestamp）</span>，防止篡改<span class="zhen">（tampering）</span>，这是概念先驱；</li>
 <li><b>2008 年</b>：化名 <b>Satoshi Nakamoto</b> 的人或团体发表比特币白皮书《Bitcoin: A Peer-to-Peer Electronic Cash System》，把密码学<span class="zhen">（cryptography）</span>、工作量证明<span class="zhen">（proof of work (PoW)）</span>和去中心化<span class="zhen">（decentralization）</span>网络结合起来，做出第一个完整可用的区块链<span class="zhen">（blockchain）</span>，2009 年上线。</li></ul>
@@ -82,7 +85,7 @@
 </section>
 
 <section class="sec" id="chain">
-<h2><span class="n">3</span>区块<span class="zhen">（block）</span>怎么连成链：为什么改不了</h2>
+<h2><span class="n">3</span><span class="ht">区块<span class="zhen">（block）</span>怎么连成链：为什么改不了</span></h2>
 <p>一个<b>区块<span class="zhen">（block）</span></b>就是一批被打包在一起、同时加入链的交易。每个区块<span class="zhen">（block）</span>包含三样关键东西（P6-25）：</p>
 <ol><li>一批<b>交易记录</b>；</li><li>这个区块<span class="zhen">（block）</span>自己的<b>哈希<span class="zhen">（hash）</span></b>（它的“指纹<span class="zhen">（fingerprint）</span>”）；</li><li><b>前一个区块<span class="zhen">（block）</span>的哈希</b>（Prev Hash）。</li></ol>
 <p>第 3 条就是“链”的来历：Block 101 里记着 Block 100 的指纹<span class="zhen">（fingerprint）</span>，Block 100 里记着 Block 99 的指纹<span class="zhen">（fingerprint）</span>……一直追溯到第一个区块（<b>genesis block，创世区块</b>）。</p>
@@ -99,12 +102,12 @@
 </svg>
 <figcaption>课件 P6-25 的示意：Block #101 的 Prev Hash = Block #100 的 Hash。</figcaption>
 </figure>
-<h3>动手：试着篡改<span class="zhen">（tampering）</span>一个区块</h3>
+<h3>动手：试着篡改<span class="zhen">（tampering）</span>一个区块<span class="zhen">（block）</span></h3>
 <div class="lab"><p class="lt">迷你区块链<span class="zhen">（blockchain）</span>（真实的 SHA-256）</p><p class="ld">每个区块<span class="zhen">（block）</span>的哈希<span class="zhen">（hash）</span> = SHA-256(编号 + 前一块哈希<span class="zhen">（hash）</span> + 数据)。试着把 Block 2 里的 “Bob 付给 Carol 10 元” 改成 “100 元”，看看会发生什么。</p>
 <div class="chain" id="minichain"></div>
 <div class="row" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="cfix">让后面的区块<span class="zhen">（block）</span>全部重新计算（模拟“篡改<span class="zhen">（tampering）</span>者重做整条链”）</button><button class="btn" id="creset">恢复原样</button></div>
 <div class="out" id="cout" style="margin-top:10px"></div></div>
-<p>你看到了：改一个字，这个区块<span class="zhen">（block）</span>的哈希就变了（雪崩效应<span class="zhen">（avalanche effect）</span>），<b>下一块记录的 Prev Hash 立刻对不上</b>，整条链从这里开始变红。篡改<span class="zhen">（tampering）</span>者要掩盖痕迹，就必须<b>重新计算后面所有区块<span class="zhen">（block）</span></b>。再加上两道防线：</p>
+<p>你看到了：改一个字，这个区块<span class="zhen">（block）</span>的哈希<span class="zhen">（hash）</span>就变了（雪崩效应<span class="zhen">（avalanche effect）</span>），<b>下一块记录的 Prev Hash 立刻对不上</b>，整条链从这里开始变红。篡改<span class="zhen">（tampering）</span>者要掩盖痕迹，就必须<b>重新计算后面所有区块<span class="zhen">（block）</span></b>。再加上两道防线：</p>
 <ul><li><b>每个节点<span class="zhen">（node）</span>都有一份账本<span class="zhen">（ledger）</span></b>，你只改了自己手里那份，别人的副本会“揭发”你；</li>
 <li>在比特币<span class="zhen">（Bitcoin）</span>里，重算每个区块<span class="zhen">（block）</span>都要做大量<b>工作量证明<span class="zhen">（proof of work (PoW)）</span></b>（下一节），想追上全网算力<span class="zhen">（network hash power）</span>几乎不可能。</li></ul>
 <h3>一笔交易的完整生命周期（P6-24～P6-26）</h3>
@@ -119,7 +122,7 @@
 </section>
 
 <section class="sec" id="cons">
-<h2><span class="n">4</span>共识算法<span class="zhen">（consensus algorithm）</span>：大家怎么同意“下一页账本<span class="zhen">（ledger）</span>写什么”</h2>
+<h2><span class="n">4</span><span class="ht">共识算法<span class="zhen">（consensus algorithm）</span>：大家怎么同意“下一页账本<span class="zhen">（ledger）</span>写什么”</span></h2>
 <p>没有中心机构，谁来决定下一个区块<span class="zhen">（block）</span>？如果谁都能随便写，坏人就可以开几百万个假节点<span class="zhen">（node）</span>刷假交易。<b>共识算法<span class="zhen">（consensus algorithm）</span></b>就是让所有节点<span class="zhen">（node）</span>对账本<span class="zhen">（ledger）</span>当前状态达成一致的规则（P6-13）。</p>
 <h3>工作量证明 PoW：用算力<span class="zhen">（computing power）</span>抽签</h3>
 <p>比特币<span class="zhen">（Bitcoin）</span>的规则：想添加区块<span class="zhen">（block）</span>，你必须找到一个数（nonce），使得<b>区块<span class="zhen">（block）</span>内容 + nonce</b> 的 <b>SHA-256</b> 哈希<span class="zhen">（hash）</span>以若干个 0 开头。哈希<span class="zhen">（hash）</span>没法预测，只能一个个试。<b>谁先试出来，谁就有权记账</b>，还能得到奖励。</p>
@@ -128,6 +131,8 @@
 <div class="fields"><div class="fld" style="grid-column:1/-1"><label for="pdata">区块<span class="zhen">（block）</span>数据</label><input id="pdata" type="text" value="Block 101: Alice pays Bob 5 BTC"></div><div class="fld"><label for="pk">难度（开头几个 0）</label><select id="pk"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div></div>
 <div class="row" style="display:flex;gap:8px"><button class="btn pri" id="pgo">开始挖矿<span class="zhen">（mining）</span></button><button class="btn" id="pstop">停止</button></div>
 <div class="out" id="pout" style="margin-top:10px">点“开始挖矿<span class="zhen">（mining）</span>”。难度 5 平均要试约 100 万次，可能要等一会儿。</div></div>
+<div class="teacher box" data-t="m6pow"><span class="bt">老师课上强调 · W10 · W12</span><ul><li><b>为什么要 PoW</b>：公链<span class="zhen">（public blockchain）</span>靠多数表决，如果投票不花成本，一个人可以注册上亿个假账户来控制结果（课件 P6-63：“creating millions of peers and spreads forged transactions”）。所以规定要先做功、解出难题，才有资格记账。</li><li>难题的准确说法：不停换 nonce，直到区块<span class="zhen">（block）</span>的 SHA-256 哈希<span class="zhen">（hash）</span>满足难度要求。（老师口头讲成“已知密文<span class="zhen">（ciphertext）</span>求明文<span class="zhen">（plaintext）</span>”，不准确。）</li><li>PoW 非常耗电、耗时，所以后来有了 PoS；今天最常用的就是 PoW 和 PoS。往年卷考过“PoW 的能耗和环境影响，以及转向 PoS”。</li></ul></div>
+
 <h3>各种共识算法<span class="zhen">（consensus algorithm）</span>对照（P6-13、P6-14）</h3>
 <div class="tbl"><table>
 <tr><th>算法</th><th>怎么选出记账人</th><th>记忆点</th></tr>
@@ -150,7 +155,7 @@
 </section>
 
 <section class="sec" id="types">
-<h2><span class="n">5</span>区块链<span class="zhen">（blockchain）</span>的类型，以及它和数据库<span class="zhen">（database）</span>有什么不同</h2>
+<h2><span class="n">5</span><span class="ht">区块链<span class="zhen">（blockchain）</span>的类型，以及它和数据库<span class="zhen">（database）</span>有什么不同</span></h2>
 <div class="tbl"><table>
 <tr><th>类型</th><th>谁能参与</th><th>例子</th></tr>
 <tr><td><b>Public</b> 公有链<span class="zhen">（public blockchain）</span></td><td>任何人都能读、能交易、能参与共识<span class="zhen">（consensus）</span>；代码开源</td><td>Bitcoin、Ethereum</td></tr>
@@ -160,6 +165,8 @@
 <tr><td><b>Hybrid</b> 混合链<span class="zhen">（hybrid blockchain）</span></td><td>结合公链<span class="zhen">（public blockchain）</span>和私链<span class="zhen">（private blockchain）</span>的特点</td><td>XinFin</td></tr>
 </table></div>
 <p>私有链<span class="zhen">（private blockchain）</span>的可见性可以按角色分配（P6-11），例如：客户能写和看全部数据，审计<span class="zhen">（audit）</span>员能看所有交易，供应商 A 只能写和看合作伙伴 A 的数据。</p>
+<div class="teacher box" data-t="m6types"><span class="bt">老师课上强调 · W10 · W11</span><p>复习课模拟卷答案：“Only three types”。<b>公有</b>（谁都能加入，Bitcoin、Ethereum）、<b>私有 ≈ 许可</b>（只有获准的人能加入，Ripple、MultiChain、Corda）、<b>联盟 ≈ 混合</b>（几个组织共同管理，“Consortium is also hybrid model”，R3、Hyperledger Fabric）。课件 P6-30 列了 5 类，考试按三类答，可以顺带提一句 permissioned、hybrid。</p></div>
+
 <h3>区块链<span class="zhen">（blockchain）</span> vs 关系数据库（P6-19）</h3>
 <div class="tbl"><table>
 <tr><th></th><th>区块链<span class="zhen">（blockchain）</span></th><th>关系数据库<span class="zhen">（relational database）</span></th></tr>
@@ -167,12 +174,14 @@
 <tr><td>管理员<span class="zhen">（administrator）</span></td><td><b>没有</b>能编辑或删除数据的管理员权限<span class="zhen">（administrator privileges）</span></td><td>DBA 可以改任何数据和结构</td></tr>
 <tr><td>为谁设计</td><td>去中心化应用<span class="zhen">（decentralized application）</span></td><td>单一实体控制的中心化应用<span class="zhen">（centralized application）</span></td></tr>
 </table></div>
+<div class="teacher box" data-t="m6db"><span class="bt">老师课上强调 · W10</span><p>数据库<span class="zhen">（database）</span>有管理员<span class="zhen">（administrator）</span>，可以改、删数据；管理员<span class="zhen">（administrator）</span>犯错或被收买，信任就没了；数据库<span class="zhen">（database）</span>挂了，所有客户端<span class="zhen">（client）</span>都用不了（单点故障<span class="zhen">（single point of failure）</span>）。区块链<span class="zhen">（blockchain）</span>没有管理员<span class="zhen">（administrator）</span>，也就没有这种腐败问题，所以更可靠、更可信。</p></div>
+
 </section>
 
 <section class="sec" id="smart">
-<h2><span class="n">6</span>智能合约<span class="zhen">（smart contract）</span>：会自己执行的合同</h2>
-<p><b>Smart contract</b> 是存放在区块链<span class="zhen">（blockchain）</span>上的程序，<b>条件满足时自动执行</b>预先写好的规则，不需要中间人<span class="zhen">（man-in-the-middle）</span>，于是降低了成本、提高了效率（P6-15）。</p>
-<div class="analogy box"><span class="bt">类比：自动售货机</span><p>投币（满足条件）→ 自动出饮料（执行合约）。不需要售货员（中间人<span class="zhen">（man-in-the-middle）</span>），也没人能“赖账”。区块链<span class="zhen">（blockchain）</span>上的智能合约<span class="zhen">（smart contract）</span>就是一台写在链上、谁都改不了的售货机。</p></div>
+<h2><span class="n">6</span><span class="ht">智能合约<span class="zhen">（smart contract）</span>：会自己执行的合同</span></h2>
+<p><b>Smart contract</b> 是存放在区块链<span class="zhen">（blockchain）</span>上的程序，<b>条件满足时自动执行</b>预先写好的规则，不需要中间人<span class="zhen">（intermediary）</span>，于是降低了成本、提高了效率（P6-15）。</p>
+<div class="analogy box"><span class="bt">类比：自动售货机</span><p>投币（满足条件）→ 自动出饮料（执行合约）。不需要售货员（中间人<span class="zhen">（intermediary）</span>），也没人能“赖账”。区块链<span class="zhen">（blockchain）</span>上的智能合约<span class="zhen">（smart contract）</span>就是一台写在链上、谁都改不了的售货机。</p></div>
 <div class="tbl"><table>
 <tr><th>平台</th><th>语言</th><th>特点</th></tr>
 <tr><td><b>Ethereum</b></td><td><b>Solidity</b></td><td>最大的智能合约<span class="zhen">（smart contract）</span>生态，DeFi、NFT</td></tr>
@@ -182,16 +191,18 @@
 <tr><td>Polkadot</td><td>Ink!、Rust</td><td>跨链互操作<span class="zhen">（cross-chain interoperability）</span></td></tr>
 </table></div>
 <p><b>用途</b>：金融（自动借贷、保险）、房地产（产权转让、托管<span class="zhen">（escrow）</span>）、供应链<span class="zhen">（supply chain）</span>（追踪货物、自动付款）、NFT 和游戏、投票、医疗数据。例子：Uniswap（自动交易）、OpenSea（NFT 买卖）、Chainlink（把链外数据接入合约的“预言机<span class="zhen">（oracle）</span>”）。</p>
-<p><b>好处</b>：去掉中间人<span class="zhen">（man-in-the-middle）</span>、减少欺诈<span class="zhen">（fraud）</span>、更快、省钱、安全。</p>
+<p><b>好处</b>：去掉中间人<span class="zhen">（intermediary）</span>、减少欺诈<span class="zhen">（fraud）</span>、更快、省钱、安全。</p>
 <div class="pitfall box"><span class="bt">风险（P6-18）</span><ul style="margin:0"><li><b>代码漏洞<span class="zhen">（code vulnerability）</span></b>：bug 会被利用；</li><li><b>不可篡改<span class="zhen">（immutable）</span>的风险<span class="zhen">（risk）</span></b>：部署以后<b>改不了错</b>，区块链<span class="zhen">（blockchain）</span>的优点在这里变成了缺点；</li><li>扩展性<span class="zhen">（scalability）</span>：受区块链<span class="zhen">（blockchain）</span>网络性能限制；</li><li>法律问题：监管和法律效力还不明确。</li></ul></div>
 <p>课件 P6-70 的例子：在以太坊<span class="zhen">（Ethereum）</span>上买房。买方担心“怎么确认房子真是卖方的”，卖方担心“买方会不会按时付钱”。智能合约<span class="zhen">（smart contract）</span>把产权和付款绑在一起，条件满足就自动交割，双方都不用信任对方。</p>
 <div class="check" data-a="1"><p class="cq">以太坊<span class="zhen">（Ethereum）</span>的智能合约<span class="zhen">（smart contract）</span>主要用什么语言写？</p>
 <div class="opts"><button class="opt">Python</button><button class="opt">Solidity</button><button class="opt">Haskell</button></div>
 <div class="cx"><p>Solidity。Haskell 是 Cardano 的 Plutus 的基础。</p></div></div>
+<div class="teacher box" data-t="m6sc"><span class="bt">老师课上强调 · W10 · W11</span><ul><li>例子：航班延误超过 5 小时，保险自动赔付；Grab 例子说明怎样去掉第三方。</li><li>W11 模拟卷“智能合约<span class="zhen">（smart contract）</span>的优点”得分要点：<b>去掉收佣金的第三方</b>；区块<span class="zhen">（block）</span>可验证、不可篡改<span class="zhen">（immutable）</span>，<b>自带信任</b>；快、高效；成本低；24/7；自动执行；让进不了传统金融体系的人也能用上。</li><li>风险<span class="zhen">（risk）</span>：代码有 bug；写错改不回来（把 $10 打成 $100 也撤不回）；扩展性<span class="zhen">（scalability）</span>差；多数国家没有监管，出事没法告。</li></ul></div>
+
 </section>
 
 <section class="sec" id="tps">
-<h2><span class="n">7</span>计算题：交易速率<span class="zhen">（transaction rate）</span> TPS 与吞吐量<span class="zhen">（throughput）</span></h2>
+<h2><span class="n">7</span><span class="ht">计算题：交易速率<span class="zhen">（transaction rate）</span> TPS 与吞吐量<span class="zhen">（throughput）</span></span></h2>
 <div class="key box"><span class="bt">两个公式（P6-34～P6-36）</span><p><b>每块交易数 TPB = 区块大小<span class="zhen">（block size）</span> ÷ 平均交易大小<span class="zhen">（average transaction size）</span></b>；<b>TPS = TPB ÷ 出块时间<span class="zhen">（block time）</span>（秒）</b></p><p><b>吞吐量 (Mbps) = TPS × 交易大小 (bytes) × 8 ÷ 1,000,000</b></p></div>
 <p><b>例 1：</b>1 MB 的区块<span class="zhen">（block）</span>，平均交易 250 字节<span class="zhen">（byte）</span>，每 10 分钟（600 秒）出一块。TPB = 1,000,000 ÷ 250 = <b>4000 笔/块</b>；TPS = 4000 ÷ 600 ≈ <b>6.67</b>。这差不多就是比特币<span class="zhen">（Bitcoin）</span>的量级。</p>
 <p><b>例 2：</b>每 15 秒一块，每块 100 笔：TPS = 100 ÷ 15 ≈ <b>6.67</b>。</p>
@@ -201,10 +212,12 @@
 <div class="fields"><div class="fld"><label for="tb">区块大小 (MB)</label><input id="tb" type="number" value="1" step="any"></div><div class="fld"><label for="tx">平均交易大小 (bytes)</label><input id="tx" type="number" value="250"></div><div class="fld"><label for="tt">出块时间<span class="zhen">（block time）</span> (秒)</label><input id="tt" type="number" value="600"></div></div>
 <div class="out" id="tpout"></div></div>
 <p>对比（P6-79）：以太坊<span class="zhen">（Ethereum）</span>大约每秒 15 笔，Visa 每秒能处理 65,000 笔。这就是区块链<span class="zhen">（blockchain）</span>的<b>扩展性<span class="zhen">（scalability）</span></b>问题。</p>
+<div class="teacher box" data-t="m6tps"><span class="bt">老师课上强调 · W10 · W11 · 往年卷</span><ul><li>“something similar will come in the exam”，“can carry ten to 15 marks”，“Remember these five examples are very, very important from exam point of view.”</li><li>分两步：每块交易数<span class="zhen">（transactions per block (TPB)）</span> = 块大小 ÷ 交易大小<span class="zhen">（transaction size）</span> → 每秒交易数 = 每块交易数<span class="zhen">（transactions per block (TPB)）</span> ÷ 出块时间<span class="zhen">（block time）</span>（秒）。吞吐量<span class="zhen">（throughput）</span> = TPS × 交易字节<span class="zhen">（byte）</span>数 × 8 ÷ 10<sup>6</sup>（Mbps）。</li><li>课件 P6-36 例 4 中间一步印成 12 000 000 bits/s，<b>应为 1 200 000</b>，最后 1.2 Mbps 是对的。</li><li>往年卷 2025-26 S2：750 TPS × 400 字节<span class="zhen">（byte）</span> = <b>2.4 Mbps</b>；2 MB 块、350 字节<span class="zhen">（byte）</span>、300 秒 → 2,000,000 ÷ 350 = 5714.29 → <b>5714 笔/块</b>、约 19 TPS。W11 模拟卷：800 TPS × 1 K（K = 1024）= <b>6.5536 Mbps</b>。答题时写明单位假设（1 MB = 10<sup>6</sup> 字节<span class="zhen">（byte）</span>）。</li></ul><p>这几道原题都在<a href="practice.html#exam">刷题本 · 期末专项 → 区块链<span class="zhen">（blockchain）</span></a>里，可以核对答案。</p></div>
+
 </section>
 
 <section class="sec" id="money">
-<h2><span class="n">8</span>货币<span class="zhen">（currency）</span>与支付：先搞懂“钱”是什么</h2>
+<h2><span class="n">8</span><span class="ht">货币<span class="zhen">（currency）</span>与支付：先搞懂“钱”是什么</span></h2>
 <p>货币<span class="zhen">（currency）</span>有三个功能（P6-38）：<b>交换媒介<span class="zhen">（medium of exchange）</span></b>（买东西）、<b>计价单位<span class="zhen">（unit of account）</span></b>（标价）、<b>价值储存<span class="zhen">（store of value）</span></b>（存钱）。课件的总结很精辟：<b>MONEY = VALUE = TRUST</b>，钱的本质是信任。</p>
 <h3>货币<span class="zhen">（currency）</span>的演变（P6-40、P6-41）</h3>
 <p>以物易物和商品货币<span class="zhen">（commodity money）</span>（中美洲人用可可豆，但商品会坏、体积大）→ 金银铜等贵金属（太重）→ 纸币（据说最早出现在公元 7 世纪的中国：把金子存在可信的一方，拿到一张写明存了多少金子的票据，这就是银行的雏形）→ 金本位<span class="zhen">（gold standard）</span> → 20 世纪 70 年代初放弃金本位<span class="zhen">（gold standard）</span>，变成 <b>fiat money（法定货币）</b>。</p>
@@ -230,7 +243,7 @@
 </section>
 
 <section class="sec" id="crypto">
-<h2><span class="n">9</span>加密货币<span class="zhen">（cryptocurrency）</span>：比特币<span class="zhen">（Bitcoin）</span>、以太坊<span class="zhen">（Ethereum）</span>、瑞波<span class="zhen">（Ripple (XRP)）</span></h2>
+<h2><span class="n">9</span><span class="ht">加密货币<span class="zhen">（cryptocurrency）</span>：比特币<span class="zhen">（Bitcoin）</span>、以太坊<span class="zhen">（Ethereum）</span>、瑞波<span class="zhen">（Ripple (XRP)）</span></span></h2>
 <p><b>Cryptocurrency</b>：基于互联网<span class="zhen">（Internet）</span>、用密码学<span class="zhen">（cryptography）</span>进行金融交易的交换媒介<span class="zhen">（medium of exchange）</span>，最重要的特征是<b>不受任何中心机构控制</b>。双方用公钥<span class="zhen">（public key）</span>和私钥<span class="zhen">（private key）</span>直接转账，手续费<span class="zhen">（transaction fee）</span>很低（P6-59）。</p>
 <div class="tbl"><table>
 <tr><th></th><th>Bitcoin 比特币</th><th>Ethereum 以太坊</th><th>Ripple (XRP) 瑞波</th></tr>
@@ -243,11 +256,15 @@
 </table></div>
 <h3>比特币<span class="zhen">（Bitcoin）</span>挖矿（P6-63）</h3>
 <p>原则上谁都能当矿工<span class="zhen">（miner）</span>。为了防止有人开几百万个节点<span class="zhen">（node）</span>刷假交易，Satoshi 规定：想记账，必须先付出<b>算力<span class="zhen">（computing power）</span></b>，找到把新区块<span class="zhen">（block）</span>和上一块连起来的哈希<span class="zhen">（hash）</span>（也就是第 4 节的实验）。找到答案的矿工<span class="zhen">（miner）</span>可以添加一笔 <b>coinbase 交易</b>，奖励自己一定数量的比特币<span class="zhen">（Bitcoin）</span>，这是<b>产生新比特币<span class="zhen">（Bitcoin）</span>的唯一方式</b>。比特币<span class="zhen">（Bitcoin）</span>诞生的动机是<b>不信任金融机构、交易成本高</b>，主要关心的是<b>交易安全和双花<span class="zhen">（double spending）</span></b>。</p>
+<div class="teacher box" data-t="m6mine"><span class="bt">老师课上强调 · W12 · 往年卷</span><ul><li>往年卷原题：“描述比特币<span class="zhen">（Bitcoin）</span>交易从发起到上链确认的全过程”。按 P6-62（Nick 给 Rose 0.5 BTC）写：发起并用私钥<span class="zhen">（private key）</span>签名<span class="zhen">（signature）</span> → 广播 → 节点<span class="zhen">（node）</span>验证签名<span class="zhen">（signature）</span>和余额（防重复花费） → 矿工<span class="zhen">（miner）</span>打包、做 PoW → 第一个解出的矿工<span class="zhen">（miner）</span>广播新块，别人验证后上链，矿工<span class="zhen">（miner）</span>得到新币和手续费<span class="zhen">（transaction fee）</span> → 交易被确认。</li><li>矿工<span class="zhen">（miner）</span>的作用：验证交易、打包成块、做 PoW 维护安全，同时发行新币（Coinbase 交易是产生新比特币<span class="zhen">（Bitcoin）</span>的唯一方式）。</li><li>环境影响：耗电极大（课上拿一个国家的用电量来比），化石能源带来碳排放，矿机变成电子垃圾。解决办法：转 PoS、用可再生能源。</li><li>中本聪为什么做比特币<span class="zhen">（Bitcoin）</span>：不信任银行、手续费<span class="zhen">（transaction fee）</span>高；要解决的是安全和<b>重复花费</b>，办法是公开账本<span class="zhen">（ledger）</span> + PoW。</li></ul></div>
+
 <h3>加密货币<span class="zhen">（cryptocurrency）</span>的优缺点（P6-73）</h3>
 <div class="tbl"><table><tr><th>优点</th><th>缺点</th></tr><tr><td>去中心化<span class="zhen">（decentralization）</span>（不需要中介）；安全（密码学<span class="zhen">（cryptography）</span>保护）；更快更便宜，全天候；跨境转账方便</td><td><b>波动大</b>；<b>缺乏监管</b>，纠纷难解决；<b>接受度低</b></td></tr></table></div>
 <div class="check" data-a="1"><p class="cq">关于比特币<span class="zhen">（Bitcoin）</span>，哪项正确？</p>
 <div class="opts"><button class="opt">没有供应上限<span class="zhen">（supply cap）</span>，支持智能合约<span class="zhen">（smart contract）</span></button><button class="opt">供应上限<span class="zhen">（supply cap）</span> 2100 万枚，使用工作量证明<span class="zhen">（proof of work (PoW)）</span></button><button class="opt">由中央银行控制</button></div>
 <div class="cx"><p>A 说的其实是以太坊<span class="zhen">（Ethereum）</span>的特点（无上限、有智能合约<span class="zhen">（smart contract）</span>）。</p></div></div>
+<div class="teacher box" data-t="m6btc"><span class="bt">老师课上强调 · W11 · W12</span><ul><li>期末范围点名“Bitcoin、Ethereum 各自的主要用途”：<b>Bitcoin 是货币<span class="zhen">（currency）</span></b>，<b>Ethereum 是去中心化应用<span class="zhen">（decentralized application）</span>平台</b>（用 Ether 付费）。</li><li>供应量：Bitcoin 2100 万封顶，Ethereum 不封顶；共识<span class="zhen">（consensus）</span>：PoW vs PoS；智能合约<span class="zhen">（smart contract）</span>：不支持 vs 支持；速度：几分钟 vs 几秒。</li><li><b>“Trustless” 不是“没有信任”</b>，而是信任已经内建在系统里（哈希<span class="zhen">（hash）</span>链、签名<span class="zhen">（signature）</span>、共识<span class="zhen">（consensus）</span>、公开账本<span class="zhen">（ledger）</span>），不需要另外证明对方可信。W12 讲了两次，2024-25 S1 往年卷考过。</li></ul></div>
+
 </section>
 
 <section class="sec" id="defi">
@@ -258,16 +275,20 @@
 <p><b>Decentralized finance</b>：用区块链<span class="zhen">（blockchain）</span>提供借贷、交易、保险等金融服务，不需要银行。</p>
 <div class="tbl"><table><tr><th>好处</th><th>风险<span class="zhen">（risk）</span></th></tr><tr><td><b>去中心化<span class="zhen">（decentralization）</span></b>：不需要中介；<b>可及性</b>：没有银行账户的人（比如发展中国家）也能用；<b>透明</b>：账本<span class="zhen">（ledger）</span>公开；<b>安全</b>：降低欺诈<span class="zhen">（fraud）</span>和盗窃风险<span class="zhen">（risk）</span></td><td><b>波动</b>：建立在高波动的加密资产<span class="zhen">（crypto asset）</span>上；<b>技术不成熟</b>：还没经过长期大规模的压力测试<span class="zhen">（stress testing）</span>；<b>扩展性<span class="zhen">（scalability）</span></b>：以太坊<span class="zhen">（Ethereum）</span>约 15 TPS，Visa 约 65,000 TPS</td></tr></table></div>
 <p>智能合约<span class="zhen">（smart contract）</span>在 DeFi 里的作用：<b>自动执行</b>（借款人逾期就自动处置抵押品）、<b>不需要信任中介</b>、<b>透明</b>（谁都能检查代码）、<b>可互操作<span class="zhen">（interoperable）</span></b>（多个合约组合成复杂协议<span class="zhen">（protocol）</span>，比如自动做市<span class="zhen">（automated market making）</span>、去中心化交易所<span class="zhen">（decentralized exchange）</span>、流动性池<span class="zhen">（liquidity pool）</span>）、<b>取代中介</b>。</p>
+<div class="teacher box" data-t="m6defi"><span class="bt">老师课上强调 · W11 · W12</span><ul><li>复习课、模拟卷、两份往年卷都考了 DeFi。模拟卷答案的定义：用区块链<span class="zhen">（blockchain）</span>把传统金融服务搬到线上。</li><li>优点：人人可用（没有银行账户也行）、24/7、交易成本低、去中介、透明。</li><li>缺点和风险<span class="zhen">（risk）</span>：波动大；技术不成熟；扩展性<span class="zhen">（scalability）</span>（以太坊<span class="zhen">（Ethereum）</span>每秒约 15 笔，Visa 约 65,000 笔）；<b>没有监管</b>，“You cannot sue them”；太复杂，大众不懂。</li><li>前景：取决于金融业是否接受、能否纳入监管框架，以及生态的发展。</li></ul></div>
+
 <h3>区块链<span class="zhen">（blockchain）</span>的商业价值</h3>
 <p>传统的资产转移<span class="zhen">（asset transfer）</span>：每一方（买方、卖方、银行、审计<span class="zhen">（audit）</span>）各记各的账，<b>低效、昂贵、容易出问题</b>。区块链<span class="zhen">（blockchain）</span>：一个<b>共享、复制、有权限<span class="zhen">（privileges）</span>控制</b>的账本<span class="zhen">（ledger）</span>，带来共识<span class="zhen">（consensus）</span>、溯源<span class="zhen">（provenance）</span>、不可篡改<span class="zhen">（immutable）</span>、最终确定性（P6-85、P6-86）。四个好处（P6-88）：<b>省时间</b>（几天变成几乎即时）、<b>降成本</b>（减少开销和中介）、<b>降风险<span class="zhen">（risk）</span></b>（防篡改<span class="zhen">（tampering）</span>、防欺诈<span class="zhen">（fraud）</span>）、<b>增信任</b>（共享流程和记录）。</p>
-<p>应用领域：银行金融、网络安全<span class="zhen">（cyber security）</span>（数据不能被改）、供应链<span class="zhen">（supply chain）</span>、IoT、保险、交通（无第三方的拼车）、云存储、投票、医疗、去掉各种中间人<span class="zhen">（man-in-the-middle）</span>（甚至慈善：你捐的钱用在哪里）。</p>
+<p>应用领域：银行金融、网络安全<span class="zhen">（cyber security）</span>（数据不能被改）、供应链<span class="zhen">（supply chain）</span>、IoT、保险、交通（无第三方的拼车）、云存储、投票、医疗、去掉各种中间人<span class="zhen">（intermediary）</span>（甚至慈善：你捐的钱用在哪里）。</p>
 <p>真实例子：BurstIQ（医疗数据共享）、Mediachain（音乐版税，2017 年被 Spotify 收购）、Xage（IoT 安全）；新加坡：GeTS 的跨境贸易区块链<span class="zhen">（blockchain）</span>、新航 KrisFlyer 数字钱包<span class="zhen">（digital wallet）</span>、义安理工学院用区块链<span class="zhen">（blockchain）</span>验证文凭、DLT Ledgers（供应链<span class="zhen">（supply chain）</span>）、KYC 区块链<span class="zhen">（blockchain）</span>原型、Averspace（房地产）、Cake DeFi。</p>
 <div class="key box"><span class="bt">第二次数字革命（P6-98）</span><p>第一次数字革命<span class="zhen">（digital revolution）</span>（互联网<span class="zhen">（Internet）</span>）擅长<b>传递信息</b>，但在商业、隐私<span class="zhen">（privacy）</span>和信任上有很大缺陷；第二次数字革命<span class="zhen">（second digital revolution）</span>（区块链<span class="zhen">（blockchain）</span>）让<b>点对点<span class="zhen">（peer-to-peer (P2P)）</span>的价值交换<span class="zhen">（value exchange）</span></b>不再需要银行或政府这样的中介，“信任被内置在系统里”。</p></div>
 </section>
 
 <section class="sec" id="cases">
-<h2><span class="n">11</span>两个真实大案，与事件响应<span class="zhen">（incident response）</span></h2>
+<h2><span class="n">11</span><span class="ht">两个真实大案，与事件响应<span class="zhen">（incident response）</span></span></h2>
 <p>课程最后用两个案例收尾。它们几乎能串起整门课的所有知识点，<b>期末论述题非常适合拿来举例</b>。</p>
+<div class="teacher box" data-t="m6case"><span class="bt">老师课上强调 · W12</span><p>老师讲这两个案例时说明它们 “have nothing to do with exam”，期末不考，当故事看就行。</p></div>
+
 <h3>案例 1：Equifax 2017（P6-100～P6-106）</h3>
 <div class="story box"><span class="bt">时间线</span><ul style="margin:0">
 <li><b>3 月 7 日</b>：Apache 公布 Struts 框架的一个易被利用的漏洞<span class="zhen">（vulnerability）</span>，并发布了补丁<span class="zhen">（patch）</span>；</li>

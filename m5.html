@@ -38,6 +38,7 @@
 <li>区分 HIDS 和 NIDS、特征检测<span class="zhen">（signature-based detection）</span>和异常检测<span class="zhen">（anomaly detection）</span>、IDS 和 IPS。</li></ul></div>
 
 <div class="teacher box" data-t="m5top"><span class="bt">老师课上强调 · 录音 W8</span><ul><li>Quiz 范围到 Part 5 为止（P6 不考）。</li><li>老师重点讲了：HTTPS 端口<span class="zhen">（port）</span>、为什么不认证<span class="zhen">（no authentication）</span>客户端<span class="zhen">（client）</span>、SSL/TLS 版本时间线、<b>TLS 1.3 为什么去掉 RSA 密钥交换<span class="zhen">（key exchange）</span></b>（前向保密<span class="zhen">（forward secrecy）</span>，改用临时 DH）。</li></ul></div>
+<div class="teacher box" data-t="m5w9top"><span class="bt">老师课上强调 · 录音 W9–W11 · 期末</span><ul><li>期末 Q1–Q3 出自 Part 1–5，本章在复习课的考试范围里点名的是：<b>防火墙<span class="zhen">（firewall）</span>类型</b>（包过滤<span class="zhen">（packet filtering）</span>、SPI、代理<span class="zhen">（proxy）</span>）的优点和局限、<b>防火墙架构<span class="zhen">（firewall architecture）</span></b>，以及<b>防火墙吞吐量<span class="zhen">（firewall throughput）</span>计算</b>。</li><li>W9 原话：“all four question will have calculation a part”，说完紧接着讲 P5-76～P5-78 的吞吐量<span class="zhen">（throughput）</span>题；W11 复习课的模拟卷也有这道原题。</li><li>本章的 TLS、SET、IDS 在 quiz 考过；期末简答可能用到“防火墙<span class="zhen">（firewall）</span>为什么还需要 IDS”这类对比。</li></ul><p>完整整理见 <a href="teacher.html">老师上课重点</a>；吞吐量<span class="zhen">（throughput）</span>大题去<a href="practice.html#exam">刷题本 · 期末专项 → 防火墙<span class="zhen">（firewall）</span></a>练。</p></div>
 <section class="sec" id="http">
 <h2><span class="n">1</span>HTTP 为什么不安全，HTTPS 加了什么</h2>
 <p>你在浏览器<span class="zhen">（browser）</span>里打开一个网页，浏览器<span class="zhen">（browser）</span>（客户端<span class="zhen">（client）</span>）用 <b>HTTP</b> 协议<span class="zhen">（protocol）</span>向服务器<span class="zhen">（server）</span>发请求，服务器<span class="zhen">（server）</span>返回网页。HTTP 是一问一答式的<b>请求-响应<span class="zhen">（request-response）</span></b>模型，而且<b>无状态<span class="zhen">（stateless）</span></b>：每个请求都是独立的，网站靠 <b>cookie</b> 记住你是谁（所以模块 1 说 cookie 记录太多信息时会变成“间谍<span class="zhen">（espionage）</span>”）。常见请求方法：GET 取数据，POST 提交数据，PUT 更新，DELETE 删除，HEAD 只取头部。</p>
@@ -123,7 +124,7 @@
 </section>
 
 <section class="sec" id="hs">
-<h2><span class="n">3</span>一次 TLS 握手<span class="zhen">（handshake）</span>：最复杂的部分</h2>
+<h2><span class="n">3</span><span class="ht">一次 TLS 握手<span class="zhen">（handshake）</span>：最复杂的部分</span></h2>
 <p><b>握手协议<span class="zhen">（handshake protocol）</span>是 SSL/TLS 最复杂的部分</b>（样题 Q5-1）。它要完成三件事：双方互相认证<span class="zhen">（authentication）</span>、协商加密<span class="zhen">（encryption）</span>和 MAC 算法、协商出密钥<span class="zhen">（key）</span>。其实就是模块 4 的<b>混合系统<span class="zhen">（hybrid system）</span></b>在真实世界里的样子。</p>
 <div class="stepper"><div class="sh"><span>经典 TLS 握手（RSA 密钥交换<span class="zhen">（key exchange）</span>，P5-17）</span><span class="ctr"></span></div>
 <div class="st"><p><b>① ClientHello（客户端 → 服务器<span class="zhen">（server）</span>）</b></p><p>“你好，我想建立安全连接。我支持这些算法组合：……”这份算法组合的列表就是 <b>cipher suite（密码套件）</b>（样题 Q5-2）。一个套件包括：密钥交换算法<span class="zhen">（key exchange algorithm）</span> + 加密算法<span class="zhen">（encryption algorithm）</span> + 哈希<span class="zhen">（hash）</span>/MAC 算法，例如 RSA + AES-128 + SHA-256。</p></div>
@@ -175,7 +176,7 @@
 </section>
 
 <section class="sec" id="tls13">
-<h2><span class="n">4</span>TLS 1.3：为什么去掉了 RSA 密钥交换<span class="zhen">（key exchange）</span></h2>
+<h2><span class="n">4</span><span class="ht">TLS 1.3：为什么去掉了 RSA 密钥交换<span class="zhen">（key exchange）</span></span></h2>
 <p>TLS 有两种交换密钥<span class="zhen">（key）</span>的方式（P5-18～P5-20）：</p>
 <ol>
 <li><b>RSA 密钥交换<span class="zhen">（key exchange）</span></b>：上一节那种，客户端<span class="zhen">（client）</span>决定会话密钥<span class="zhen">（session key）</span>，用服务器<span class="zhen">（server）</span>公钥加密<span class="zhen">（public-key encryption）</span>后发出；</li>
@@ -212,6 +213,8 @@
 <div class="check" data-a="1"><p class="cq">TLS 1.3 为什么去掉了 RSA 密钥交换<span class="zhen">（key exchange）</span>？</p>
 <div class="opts"><button class="opt">RSA 太快了</button><button class="opt">它没有前向保密<span class="zhen">（forward secrecy）</span>：私钥<span class="zhen">（private key）</span>日后泄露<span class="zhen">（leak）</span>，录下的旧会话<span class="zhen">（session）</span>都能被解密<span class="zhen">（decryption）</span></button><button class="opt">浏览器<span class="zhen">（browser）</span>不支持 RSA</button></div>
 <div class="cx"><p>RSA 在 TLS 1.3 里仍可用于<b>签名<span class="zhen">（signature）</span></b>，被去掉的只是“用 RSA 加密<span class="zhen">（encryption）</span>会话密钥<span class="zhen">（session key）</span>”这种交换方式。</p></div></div>
+<div class="teacher box" data-t="m5w9tls"><span class="bt">老师课上强调 · W9</span><ul><li>P5-25 时序图：TLS 1.3 握手<span class="zhen">（handshake）</span> <b>5 步、200 ms</b>，TLS 1.2 是 <b>7 步、300 ms</b>；往返次数从 2 减到 1。（老师口头先后说过“3 倍”“2 倍”，按图只有 1.5 倍。）</li><li>攻击和版本对应：BEAST → TLS 1.0，POODLE → SSL 3.0，DROWN → SSL 2.0，Heartbleed → OpenSSL 漏洞<span class="zhen">（vulnerability）</span>。还在同时支持旧版本的网站，就给了降级攻击<span class="zhen">（downgrade attack）</span>机会。</li><li>补丁<span class="zhen">（patch）</span>政策<span class="zhen">（policy）</span>：公司应该规定补丁<span class="zhen">（patch）</span>发布后“within few hours, not within few days”装好。</li></ul></div>
+
 <h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：TLS 1.3 密钥交换<span class="zhen">（key exchange）</span>与握手<span class="zhen">（handshake）</span> <span class="ref">P5-18～P5-29、P5-39</span></h3>
 
 <h4>RSA 密钥交换（P5-18）</h4>
@@ -286,6 +289,8 @@
 <div class="check" data-a="1"><p class="cq">关于 SET 和 SSL，哪项正确？</p>
 <div class="opts"><button class="opt">SET 和 SSL 一样是两方协议<span class="zhen">（two-party protocol）</span></button><button class="opt">SET 用证书<span class="zhen">（certificate）</span>认证<span class="zhen">（authentication）</span>所有参与方，商家<span class="zhen">（merchant）</span>看不到客户的卡号</button><button class="opt">SET 是今天最流行的电商<span class="zhen">（e-commerce）</span>协议<span class="zhen">（protocol）</span></button></div>
 <div class="cx"><p>SSL 才是两方协议<span class="zhen">（two-party protocol）</span>；SET 几乎没人用。</p></div></div>
+<div class="teacher box" data-t="m5w9set"><span class="bt">老师课上强调 · W9</span><ul><li>SSL/TLS 只保护<b>传输中</b>的数据，不保护数据库<span class="zhen">（database）</span>；它<b>认证<span class="zhen">（authentication）</span>不了屏幕后面的人</b>：不知道商家<span class="zhen">（merchant）</span>是不是真的、下单的人是不是持卡人<span class="zhen">（cardholder）</span>本人，所以挡不住盗刷。老师：“SSL TLS is not designed for online payment system”。</li><li>SET 每一方都认证<span class="zhen">（authentication）</span>：“perfect system, but not practical”。5 方（持卡人<span class="zhen">（cardholder）</span>、商家<span class="zhen">（merchant）</span>、发卡行<span class="zhen">（issuing bank）</span>、收单行、支付网关<span class="zhen">（payment gateway）</span>）× 2（人和电脑）= <b>10 张证书<span class="zhen">（certificate）</span></b>，极慢、不好用，“nobody is using SET”。</li><li>出事谁赔钱：SSL 下是<b>商家<span class="zhen">（merchant）</span></b>（货没了，还被银行退单），SET 下是支付网关<span class="zhen">（payment gateway）</span>。“In the current E commerce, merchant is at the disadvantage.”</li></ul></div>
+
 <h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：SET 的组成与交易流程 <span class="ref">P5-31～P5-38</span></h3>
 
 <h4>SET 的几个关键点（P5-31、P5-33）</h4>
@@ -325,7 +330,7 @@
 </section>
 
 <section class="sec" id="fw">
-<h2><span class="n">6</span>防火墙<span class="zhen">（firewall）</span>基础：网络的门卫</h2>
+<h2><span class="n">6</span><span class="ht">防火墙<span class="zhen">（firewall）</span>基础：网络的门卫</span></h2>
 <p><b>Firewall</b> 是一种网络安全设备<span class="zhen">（network security device）</span>或软件，根据组织事先制定的安全策略<span class="zhen">（security policy）</span>，<b>监控和过滤进出网络的流量<span class="zhen">（traffic）</span></b>。它是内部私有网络和公共互联网<span class="zhen">（Internet）</span>之间的那道墙，目的就是放行无害流量<span class="zhen">（traffic）</span>、挡住危险流量<span class="zhen">（traffic）</span>（样题 Q5-8）。</p>
 <ul>
 <li>防火墙<span class="zhen">（firewall）</span>可以是单台计算机，也可以是<b>两台或更多系统协同</b>完成（样题 Q5-6：True）；</li>
@@ -334,6 +339,8 @@
 </ul>
 <p>进入网络的流量<span class="zhen">（traffic）</span>叫 <b>ingress</b>，离开网络的叫 <b>egress</b>。课件有一句很重要的话：防火墙<span class="zhen">（firewall）</span><b>只丢弃能被证明是攻击的包</b>，所以总有一些“看起来正常”的攻击包<span class="zhen">（attack packet）</span>能溜进来，防火墙<span class="zhen">（firewall）</span>不是万能的。</p>
 <div class="analogy box"><span class="bt">类比：房子与房间（P5-51）</span><p>把 IP 地址<span class="zhen">（IP address）</span>想成房子，端口<span class="zhen">（port）</span>号想成房子里的房间。只有可信的人（源地址<span class="zhen">（source address）</span>）能进这栋房子（目的地址<span class="zhen">（destination address）</span>），进来以后还要看身份决定能进哪些房间（目的端口<span class="zhen">（destination port）</span>）：主人哪个房间都能进，孩子和客人只能进某些房间。</p></div>
+<div class="teacher box" data-t="m5w9fw"><span class="bt">老师课上强调 · W9</span><ul><li>防火墙<span class="zhen">（firewall）</span><b>只在包被证明是攻击时</b>才丢弃并记录（“Now, this is important.”）；可疑但证明不了的包会被放行。</li><li>防火墙<span class="zhen">（firewall）</span>只看包头（IP、端口<span class="zhen">（port）</span>、协议<span class="zhen">（protocol）</span>），不看内容，所以还需要 IDS。</li><li>“This policy is the most important”：策略决定防火墙<span class="zhen">（firewall）</span>成败，买来不更新很快失效。“Biggest problem with firewall is configuration”：太严挡住正常流量<span class="zhen">（traffic）</span>，太松放进攻击。</li><li>W11 模拟卷的简答：防火墙<span class="zhen">（firewall）</span>像<b>守门员（goalkeeper）或保镖（bodyguard）</b>，站在可信内网<span class="zhen">（internal network）</span>和不可信的互联网<span class="zhen">（Internet）</span>之间，挡坏包、放好包。</li></ul></div>
+
 <h3>动手：防火墙<span class="zhen">（firewall）</span>规则匹配（P5-52）</h3>
 <p>规则<b>从上到下</b>逐条检查，<b>第一条完全匹配的规则说了算</b>，后面的不再看。最后一条通常是 “Any Any Any → Deny”（默认拒绝<span class="zhen">（default deny）</span>）。</p>
 <div class="lab"><p class="lt">规则匹配<span class="zhen">（rule matching）</span>器</p><p class="ld">规则表<span class="zhen">（rule table）</span>就是课件上的那三条。改一改数据包<span class="zhen">（packet）</span>的源地址<span class="zhen">（source address）</span>、目的地址<span class="zhen">（destination address）</span>和端口<span class="zhen">（port）</span>，看它命中哪一条。</p>
@@ -370,12 +377,12 @@
 </section>
 
 <section class="sec" id="fwtypes">
-<h2><span class="n">7</span>防火墙<span class="zhen">（firewall）</span>的类型：看得越深越安全，也越慢</h2>
+<h2><span class="n">7</span><span class="ht">防火墙<span class="zhen">（firewall）</span>的类型：看得越深越安全，也越慢</span></h2>
 <div class="tbl"><table>
 <tr><th>类型</th><th>怎么工作</th><th>特点</th></tr>
 <tr><td><b>Packet filtering</b> 包过滤</td><td>逐个检查包头<span class="zhen">（packet header）</span>：源 IP、目的 IP、端口<span class="zhen">（port）</span>，按规则放行或丢弃（样题 Q5-9）</td><td>快、便宜；<b>无状态<span class="zhen">（stateless）</span></b>，不记得之前的包，也不看更高层的内容（样题 Q5-7：True）</td></tr>
 <tr><td><b>Stateful inspection（SPI）</b> 状态检测</td><td>除了包头<span class="zhen">（packet header）</span>，还用<b>状态表<span class="zhen">（state table）</span></b>记录每条连接（IP、端口<span class="zhen">（port）</span>、序列号<span class="zhen">（serial number）</span>），只放行“内网<span class="zhen">（internal network）</span>主动发起的连接”的回包</td><td>比包过滤<span class="zhen">（packet filtering）</span>更安全，资源消耗更多；维护状态表<span class="zhen">（state table）</span>可能被 DoS 拖垮；如今几乎所有边界防火墙<span class="zhen">（perimeter firewall）</span>都用它</td></tr>
-<tr><td><b>Proxy / Application gateway</b> 代理</td><td>作为中间人<span class="zhen">（man-in-the-middle）</span>：用户向代理<span class="zhen">（proxy）</span>请求，代理<span class="zhen">（proxy）</span>检查请求合法后替你去取，再把结果返回</td><td>能看懂完整的应用协议<span class="zhen">（protocol）</span>，<b>最安全</b>，日志审计<span class="zhen">（logging and auditing）</span>方便；但<b>最慢</b></td></tr>
+<tr><td><b>Proxy / Application gateway</b> 代理</td><td>作为中间人<span class="zhen">（intermediary）</span>：用户向代理<span class="zhen">（proxy）</span>请求，代理<span class="zhen">（proxy）</span>检查请求合法后替你去取，再把结果返回</td><td>能看懂完整的应用协议<span class="zhen">（protocol）</span>，<b>最安全</b>，日志审计<span class="zhen">（logging and auditing）</span>方便；但<b>最慢</b></td></tr>
 <tr><td><b>NGFW</b> 下一代防火墙</td><td>传统功能 + 入侵防御（IPS）+ 深度包检测（DPI）+ 应用识别<span class="zhen">（application identification）</span></td><td>更先进，也更贵；“下一代”没有统一定义</td></tr>
 <tr><td>Cloud firewall</td><td>部署在云上，保护远程用户（Firewall-as-a-Service）</td><td>弹性好，但依赖第三方</td></tr>
 <tr><td>WAF</td><td>专门保护 Web 应用</td><td>防 SQL 注入<span class="zhen">（SQL injection）</span>、XSS</td></tr>
@@ -389,6 +396,8 @@
 <tr><td>App gateway</td><td>1（最安全）</td><td>4（最慢）</td></tr>
 </table></div>
 <p class="ref" style="white-space:normal">课件 P5-68 的对比表</p>
+<div class="teacher box" data-t="m5w9spi"><span class="bt">老师课上强调 · W9</span><ul><li>老师至少说了 4 遍：<b>SPI 是今天的主边界防火墙<span class="zhen">（primary perimeter firewall）</span></b>，静态包过滤<span class="zhen">（static packet filtering）</span>只作辅助（但它能挡伪造<span class="zhen">（forgery）</span> IP 的包）。</li><li>为什么 SPI 反而更快更便宜：只有约 <b>1%</b> 的包是建连包，需要细查；其余 <b>99%</b> 查一下状态表<span class="zhen">（state table）</span>就行。老师的例子：一条消息 20 个包，静态过滤<span class="zhen">（static filtering）</span>每包 1 秒，共 20 秒；SPI 只细查首尾两个包，每个 2 秒，共 4 秒。</li><li>SPI 能防 SYN flood：统计连接请求和成功建立的连接，比如 5 个请求只成功 1 个，就判定是攻击、拒绝请求。静态包过滤<span class="zhen">（static packet filtering）</span>看不到连接状态，挡不住。</li><li>代理<span class="zhen">（proxy）</span>（应用层<span class="zhen">（application layer）</span>）防火墙<span class="zhen">（firewall）</span>看内容，安全性最好，但最慢。</li></ul></div>
+
 <h3>吞吐量<span class="zhen">（throughput）</span>计算（P5-76～P5-78）</h3>
 <p>和模块 1 的 Ping flood 是同一个公式：<b>所需包速率<span class="zhen">（packet rate）</span> = 带宽<span class="zhen">（bandwidth）</span> ÷ (包大小<span class="zhen">（packet size）</span> × 8)</b>，再和防火墙<span class="zhen">（firewall）</span>的处理能力比较。</p>
 <div class="lab"><p class="lt">防火墙吞吐量<span class="zhen">（firewall throughput）</span>计算器</p>
@@ -415,6 +424,8 @@
 <div class="check" data-a="0"><p class="cq">“A traditional packet filter makes filtering decisions on an individual packet basis and does not take into consideration any higher layer context.”</p>
 <div class="opts"><button class="opt">TRUE</button><button class="opt">FALSE</button></div>
 <div class="cx"><p>传统包过滤<span class="zhen">（packet filtering）</span>就是无状态<span class="zhen">（stateless）</span>、逐包判断（样题 Q5-7）。</p></div></div>
+<div class="teacher box" data-t="m5w9thr"><span class="bt">老师课上强调 · W9 · W11</span><ul><li><b>期末计算题</b>：W9 讲完“四道题都有计算”就讲这道；W11 复习课模拟卷原题：1 Gbps、1000 字节<span class="zhen">（byte）</span> → 125,000 pps &lt; 200,000 pps，扛得住。</li><li>“We need to have the same unit.” 包是字节<span class="zhen">（byte）</span>、带宽<span class="zhen">（bandwidth）</span>是比特，<b>一定要乘 8</b>；忘了乘 8 会算成 1,000,000 pps，结论全错。</li><li>写三步：需要的 pps = 带宽<span class="zhen">（bandwidth）</span> ÷ (包字节<span class="zhen">（byte）</span>数 × 8) → 和防火墙<span class="zhen">（firewall）</span>能力比较 → 写结论（能 / 不能，为什么）。</li></ul><p>在<a href="practice.html#exam">刷题本 · 期末专项 → 防火墙吞吐量<span class="zhen">（firewall throughput）</span></a>里有课件两个例子和随机题，附满分答题模板<span class="zhen">（template）</span>。</p></div>
+
 <h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：每种防火墙<span class="zhen">（firewall）</span>的课件原文要点 <span class="ref">P5-55～P5-68</span></h3>
 
 <h4>包过滤防火墙（P5-57）</h4>
@@ -468,7 +479,7 @@
 </section>
 
 <section class="sec" id="arch">
-<h2><span class="n">8</span>防火墙架构<span class="zhen">（firewall architecture）</span>：从单个路由器<span class="zhen">（router）</span>到 DMZ</h2>
+<h2><span class="n">8</span><span class="ht">防火墙架构<span class="zhen">（firewall architecture）</span>：从单个路由器<span class="zhen">（router）</span>到 DMZ</span></h2>
 <p>选哪种架构，取决于网络的目标、组织的实施能力和预算。课件介绍了四种（P5-69～P5-75）：</p>
 <ol>
 <li><b>Packet filtering router</b>：用连接互联网<span class="zhen">（Internet）</span>的路由器做包过滤<span class="zhen">（packet filtering）</span>，是第一代防火墙<span class="zhen">（first-generation firewall）</span>。缺点：缺少审计<span class="zhen">（audit）</span>，也没有强认证<span class="zhen">（strong authentication）</span>；</li>
@@ -492,6 +503,8 @@
 <figcaption>Screened subnet：考试看到 DMZ 就选它（P5-74、P5-75）。</figcaption>
 </figure>
 <p>它的优点：入侵者<span class="zhen">（intruder）</span>要过<b>三层防御<span class="zhen">（three layers of defense）</span></b>；外部路由器<span class="zhen">（exterior router）</span>只向互联网<span class="zhen">（Internet）</span>宣告 DMZ 的存在，<b>内网<span class="zhen">（internal network）</span>对互联网<span class="zhen">（Internet）</span>不可见</b>；内部路由器<span class="zhen">（interior router）</span>只向内网<span class="zhen">（internal network）</span>宣告 DMZ，所以<b>内网<span class="zhen">（internal network）</span>主机也无法直接建立通往互联网<span class="zhen">（Internet）</span>的路由</b>。</p>
+<div class="teacher box" data-t="m5w9arch"><span class="bt">老师课上强调 · W9</span><p>“Screen subnet is the most secure.” 屏蔽子网<span class="zhen">（screened subnet）</span>用两台过滤路由器<span class="zhen">（filtering router）</span>夹出 DMZ，提供<b>三层防御<span class="zhen">（three layers of defense）</span></b>：外路由器<span class="zhen">（router）</span>只对外宣告 DMZ，内网<span class="zhen">（internal network）</span>对互联网<span class="zhen">（Internet）</span>不可见；内路由器<span class="zhen">（router）</span>只对内宣告 DMZ，内部主机<span class="zhen">（internal host）</span>不能直接建到互联网<span class="zhen">（Internet）</span>的路由。期末考试范围点名了“防火墙架构<span class="zhen">（firewall architecture）</span>”。</p></div>
+
 <h3>“边界<span class="zhen">（perimeter）</span>已死”？防火墙<span class="zhen">（firewall）</span>还需要吗（P5-79～P5-82）</h3>
 <p>传统思路是“内网<span class="zhen">（internal network）</span>可信、外网<span class="zhen">（external network）</span>不可信”，防火墙<span class="zhen">（firewall）</span>守在边界<span class="zhen">（perimeter）</span>上。但云计算<span class="zhen">（cloud computing）</span>、远程办公<span class="zhen">（remote work）</span>和 BYOD、零信任<span class="zhen">（zero trust）</span>、越来越多的加密流量<span class="zhen">（encrypted traffic）</span>、钓鱼<span class="zhen">（phishing）</span>和内鬼<span class="zhen">（insider）</span>这类复杂威胁<span class="zhen">（sophisticated threat）</span>，让“固定边界<span class="zhen">（perimeter）</span>”逐渐瓦解。课件的结论是：<b>边界<span class="zhen">（perimeter）</span>没有消失，只是移动了</b>，从固定位置变成跟着用户、设备和数据走的、以身份为基础的边界<span class="zhen">（perimeter）</span>。防火墙<span class="zhen">（firewall）</span>仍然重要，但不再是唯一防线，要和下一代防火墙<span class="zhen">（next-generation firewall (NGFW)）</span>、云防火墙<span class="zhen">（cloud firewall）</span>、网络分段<span class="zhen">（network segmentation）</span>、零信任<span class="zhen">（zero trust）</span>一起用。</p>
 <h3>推荐做法（P5-84）</h3>
@@ -553,6 +566,8 @@
 <tr><td>缺点</td><td>每台要监视的机器都要装，拥有成本高，占用本机资源</td><td><b>流量<span class="zhen">（traffic）</span>加密<span class="zhen">（encryption）</span>后就失效</b>；看不到主机内部的活动</td></tr>
 </table></div>
 <p>HIDS 还分被动的（只分析、告警<span class="zhen">（alert）</span>）和主动的（能执行脚本、终止进程）；现代的 HIDS 常被称为 HIPS，集成了主机防火墙<span class="zhen">（host firewall）</span>、行为和特征检测<span class="zhen">（signature-based detection）</span>、恶意软件防护<span class="zhen">（malware protection）</span>。</p>
+<div class="teacher box" data-t="m5w10nids"><span class="bt">老师课上强调 · W10</span><ul><li>NIDS 的两个缺点：<b>流量<span class="zhen">（traffic）</span>加密<span class="zhen">（encryption）</span>时无效</b>（看不到攻击特征<span class="zhen">（attack signature）</span>）；不知道主机上发生了什么。优点是每个子网放一台就够，成本低。</li><li>HIDS 的关键优势：攻击者<span class="zhen">（attacker）</span>把攻击加密<span class="zhen">（encryption）</span>，NIDS 看不出来，<b>到主机解密<span class="zhen">（decryption）</span>后 HIDS 能发现</b>。</li><li>HIDS 的告警<span class="zhen">（alert）</span>信号：多次登录失败、非正常时间登录（从没在凌晨 4 点登录的人突然登录）、权限提升<span class="zhen">（privilege escalation）</span>、新增账户。</li><li>NIDS 放在防火墙<span class="zhen">（firewall）</span>前面还是后面都可以，“it doesn’t matter”。</li></ul></div>
+
 <h3>按“怎么判断”分：特征检测<span class="zhen">（signature-based detection）</span> vs 异常检测<span class="zhen">（anomaly detection）</span></h3>
 <div class="tbl"><table>
 <tr><th></th><th>Signature-based 特征检测<span class="zhen">（signature-based detection）</span></th><th>Anomaly-based 异常检测<span class="zhen">（anomaly detection）</span></th></tr>
@@ -566,6 +581,8 @@
 <li>Q5-14 说“signature 定义正常行为，anomaly 定义恰当行为”，这是把两者说反了，答 <b>FALSE</b>。</li>
 <li>Q5-17“定义一组规则或攻击模式<span class="zhen">（attack pattern）</span>，用来判断某行为是否来自入侵者<span class="zhen">（intruder）</span>”：按定义应该是 <b>Signature detection</b>，但样题 PDF 标的是 Anomaly detection，疑似标错。刷题本里两个都判对。正式考试遇到原题时，请留意老师的口径。</li>
 <li>Q5-18“收集合法用户<span class="zhen">（genuine user）</span>在一段时间内的行为数据”是 <b>Anomaly detection</b>，没有争议。</li></ul></div>
+<div class="teacher box" data-t="m5w10zero"><span class="bt">老师课上强调 · W10</span><ul><li>老师当堂提问：哪种系统能发现<b>零日攻击（zero-day）</b>？Signature-based <b>不能</b>（新攻击还没有特征）；anomaly / behavior-based <b>有能力</b>发现，但不保证。</li><li>Anomaly 最难的是定基线<span class="zhen">（baseline）</span>：凌晨 4 点登录的可能就是用户本人，所以会误报<span class="zhen">（false positive）</span>。误报<span class="zhen">（false positive）</span>太多，人就会习惯性忽略，真告警<span class="zhen">（alert）</span>也被忽略。</li><li>Sample Quiz P5 第 17 题老师选的是 Anomaly detection（“There’s no word here, signature”）。</li></ul></div>
+
 <h3>IDS vs IPS（P5-94）</h3>
 <div class="tbl"><table>
 <tr><th></th><th>IDS 入侵检测<span class="zhen">（intrusion detection）</span></th><th>IPS 入侵防御<span class="zhen">（intrusion prevention）</span></th></tr>
@@ -575,6 +592,8 @@
 <tr><td>适合</td><td>取证分析<span class="zhen">（forensic analysis）</span>和监控</td><td>实时执行安全策略<span class="zhen">（security policy）</span></td></tr>
 <tr><td>工具</td><td>Snort、Zeek、OSSEC</td><td>Palo Alto NGFW、Suricata、Cisco Firepower</td></tr>
 </table></div>
+<div class="teacher box" data-t="m5w10ips"><span class="bt">老师课上强调 · W10</span><p>“IDS only detects. IPS will prevent it.” IDS 发告警<span class="zhen">（alert）</span>交给人处理，适合取证（forensic）；IPS 能检测并阻断，适合实时防护。防火墙<span class="zhen">（firewall）</span>一次只看一个包的包头<span class="zhen">（packet header）</span>，IDS 做深度检查、看一串包。</p></div>
+
 <h3>蜜罐 Honeypot（P5-95）</h3>
 <p>故意设置一台<b>诱饵系统<span class="zhen">（decoy system）</span></b>，看起来像真的（比如假的客户计费系统），还故意留下漏洞<span class="zhen">（vulnerability）</span>，吸引攻击者<span class="zhen">（attacker）</span>进来。用途：观察攻击者<span class="zhen">（attacker）</span>的手法，改进真实网络的防护；或者把攻击者<span class="zhen">（attacker）</span>从真实目标引开。局限：它发现不了真实系统上的入侵<span class="zhen">（intrusion）</span>，也不一定能查出攻击者<span class="zhen">（attacker）</span>是谁。</p>
 <div class="check" data-a="2"><p class="cq">公司的流量<span class="zhen">（traffic）</span>大部分走 HTTPS 加密<span class="zhen">（encryption）</span>，想检查解密<span class="zhen">（decryption）</span>后的内容，应该更依赖？</p>
@@ -583,6 +602,8 @@
 <div class="check" data-a="1"><p class="cq">一种全新的攻击（零日<span class="zhen">（zero-day）</span>），哪种检测方法更有可能发现它？</p>
 <div class="opts"><button class="opt">特征检测<span class="zhen">（signature-based detection）</span></button><button class="opt">异常检测<span class="zhen">（anomaly detection）</span></button><button class="opt">两者都发现不了</button></div>
 <div class="cx"><p>零日攻击<span class="zhen">（zero-day attack）</span>不在特征库<span class="zhen">（signature database）</span>里；但它的行为偏离了正常基线<span class="zhen">（baseline）</span>，异常检测<span class="zhen">（anomaly detection）</span>有机会发现，代价是误报<span class="zhen">（false positive）</span>多。</p></div></div>
+<div class="teacher box" data-t="m5w10honey"><span class="bt">老师课上强调 · W10</span><p>蜜罐<span class="zhen">（honeypot）</span>能引诱攻击者<span class="zhen">（attacker）</span>、记录他们的手法，但老师说 “it’s not as great as it looks on the diagram”：攻击者<span class="zhen">（attacker）</span>也会把它当诱饵，绕开真正的系统。</p></div>
+
 <h3 style="margin-top:34px;padding-top:14px;border-top:1.5px dashed var(--line-strong)">课件逐页详解：IDS 与 IPS 的课件细节 <span class="ref">P5-86～P5-97</span></h3>
 
 <h4>IDS 的优缺点（P5-86）</h4>

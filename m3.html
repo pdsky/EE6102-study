@@ -35,7 +35,7 @@
 
 <div class="teacher box" data-t="m3top"><span class="bt">老师课上强调 · 录音 W4–W5</span><ul><li>真题可能问：<b>没认证能不能授权<span class="zhen">（authorization）</span>？不能</b>。先 authentication，再 authorization。</li><li>老师口径：top-down 总是有效；zero trust 连总裁的设备也要认证<span class="zhen">（authentication）</span>；FRR 是 Type I，FAR 是 Type II。</li></ul></div>
 <section class="sec" id="plan">
-<h2><span class="n">1</span>安全计划<span class="zhen">（security plan）</span>：先想清楚，再动手</h2>
+<h2><span class="n">1</span><span class="ht">安全计划<span class="zhen">（security plan）</span>：先想清楚，再动手</span></h2>
 <p><b>Cyber security plan</b> 是一份书面文件，写明组织在安全上采用的<b>策略<span class="zhen">（policy）</span>、战略、流程和技术</b>（P3-2）。它的目标有四个：保护 CIA、管理网络风险<span class="zhen">（cyber risk）</span>、保证业务连续<span class="zhen">（business continuity）</span>、满足法律和监管要求。</p>
 <div class="analogy box"><span class="bt">类比</span><p>装修房子先画图纸：哪里放保险柜、门锁装几道、谁有钥匙、着火了从哪逃。没有图纸就开工，钱花了不少，该防的地方却没防到。</p></div>
 <h3>安全计划<span class="zhen">（security plan）</span>的 5 个好处（P3-3、P3-4）</h3>
@@ -119,7 +119,7 @@
 </section>
 
 <section class="sec" id="approach">
-<h2><span class="n">4</span>谁来推动：自上而下<span class="zhen">（top-down）</span>、DLM 四层防御<span class="zhen">（four-tier defense）</span>、零信任<span class="zhen">（zero trust）</span></h2>
+<h2><span class="n">4</span><span class="ht">谁来推动：自上而下<span class="zhen">（top-down）</span>、DLM 四层防御<span class="zhen">（four-tier defense）</span>、零信任<span class="zhen">（zero trust）</span></span></h2>
 <h3>自下而上<span class="zhen">（bottom-up）</span> vs 自上而下（P3-10）</h3>
 <div class="tbl"><table>
 <tr><th></th><th>Bottom-up 自下而上</th><th>Top-down 自上而下</th></tr>
@@ -164,7 +164,7 @@
 </section>
 
 <section class="sec" id="auth">
-<h2><span class="n">5</span>认证<span class="zhen">（authentication）</span>基础：怎么证明“你是你”</h2>
+<h2><span class="n">5</span><span class="ht">认证<span class="zhen">（authentication）</span>基础：怎么证明“你是你”</span></h2>
 <p>后半章进入技术部分。所有门禁和登录系统都要解决一个问题：<b>怎么确认来者就是他声称的那个人？</b>课件 P3-18 给出三种证明方式：</p>
 <div class="tbl"><table>
 <tr><th>因素</th><th>含义</th><th>例子</th><th>弱点</th></tr>
@@ -192,7 +192,7 @@
 </section>
 
 <section class="sec" id="bio">
-<h2><span class="n">6</span>生物识别<span class="zhen">（biometrics）</span>怎么工作：注册、采集、比对、判决</h2>
+<h2><span class="n">6</span><span class="ht">生物识别<span class="zhen">（biometrics）</span>怎么工作：注册、采集、比对、判决</span></h2>
 <p><b>Biometrics</b> 指利用一个人独特的<b>生理特征<span class="zhen">（physiological characteristic）</span>或行为特征<span class="zhen">（behavioral characteristic）</span></b>来识别和认证<span class="zhen">（authentication）</span>身份。</p>
 <h3>四个步骤（P3-24）</h3>
 <div class="stepper"><div class="sh"><span>一次指纹<span class="zhen">（fingerprint）</span>登录的全过程</span><span class="ctr"></span></div>
@@ -216,7 +216,7 @@
 </section>
 
 <section class="sec" id="types">
-<h2><span class="n">7</span>四种主要生物特征<span class="zhen">（biometric characteristic）</span>：指纹<span class="zhen">（fingerprint）</span>、虹膜<span class="zhen">（iris）</span>、视网膜<span class="zhen">（retina）</span>、人脸<span class="zhen">（face）</span></h2>
+<h2><span class="n">7</span><span class="ht">四种主要生物特征<span class="zhen">（biometric characteristic）</span>：指纹<span class="zhen">（fingerprint）</span>、虹膜<span class="zhen">（iris）</span>、视网膜<span class="zhen">（retina）</span>、人脸<span class="zhen">（face）</span></span></h2>
 <div class="tbl"><table>
 <tr><th>类型</th><th>原理</th><th>优点</th><th>缺点</th><th>记忆点</th></tr>
 <tr><td><b>Fingerprint</b> 指纹</td><td>识别指尖的脊（ridge）和谷（valley），以及<b>细节点 minutiae</b>（脊线的终点和分叉，约 30 个）</td><td>便宜、快、容易集成、非侵入</td><td><b>容易被偷</b>（摸过的东西上到处都是）；可以做出高质量复制品（明胶假指纹<span class="zhen">（fingerprint）</span>、高清照片还原）；受环境影响；泄露<span class="zhen">（leak）</span>后无法重置</td><td><b>最常用</b></td></tr>
@@ -235,7 +235,7 @@
 </section>
 
 <section class="sec" id="err">
-<h2><span class="n">8</span>FAR、FRR、CER：生物识别<span class="zhen">（biometrics）</span>的两种错误</h2>
+<h2><span class="n">8</span><span class="ht">FAR、FRR、CER：生物识别<span class="zhen">（biometrics）</span>的两种错误</span></h2>
 <p>上一节说过，比对只能得到一个“相似度分数<span class="zhen">（similarity score）</span>”，再用<b>阈值<span class="zhen">（threshold）</span></b>决定放不放行。于是有两种可能的错误（P3-47）：</p>
 <div class="tbl"><table>
 <tr><th>错误</th><th>别名</th><th>发生了什么</th><th>后果</th></tr>
@@ -271,7 +271,7 @@
 </section>
 
 <section class="sec" id="attack">
-<h2><span class="n">9</span>生物识别<span class="zhen">（biometrics）</span>会被怎样攻击，它能取代密码<span class="zhen">（password）</span>吗</h2>
+<h2><span class="n">9</span><span class="ht">生物识别<span class="zhen">（biometrics）</span>会被怎样攻击，它能取代密码<span class="zhen">（password）</span>吗</span></h2>
 <h3>五种攻击方式（P3-50）</h3>
 <ul>
 <li><b>Presentation attack 呈现攻击</b>：在传感器<span class="zhen">（sensor）</span>前出示人造物（假指纹<span class="zhen">（fingerprint）</span>、照片、面具）；</li>
