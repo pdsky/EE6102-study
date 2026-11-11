@@ -3813,7 +3813,7 @@ TOOL.risk={
  },
  steps:function(){
   var T=parseNum(V('T',4)),Vu=parseNum(V('Vu',3)),A=parseNum(V('A',5)),h='';
-  if(T>0&&Vu>0&&A>0){var r=T*Vu*A;h+=step(1,'风险评分','<span class="eq">Risk = Threat × Vulnerability × Asset Value = '+T+' × '+Vu+' × '+A+' = <b>'+r+'</b></span><span class="eq">满分 5 × 5 × 5 = 125　→　'+r+' ÷ 125 = <b>'+(+(r/125*100).toPrecision(3))+'%</b></span><p class="muted" style="font-size:13px">课件例题 60 分（48%）被判为 medium。课件没有给出高、中、低的具体分界，程序只算分数和百分比。</p>')}
+  if(T>0&&Vu>0&&A>0){var r=T*Vu*A;h+=step(1,'风险评分','<span class="eq">Risk = Threat × Vulnerability × Asset Value = '+T+' × '+Vu+' × '+A+' = <b>'+r+'</b></span><span class="eq">满分 5 × 5 × 5 = 125　→　'+r+' ÷ 125 = <b>'+(+(r/125*100).toPrecision(3))+'%</b></span><p class="muted" style="font-size:13px">分档按 W11 复习课模拟卷答案：1–29 低、30–59 中、60–125 高（本题 '+r+' → '+(r>=60?'高':r>=30?'中':'低')+'）。注意课件 P2-57 把 60 分（48%）判成 medium，和这套分档矛盾；考试按题目给的分档判断。</p>')}
   var pw=String(V('pw','')),mn=parseNum(V('min',12))||0;
   var c=pwCheck(pw,mn,V('up',true),V('lo',true),V('di',true),V('sy',true));
   h+=step(2,'密码合规检查','<div class="tbl"><table class="calc" style="font-family:var(--f-body)"><tr><th style="text-align:left">项目</th><th style="text-align:left">密码中的情况</th><th>结果</th></tr>'+c.rows+'</table></div><p><b>'+(c.ok?'Compliant ✓ 合规':'Non-compliant ✗ 不合规（缺：'+c.miss.join('、')+'）')+'</b></p>');
